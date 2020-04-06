@@ -1,0 +1,101 @@
+---
+title: "L01 Introduction"
+subtitle: "Data Visualization (STAT 302) - Spring 2020" 
+author: "Martha Eichlersmith"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    highlight: "tango"
+---
+
+## Overview
+
+The goals of this lab are to (1) ensure that the major software for this course is properly installed and functional, (2) develop and follow a proper workflow, and (3) work together to construct a few plots to explore a dataset using `ggplot2` --- demonstration of the utility and power of `ggplot2`. 
+
+**Don't worry if you cannot do everything here by yourself.** You are just getting started and the learning curve is steep, but remember that the instructional team and your classmates will be there to provide support. Persevere and put forth an honest effort and this course will payoff.
+
+```{r load-packages, warning=FALSE, message=FALSE}
+# Load package(s) - We will do this together 
+```
+
+<br>
+
+## Dataset
+
+We'll be using data from the [**lego** package](https://github.com/seankross/lego) which is already in the `/data` subdirectory, along with many other processed datasets, as part of the zipped folder for this lab. 
+
+<br><br>
+
+## Tasks
+Complete the following tasks. For many of these you'll need to simply indicate that you have completed the task. In others, you'll need to run some R code and/or supply a sentence or two.
+
+<br><br>
+
+### Task 1
+
+Download and install [R Software](https://cran.rstudio.com/).
+
+<br><br>
+
+### Task 2
+
+1. Download and install [RStudio](https://www.rstudio.com/products/rstudio/download4/).
+2. Open RStudio and ensure it and R have been properly installed. 
+3. Go to **Tools** > **Global Options** and change the two indicated settings below and click **Applly**.
+
+<!-- ![](screen_shot/rstudio-workspace.png) --> 
+
+<br>
+
+### Task 3
+Install the following packages:
+
+- `tidyverse`
+- `ggstance`
+- `skimr`
+
+<br><br>
+
+### Task 4
+
+1. Download `data_vis_labs.zip` from Canvas. 
+2. Unzip the file and place the unzipped `data_vis_labs` directory where you would like to keep all of your lab work for this course.
+3. Open RStudio and create a project folder for this *exsisting directory*.  
+4. Appropriately rename `template_L01.Rmd` for submission (e.g. *Kuper_Arend_L01.Rmd*).
+5. Compile the *_L01.Rmd file with `Cmd/Ctrl + Shift + K`.
+
+<br><br>
+
+### Task 5 
+Optional: It is always handy to have a versatile text editor and I would suggest downloading [Sublime Text](https://www.sublimetext.com/). It is free to use.
+
+<br><br>
+
+## Exercise 1
+
+Let's look at some interesting patterns in the history of LEGO! We'll be using data from the [**lego** package](https://github.com/seankross/lego) located `data/legosets.rda`. We will work through this exercise together in class.
+
+<br><br>
+
+### Inspect the data
+
+The **lego** package provides a helpful dataset some interesting variables. Let's take a quick look at the data.
+
+<br><br>
+
+### Price per year
+
+First, let's look at the average cost of LEGO sets over time. The main variable of interest here is `USD_MSRP`, or the manufacturer's suggested retail price in constant dollars (i.e. not adjusted for inflation).
+
+<br><br>
+
+### Pieces per year
+
+Next, let’s look at how the number of pieces per set has changed over time. Because Duplo sets are much smaller (since they’re designed for toddlers), we’ll make a special indicator variable for them.
+
+<br><br>
+
+### LEGO set themes
+
+In the 1990s, [LEGO began partnering with famous brands and franchises](https://www.cnbc.com/2018/04/27/lego-marketing-strategy-made-it-world-favorite-toy-brand.html) to boost its own sales. First, let's see how many different "themes" LEGO now offers:
