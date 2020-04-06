@@ -1,0 +1,37 @@
+---
+title: "Class Notes: 2020-04-06"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith "
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    highlight: "tango"
+---
+
+## When and why do we use a __ ? 
+
+### Histogram  
+- **univariate**
+- **continuous (or discrete numerical)** variable
+ 
+
+### Box Plot
+- **univariate**
+- **continuous (or discrete numerical)** variable 
+
+### Bar Plot 
+- **categorical/factor** variables 
+
+### Scatterplot 
+- **bivariate**
+- two **continuous (or discrete numerical)** variables
+
+### segmented/stacked bar plot
+- **bivariate**
+- two **categorical/factor** variables 
+
+### side-by-side box plots (grouped box plots)
+- **multivariate**
+- one **continuous (or discrete numerical)** variable
+- 1+ **categorical/factor** variable(s) 
