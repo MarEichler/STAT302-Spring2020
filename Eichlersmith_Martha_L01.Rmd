@@ -63,7 +63,10 @@ df.1b <- ddply( #in the plyr package
     )
   )
 
-ggplot(df.1b, aes(Year, AverageCost))+geom_point()+geom_line()
+ggplot(df.1b, aes(Year, AverageCost))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Lego Sets: Average Price vs Year")
 ```
 
 
@@ -100,7 +103,10 @@ df.1c <- ddply( #in the plyr package
     )
   )
 
-ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+geom_point()+geom_line()
+ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Lego Sets: Average Pieces vs Year")
 ```
 
 
