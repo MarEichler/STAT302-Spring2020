@@ -1,6 +1,7 @@
 ---
 title: "L01 Introduction"
-subtitle: "Data Visualization (STAT 302) - Spring 2020" 
+subtitle: "Data Visualization (STAT 302)" 
+date: 2020-04-12
 author: "Martha Eichlersmith"
 output:
   html_document:
