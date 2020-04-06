@@ -107,6 +107,12 @@ ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
   geom_point()+
   geom_line()+
   ggtitle("Lego Sets: Average Pieces vs Year")
+
+ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
+  facet_wrap(~IsDuplo, ncol=2, scales="fixed")+
+  geom_point()+
+  geom_line()+
+  ggtitle("Lego Sets: Average Pieces vs Year")
 ```
 
 
