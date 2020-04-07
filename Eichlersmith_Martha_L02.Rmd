@@ -95,7 +95,7 @@ ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
 
 <br> 
 
-<p><font color="red">answer question</font></p>
+The first plot uses colors for a purley subjective reason, a preferance for purple, but does not have any aesthetic effect on the data.  The second plot uses the aesthetic color to section the data into two groups (Female and Male); this plot is using color as part of the mapping of the data to aesthetics.  
 
 <br> 
 
@@ -114,18 +114,17 @@ cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
 
 # Selecting a random subset of size 100
 cdc_small <- cdc %>% sample_n(100)
-head(cdc_small)
 ```
 
-```{r plots}
+```{r ex_2}
 #plot 1 plain
 ggplot(cdc_small, aes(height, weight))+
-  geom_point(size=2)+
+  geom_point(size=2, alpha=0.5)+
   ggtitle("Weight by Height: Plain")
 
 #plot 2 gender
 ggplot(cdc_small, aes(height, weight, shape=gender, color=gender))+
-  geom_point(size=2)+
+  geom_point(size=2, alpha=.5)+
   ggtitle("Weight by Height: Gender")
 
 #plot 3 general health
@@ -134,8 +133,23 @@ ggplot(cdc_small, aes(height, weight, color=genhlth, shape=genhlth))+
   ggtitle("Weight by Height: General Health")
 
 #plot 4 age
-ggplot(cdc_small, aes(height, weight))+
-  geom_point(aes(color=age, size=age))+
+ggplot(cdc_small, aes(height, weight, color=age, size=age))+
+  geom_point()+
   ggtitle("Weight by Height: Age")
+
+#plot 5 smoking
+ggplot(cdc_small, aes(height, weight, color=as.factor(smoke100)))+
+  geom_point(size=2)+
+  ggtitle("Weight by Height: Smoking")+
+  scale_color_discrete(
+     name="Smoked at least \n100 cigarettes"
+    ,label=c("No", "Yes")
+    )
+
+#plot 5 healthcare coverage
+ggplot(cdc_small, aes(height, weight, color=as.factor(hlthplan)))+
+  geom_point(size=2)+
+  ggtitle("Weight by Height: Healthcare")+
+  scale_color_discrete(name="Health Care \nCoverage", label=c("No", "Yes"))
 ```
 
