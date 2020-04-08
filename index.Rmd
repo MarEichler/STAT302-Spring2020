@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization (STAT 302) Labs"
+title: "Data Visualization Work"
 subtitle: "Spring 2020" 
 author: "Martha Eichlersmith"
 output:
@@ -8,14 +8,15 @@ output:
     toc_float: true
     highlight: "tango"
 ---
+These are the projects and labs completed for Data Visualization (STAT 302) during the Spring 2020 quarter.  
 
-# L01
+# Lab 01
 ```{r child='Eichlersmith_Martha_L01.Rmd'}
 
 ```
 
 
-# L02
+# Lab 02
 ```{r child='Eichlersmith_Martha_L02.Rmd'}
 
 ```
