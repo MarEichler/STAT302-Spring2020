@@ -1,5 +1,5 @@
 ---
-title: "Data Visualization Work"
+title: "Data Visualization Class Work"
 subtitle: "Spring 2020" 
 author: "Martha Eichlersmith"
 output:
