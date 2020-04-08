@@ -20,7 +20,6 @@ knitr::opts_chunk$set(echo=TRUE)
 library(tidyverse)
 library(ggstance)
 library(skimr)
-library(plyr)
 ```
 
 
@@ -48,38 +47,33 @@ colnames(legosets)
 ### 1b Price per year
 
 First, let's look at the average cost of LEGO sets over time. The main variable of interest here is `USD_MSRP`, or the manufacturer's suggested retail price in constant dollars (i.e. not adjusted for inflation).  
-```{r priceVtime}
-#subset large df (just to make it simpler)
-df.subset1b<- select(legosets, Year, USD_MSRP)
 
-df.1b <- ddply( #in the plyr package
-  df.subset1b,  #data frame
-  .(Year), #column you want to show
-  summarize, #summarize the data (i.e. 2014, 2015, ... VS 2014, 2014, 2014, 2015, 2015, 2015)
-  AverageCost #name the column 
-  = mean(
-    USD_MSRP,
-    na.rm=TRUE #remove NA's (if false, will not calc mean with NA's present)
+```{r priceVtime}
+df.1b <- legosets %>%
+  group_by(Year) %>%
+  summarize(
+    AverageCost = #name the column
+      mean( #find the mena
+        USD_MSRP #what you wnat to find the mean of 
+        , na.rm=TRUE #ignore (remove) NA's
+        )
     )
-  )
 
 ggplot(df.1b, aes(Year, AverageCost))+
   geom_point()+
   geom_line()+
   ggtitle("Lego Sets: Average Price vs Year")
 ```
-
-
 <br><br>
 
 ### 1c Pieces per year
 
 Next, let’s look at how the number of pieces per set has changed over time. Because Duplo sets are much smaller (since they’re designed for toddlers), we’ll make a special indicator variable for them.
 
-```{r piecesVtime}
-#subset large df (just to make it simpler)
 
-df.subset1c<- select(legosets, Year, Theme, Pieces)
+```{r piecesVtime}
+#subset large df (just to make it simpler) - and don't want to amend actual legosets df 
+legosubset1c<- select(legosets, Year, Theme, Pieces)
 
 #function: to make theme into binary "Duplo" and "Not Duplo" variable 
 myefunc_IsDuplo <- function(input){
@@ -89,25 +83,25 @@ myefunc_IsDuplo <- function(input){
 }
 
 #add binary duplo variable to df
-df.subset1c$IsDuplo <- sapply(df.subset1c$Theme, myefunc_IsDuplo)
+legosubset1c$IsDuplo <- sapply(legosubset1c$Theme, myefunc_IsDuplo)
 
-
-df.1c <- ddply( #in the plyr package
-  df.subset1c,  #data frame
-  .(Year, IsDuplo), #column you want to show
-  summarize, #summarize the data (i.e. 2014, 2015, ... VS 2014, 2014, 2014, 2015, 2015, 2015)
-  AveragePieces #name the column 
-  = mean(
-    Pieces,
-    na.rm=TRUE #remove NA's (if false, will not calc mean with NA's present)
+#create df with avg pieces grouped by year and duplo status
+df.1c <- legosubset1c  %>%
+  group_by(Year, IsDuplo) %>%
+  summarize(
+    AveragePieces = #name the column
+      mean( #find the mena
+        Pieces #what you wnat to find the mean of 
+        , na.rm=TRUE #ignore (remove) NA's
+        )
     )
-  )
 
+#same plot 
 ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
   geom_point()+
   geom_line()+
   ggtitle("Lego Sets: Average Pieces vs Year")
-
+#facet plots
 ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
   facet_wrap(~IsDuplo, ncol=2, scales="fixed")+
   geom_point()+
