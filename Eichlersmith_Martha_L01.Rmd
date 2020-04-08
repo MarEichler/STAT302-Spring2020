@@ -8,20 +8,38 @@ output:
     toc: true
     toc_float: true
     highlight: "tango"
+editor_options: 
+  chunk_output_type: inline
 ---
 
 ```{r setup, echo=FALSE}
 knitr::opts_chunk$set(echo=TRUE)
 ```
 
+## Overview
 
+The goals of this lab are to (1) ensure that the major software for this course is properly installed and functional, (2) develop and follow a proper workflow, and (3) work together to construct a few plots to explore a dataset using `ggplot2` --- demonstration of the utility and power of `ggplot2`. 
+
+**Don't worry if you cannot do everything here by yourself.** You are just getting started and the learning curve is steep, but remember that the instructional team and your classmates will be there to provide support. Persevere and put forth an honest effort and this course will payoff.
 
 ```{r load-packages, warning=FALSE, message=FALSE}
+# Load package(s) 
 library(tidyverse)
 library(ggstance)
 library(skimr)
 ```
 
+<br>
+
+## Dataset
+
+We'll be using data from the [**lego** package](https://github.com/seankross/lego) which is already in the `/data` subdirectory, along with many other processed datasets, as part of the zipped folder for this lab. 
+
+## Tasks
+ 
+> Completed tasks
+
+<br><br> 
 
 ## Exercise 1
 
@@ -37,10 +55,17 @@ load(file = "data/legosets.rda")
 The **lego** package provides a helpful dataset some interesting variables. Let's take a quick look at the data.
 
 ```{r dataset}
-head(legosets)
-colnames(legosets)
-```
+#print the top of the data sets
+#head(legosets)
 
+#focus of the variables 
+glimpse(legosets)
+
+#short eda
+skim_without_charts(legosets)
+```
+  
+Notice there are a lot of missing variables, especially when it comes to pricing - this will be important for when we calculate the means.  
 
 <br>
 
@@ -49,30 +74,49 @@ colnames(legosets)
 First, let's look at the average cost of LEGO sets over time. The main variable of interest here is `USD_MSRP`, or the manufacturer's suggested retail price in constant dollars (i.e. not adjusted for inflation).  
 
 ```{r priceVtime}
-df.1b <- legosets %>%
-  group_by(Year) %>%
+#`drop` NA's at top  
+df.1b <- legosets %>% 
+  drop_na(USD_MSRP) %>% 
+  group_by(Year) %>% 
   summarize(
-    AverageCost = #name the column
-      mean( #find the mena
-        USD_MSRP #what you wnat to find the mean of 
-        , na.rm=TRUE #ignore (remove) NA's
-        )
-    )
+    AveragePrice = mean(USD_MSRP)
+  )
 
-ggplot(df.1b, aes(Year, AverageCost))+
-  geom_point()+
-  geom_line()+
-  ggtitle("Lego Sets: Average Price vs Year")
+#`remove` NA's in mean function
+#equivalent to `drop` NAs at top for this task 
+#df.1b <- legosets %>%
+#  group_by(Year) %>%
+#  summarize(
+#    AverageCost = mean(USD_MSRP, na.rm=TRUE)
+#    )
+
+ggplot(df.1b, aes(Year, AveragePrice))+
+  geom_point(size=1.25)+
+  geom_line(size=1)+
+  ggtitle("LEGO Sets: Average Price vs Year")+
+  theme_minimal()+
+  labs( #lables on the plot
+     x = "Year"
+   , y = "Average Price (USD)"
+   , subtitle = "sets without price are removed from calculation of average price"
+   , caption = "Source: LEGO"
+    )
 ```
+
+Is the increase in price simply due to inflation?  Could get data from federal resersve and plot inflation-adjusted price vs year.  
 <br><br>
+
+
 
 ### 1c Pieces per year
 
 Next, let’s look at how the number of pieces per set has changed over time. Because Duplo sets are much smaller (since they’re designed for toddlers), we’ll make a special indicator variable for them.
 
 
-```{r piecesVtime}
-#subset large df (just to make it simpler) - and don't want to amend actual legosets df 
+```{r data-wrangling, echo=FALSE, eval=FALSE}
+#not used but works 
+#subset large df (just to make it simpler)
+#don't want to amend actual legosets df 
 legosubset1c<- select(legosets, Year, Theme, Pieces)
 
 #function: to make theme into binary "Duplo" and "Not Duplo" variable 
@@ -95,22 +139,93 @@ df.1c <- legosubset1c  %>%
         , na.rm=TRUE #ignore (remove) NA's
         )
     )
+```
+
+#### All Years 
+```{r piecesVtime}
+
+df.1c <- legosets %>% 
+  mutate(IsDuplo = ifelse(Theme == "Duplo", "Duplo", "Lego")) %>%
+  drop_na(Pieces) %>% 
+  group_by(Year, IsDuplo) %>% 
+  summarize(
+     AveragePieces = mean(Pieces)
+    ,num_sets = n()
+    )
 
 #same plot 
 ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
   geom_point()+
   geom_line()+
-  ggtitle("Lego Sets: Average Pieces vs Year")
+  ggtitle("Lego Sets: Average Pieces vs Year")+
+  labs( #lables on the plot
+     x = "Year"
+   , y = "Average Pieces"
+   , subtitle = "sets without pieces are removed from calculation of average pieces"
+   , caption = "Source: LEGO"
+    )
+  
 #facet plots
 ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
   facet_wrap(~IsDuplo, ncol=2, scales="fixed")+
   geom_point()+
   geom_line()+
-  ggtitle("Lego Sets: Average Pieces vs Year")
+  ggtitle("Lego Sets: Average Pieces vs Year")+
+  labs( #lables on the plot
+     x = "Year"
+   , y = "Average Pieces"
+   , subtitle = "sets without pieces are removed from calculation of average pieces"
+   , caption = "Source: LEGO"
+    )+
+  theme(
+    legend.position = "none"
+  )
+```
+<br> 
+
+#### Data after 1985
+```{r piecesVtime-after1985}
+
+df.1c <- legosets %>% 
+  mutate(IsDuplo = ifelse(Theme == "Duplo", "Duplo", "Lego")) %>%
+  drop_na(Pieces) %>% 
+  filter(Year > 1985) %>%
+  group_by(Year, IsDuplo) %>% 
+  summarize(
+     AveragePieces = mean(Pieces)
+    ,num_sets = n()
+    )
+
+#same plot 
+ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
+  geom_point()+
+  geom_line()+
+  ggtitle("Lego Sets: Average Pieces vs Year")+
+  labs( #lables on the plot
+     x = "Year"
+   , y = "Average Pieces"
+   , subtitle = "sets without pieces are removed from calculation of average pieces"
+   , caption = "Source: LEGO"
+    )
+  
+#facet plots
+ggplot(df.1c, aes(Year, AveragePieces, color=IsDuplo))+
+  facet_wrap(~IsDuplo, ncol=2, scales="fixed")+
+  geom_point()+
+  geom_line()+
+  ggtitle("Lego Sets: Average Pieces vs Year")+
+  labs( #lables on the plot
+     x = "Year"
+   , y = "Average Pieces"
+   , subtitle = "sets without pieces are removed from calculation of average pieces"
+   , caption = "Source: LEGO"
+    )+
+  theme(
+    legend.position = "none"
+  )
 ```
 
-
-
+<br> 
 
 ### 1d LEGO set themes
 
@@ -118,5 +233,32 @@ In the 1990s, [LEGO began partnering with famous brands and franchises](https://
 
 ```{r numberofthemes}
 length(unique(legosets$Theme))
+
+legosets %>% 
+  distinct(Theme) %>% 
+  summarize ( n_themes = n())
+```
+
+
+```{r themes}
+#counts of the themes 
+df.1d <- legosets %>% 
+  #count data, automatically labeled 'n' 
+  count(Theme, sort = TRUE
+        , name ="theme_count" #personalize name if wnat 
+        )  %>% 
+  #turning character chr into factor fct -- meaning a categorical variable 
+  mutate(Theme = fct_inorder(Theme, ordered = TRUE)) 
+
+
+
+df.1d %>% 
+  filter(theme_count > 150, Theme != 'Duplo') %>% #only look at top ones
+  ggplot(aes(x=fct_rev(Theme), y= theme_count)) +
+    geom_col()+
+    coord_flip()+
+    labs(y="Number of Sets", x=NULL)
+
+
 ```
 
