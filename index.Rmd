@@ -1,0 +1,21 @@
+---
+title: "Data Visualization (STAT 302) Labs"
+subtitle: "Spring 2020" 
+author: "Martha Eichlersmith"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+    highlight: "tango"
+---
+
+# L01
+```{r child='Eichlersmith_Martha_L01.Rmd'}
+
+```
+
+
+# L02
+```{r child='Eichlersmith_Martha_L02.Rmd'}
+
+```

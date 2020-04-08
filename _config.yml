@@ -1,0 +1,10 @@
+---
+title: "Data Visualization Labs"
+date: 
+output:
+  html_document:
+    toc: true
+    toc_float: true
+theme:  jekyll-theme-minimal
+#logo: WIST-withname.png
+---
