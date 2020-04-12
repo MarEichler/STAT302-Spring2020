@@ -1,0 +1,200 @@
+---
+title: "L03 ggplot II"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-04-19
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# Overview
+
+The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
+
+# Datasets
+
+We'll be using data from the `BA_degrees.rda` and `dow_jones_industrial.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. Below is a description of the variables contained in each dataset.
+
+`BA_degrees.rda`
+
+* `field` - field of study
+* `year_str` - academic year (e.g. 1970-71)
+* `year` - closing year of academic year
+* `count` - number of degrees conferred within a field for the year
+* `perc` - field's percentage of degrees conferred for the year
+
+`dow_jones_industrial.rda`
+
+* `date` - date
+* `open` - Dow Jones Industrial Average at open
+* `high` - Day's high for the Dow Jones Industrial Average
+* `low` - Day's low for the Dow Jones Industrial Average
+* `close` - Dow Jones Industrial Average at close
+* `volume` - number of trades for the day
+
+We'll also be using a subset of the BRFSS (Behavioral Risk Factor Surveillance System) survey collected annually by the Centers for Disease Control and Prevention (CDC). The data can be found in the provided `cdc.txt` file --- place this file in your `/data` subdirectory. The dataset contains 20,000 complete observations/records of 9 variables/fields, described below.
+
+* `genhlth` - How would you rate your general health? (excellent, very good, good, fair, poor)
+* `exerany` - Have you exercised in the past month? (`1 = yes`, `0 = no`) 
+* `hlthplan` - Do you have some form of health coverage? (`1 = yes`, `0 = no`) 
+* `smoke100` - Have you smoked at least 100 cigarettes in your life time? (`1 = yes`, `0 = no`) 
+* `height` -  height in inches
+* `weight` - weight in pounds
+* `wtdesire` - weight desired in pounds
+* `age` - in years
+* `gender` - `m` for males and `f` for females
+
+<br>
+
+```{r load-packages, warning=FALSE, message=FALSE}
+# Load package(s)
+library(tidyverse)
+```
+
+# Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using `BA_degrees` dataset, recreate the following graphics as precisely as possible.
+
+```{r, eval = FALSE}
+# Wrangling for plotting
+ba_dat <- BA_degrees %>%
+  # mean % per field
+  group_by(field) %>%
+  mutate(mean_perc = mean(perc)) %>%
+  # Only fields with mean >= 5%
+  filter(mean_perc >= 0.05) %>%
+  # Organizing for plotting
+  arrange(desc(mean_perc), year) %>%
+  ungroup() %>%
+  mutate(field = fct_inorder(field))
+```
+
+<br>
+
+##### Plot 1
+
+
+<br>
+
+##### Plot 2
+
+*Hints:*
+
+- Transparency is 0.5
+- Color used is`"red"`
+
+<br>
+
+##### Plot 3
+
+
+<br>
+
+### Exercise 2
+
+Using `dow_jones_industrial` dataset, recreate the following graphics as precisely as possible. *Hint:* Used `close`.
+
+```{r, eval = FALSE}
+# Restrict data to useful range
+djia_date_range <- dow_jones_industrial %>%
+  filter(date >= ymd("2008/12/31") & date <= ymd("2010/01/10"))
+```
+
+<br>
+
+##### Plot 1
+
+*Hints:*
+
+- Colors used `"red"`, `"purple"`, & `"green"`
+
+<br>
+
+##### Plot 2
+
+*Hints:*
+
+- Wiggliness for `loess` is 0.3
+
+<br>
+
+##### Plot 3
+
+*Hints:*
+
+- `y ~ ns(x, 6)` will need `splines` package (`"lm"` will work) 
+
+<br>
+
+### Exercise 3
+
+Using `cdc` dataset, recreate the following graphics as precisely as possible.
+
+```{r cdc, warning=FALSE, message=FALSE}
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
+```
+
+<br>
+
+##### Plot 1
+
+Construct this plot in two ways. Once using `cdc` and once using the `genhlth_count`.
+
+```{r}
+genhlth_count <- cdc %>%
+  count(genhlth)
+```
+
+<br>
+
+
+
+<br>
+
+##### Plot 2
+
+<br>
+
+##### Plot 3
+
+*Hints:*
+
+- Transparency is 0.2
+
+<br>
+
+##### Plot 4
+
+*Hints:*
+
+- Transparency is 0.5
+- Horizontal axis should have lower limit of 50 and upper limit of 300
+
+<br>
+
+##### Plot 5
+
+*Hints:*
+
+- Transparency is 0.4
+
+<br>
+
+##### Plot 6
+
+*Hints:*
+
+- Transparency is 0.2
+

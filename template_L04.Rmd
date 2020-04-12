@@ -1,0 +1,114 @@
+---
+title: "L04 ggplot III"
+author: "Data Visualization (STAT 302)"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+# Overview
+
+The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
+
+# Datasets
+
+We'll be using data from the `blue_jays.rda`, `tech_stocks.rda`, `corruption.rda`, and `cdc.txt` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
+
+```{r load-packages, eval=FALSE, warning=FALSE, message=FALSE}
+# Load package(s)
+
+# Load datasets
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
+```
+
+# Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using `blue_jays.rda` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Transparency is 0.6
+- Point size 2
+- Shift text horizontally by 0.5
+- See pg 44 in *ggplot2*
+
+<br>
+
+### Exercise 2
+
+Using `tech_stocks` dataset, recreate the following graphics as precisely as possible.
+
+<br>
+
+##### Plot 1
+
+*Hints:*
+
+- serif font
+
+<br>
+
+##### Plot 2
+
+*Hints:*
+
+- Package `ggrepel`
+- `box.padding` is 0.6
+- Minimum segment length is 0 
+- Horizontal justification is to the right
+- seed of 9876
+
+<br>
+
+### Exercise 3
+
+Using `corruption.rda` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Transparency is 0.6
+- Only use 2015 data
+- Color used is `grey60`
+- `"y ~ log(x)"` (method `"lm"`)
+- Package `ggrepel`
+- `box.padding` is 0.6
+- Minimum segment length is 0 
+- seed is 9876
+
+<br>
+
+### Exercise 4
+
+Using `cdc` dataset, recreate the described graphic as precisely as possible.
+
+Using Bilbo Baggins' responses below to the CDC BRSFF questions, add Bilbo's data point as a transparent (0.5) solid red circle of size 4 to a scatterplot of `weight` by `height` with transparent (0.1) solid blue circles of size 2 as the plotting characters. In addition, label the point with his name in red. Left justify and rotate the label so it reads vertically from bottom to top --- shift it up by 10 pounds too. Plot should use appropriately formatted axis labels. Remember that the default shape is a solid circle.
+
+* `genhlth` - How would you rate your general health? **fair**
+* `exerany` - Have you exercised in the past month? **1=yes**
+* `hlthplan` - Do you have some form of health coverage? **0=no**
+* `smoke100` - Have you smoked at least 100 cigarettes in your life time? **1=yes** 
+* `height` -  height in inches: **46**
+* `weight` - weight in pounds: **120**
+* `wtdesire` - weight desired in pounds: **120**
+* `age` - in years: **45**
+* `gender` - m for males and f for females: **m**
+
+<br>
+
+*Hint:* Create a new dataset (maybe call it `bilbo` or `bilbo_baggins`) using either `data.frame()` (base R - example in book) or `tibble()` (tidyverse - see help documentation for the function). Make sure to use variable names that exactly match `cdc`'s variable names
+
+<br>
+
+
