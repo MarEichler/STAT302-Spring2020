@@ -48,7 +48,7 @@ We'll also be using a subset of the BRFSS (Behavioral Risk Factor Surveillance S
 
 <br>
 
-```{r load-packages, warning=FALSE, message=FALSE}
+```{r, warning=FALSE, message=FALSE}
 # Load package(s)
 library(tidyverse)
 ```
