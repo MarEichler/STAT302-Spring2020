@@ -9,18 +9,23 @@ output:
     toc_float: true
 ---
 
-# Overview
+## Overview
 
 The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
 
-# Datasets
+## Datasets
 
 We'll be using data from the `blue_jays.rda`, `tech_stocks.rda`, `corruption.rda`, and `cdc.txt` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
 
-```{r load-packages, eval=FALSE, warning=FALSE, message=FALSE}
+```{r L04-load-packages, warning=FALSE, message=FALSE}
 # Load package(s)
+library(tidyverse)
+library(gridExtra)
 
 # Load datasets
+load(file="data/blue_jays.rda")
+load(file="data/tech_stocks.rda")
+load(file="data/corruption.rda")
 
 # Read in the cdc dataset
 cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
@@ -29,7 +34,7 @@ cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
   ))
 ```
 
-# Exercises
+## Exercises
 
 Complete the following exercises.
 
@@ -45,6 +50,36 @@ Using `blue_jays.rda` dataset, recreate the following graphic as precisely as po
 - Point size 2
 - Shift text horizontally by 0.5
 - See pg 44 in *ggplot2*
+
+```{r, L04-EX1}
+caption <- paste("Head length versus body mass for", nrow(blue_jays), "blue jays")
+caption_print <- paste(strwrap(caption, 40), collapse ="\n") 
+
+topHead <- blue_jays %>% 
+  arrange(desc(Head)) %>%
+  group_by(KnownSex) %>% 
+  top_n(n=2, wt=Head)
+
+topHead <- topHead[c(1,4),]
+
+ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
+  geom_point(alpha=0.6, size=2)+
+  annotate(
+     "text"
+    ,x=range(blue_jays$Mass)[1]
+    ,y=range(blue_jays$Head)[2]
+    ,label=caption
+    ,hjust=0
+    ,vjust=1
+    )+
+  xlab("Body Mass (g)")+
+  ylab("Head length (mm)")+
+  theme(legend.position = "none")+
+#  directlabels::geom_dl(aes(label=KnownSex), method="top.points")
+#  directlabels::geom_dl(aes(label=KnownSex), method="smart.grid")
+  geom_text(data=topHead, aes(Mass, Head, label=KnownSex), nudge_x=0.5)
+```
+
 
 <br>
 
