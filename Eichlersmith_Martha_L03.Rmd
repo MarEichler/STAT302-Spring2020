@@ -9,11 +9,11 @@ output:
     toc_float: true
 ---
 
-# Overview
+## Overview
 
 The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
 
-# Datasets
+## Datasets
 
 We'll be using data from the `BA_degrees.rda` and `dow_jones_industrial.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. Below is a description of the variables contained in each dataset.
 
@@ -48,12 +48,12 @@ We'll also be using a subset of the BRFSS (Behavioral Risk Factor Surveillance S
 
 <br>
 
-```{r, warning=FALSE, message=FALSE}
+```{r LO3-load-packages, warning=FALSE, message=FALSE}
 # Load package(s)
 library(tidyverse)
 ```
 
-# Exercises
+## Exercises
 
 Complete the following exercises.
 
@@ -63,7 +63,7 @@ Complete the following exercises.
 
 Using `BA_degrees` dataset, recreate the following graphics as precisely as possible.
 
-```{r}
+```{r LO3-EX1-data}
 load(file="data/BA_degrees.rda")
 # Wrangling for plotting
 ba_dat <- BA_degrees %>%
@@ -84,7 +84,7 @@ glimpse(ba_dat)
 
 ##### Plot 1
 
-```{r}
+```{r LO3-EX1-plot1}
 ggplot(ba_dat, aes(year, perc))+
   geom_line(size=1)+
   facet_wrap(~field)+
@@ -103,7 +103,7 @@ ggplot(ba_dat, aes(year, perc))+
 - Transparency is 0.5
 - Color used is`"red"`
 
-```{r}
+```{r LO3-EX1-plot2}
 ggplot(ba_dat, aes(year, perc))+
   geom_area(alpha=0.5, fill="red")+
   geom_line(color="red", size=1)+
@@ -117,7 +117,7 @@ ggplot(ba_dat, aes(year, perc))+
 
 ##### Plot 3
 
-```{r}
+```{r LO3-EX1-plot3}
 ggplot(ba_dat, aes(year, perc, color=field))+
   geom_line(size=1)+
   xlab("Year")+
@@ -132,7 +132,7 @@ ggplot(ba_dat, aes(year, perc, color=field))+
 Using `dow_jones_industrial` dataset, recreate the following graphics as precisely as possible.  
 *Hint:* Used `close`.
 
-```{r, message=FALSE}
+```{r LO3-EX2-data, message=FALSE}
 load(file="data/dow_jones_industrial.rda")
 library(lubridate) #for ymd() function
 
@@ -149,7 +149,7 @@ glimpse(djia_date_range)
 *Hints:*
 
 - Colors used `"red"`, `"purple"`, & `"green"`  
-```{r}
+```{r LO3-EX2-plot1}
 ggplot(djia_date_range, aes(date, close))+
   geom_line(size=1, color="purple")+
   geom_smooth(
@@ -171,7 +171,7 @@ ggplot(djia_date_range, aes(date, close))+
 
 - Wiggliness for `loess` is 0.3
 
-```{r}
+```{r LO3-EX2-plot2}
 ggplot(djia_date_range, aes(date, close))+
   geom_line(size=1)+
   geom_smooth(
@@ -192,7 +192,7 @@ ggplot(djia_date_range, aes(date, close))+
 
 - `y ~ ns(x, 6)` will need `splines` package (`"lm"` will work) 
 
-```{r}
+```{r LO3-EX2-plot3}
 ggplot(djia_date_range, aes(date, close))+
   geom_line(size=1)+
   geom_smooth(
@@ -212,7 +212,7 @@ ggplot(djia_date_range, aes(date, close))+
 
 Using `cdc` dataset, recreate the following graphics as precisely as possible.
 
-```{r cdc, warning=FALSE, message=FALSE}
+```{r LO3-EX3-data, warning=FALSE, message=FALSE}
 # Read in the cdc dataset
 cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
   mutate(genhlth = factor(genhlth,
@@ -227,7 +227,7 @@ cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
 Construct this plot in two ways. Once using `cdc` and once using the `genhlth_count`.
 
 **Using `cdc`**  
-```{r}
+```{r LO3-EX3-plot1A}
 ggplot(cdc, aes(genhlth))+
   geom_bar()
 ```
@@ -236,7 +236,7 @@ ggplot(cdc, aes(genhlth))+
 
 **Using  `genhlth_count`**
 
-```{r}
+```{r LO3-EX3-plot1B}
 genhlth_count <- cdc %>%
   count(genhlth)
 
@@ -252,7 +252,7 @@ ggplot(genhlth_count, aes(genhlth, n))+
 
 ##### Plot 2  
 
-```{r}
+```{r LO3-EX3-plot2}
 ggplot(cdc, aes(genhlth, fill=as.factor(hlthplan)))+
   geom_bar(position="dodge")+
   labs(fill="Health Plan") #change title on legend
@@ -267,7 +267,7 @@ ggplot(cdc, aes(genhlth, fill=as.factor(hlthplan)))+
 
 - Transparency is 0.2  
 
-```{r}
+```{r LO3-EX3-plot3}
 ggplot(cdc, aes(weight, fill=genhlth, color=genhlth))+
   geom_density(alpha=0.2)+
   facet_wrap(~gender)
@@ -285,7 +285,7 @@ ggplot(cdc, aes(weight, fill=genhlth, color=genhlth))+
 - Horizontal axis should have lower limit of 50 and upper limit of 300  
 
 **Fix x-axis limits**  
-```{r, warning=FALSE}
+```{r LO3-EX3-plot4A, warning=FALSE}
 ggplot(cdc, aes(weight, fill=gender, color=gender))+
   geom_density(alpha=0.5)+
   facet_wrap(~genhlth, scales="fixed")+
@@ -293,7 +293,7 @@ ggplot(cdc, aes(weight, fill=gender, color=gender))+
 ```
 
 **Filter cdc df to weight values [50, 300]**
-```{r}
+```{r LO3-EX3-plot4B}
 cdc %>%
   filter(weight >= 50, weight <= 300) %>%
 ggplot(aes(weight, fill=gender, color=gender))+
@@ -310,7 +310,7 @@ ggplot(aes(weight, fill=gender, color=gender))+
 
 - Transparency is 0.4  
 
-```{r}
+```{r LO3-EX3-plot5}
 ggplot(cdc, aes(height, gender,  fill=gender))+
   geom_boxplot(alpha=0.4)+
   facet_wrap(~genhlth, nrow=1)+
@@ -326,7 +326,7 @@ ggplot(cdc, aes(height, gender,  fill=gender))+
 
 - Transparency is 0.2  
 
-```{r}
+```{r LO3-EX3-plot6}
 ggplot(cdc, aes(height, weight, color=gender))+
   geom_point(alpha=0.2)+
   geom_smooth(method="lm", formula= y~x, se=FALSE, fullrange=TRUE)
