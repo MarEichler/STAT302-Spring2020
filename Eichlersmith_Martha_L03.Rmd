@@ -7,6 +7,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
 ---
 
 ## Overview
@@ -83,7 +84,7 @@ glimpse(ba_dat)
 
 <br>
 
-##### Plot 1
+#### Plot 1
 
 ```{r LO3-EX1-plot1}
 ggplot(ba_dat, aes(year, perc))+
@@ -97,7 +98,7 @@ ggplot(ba_dat, aes(year, perc))+
 
 <br>
 
-##### Plot 2
+#### Plot 2
 
 *Hints:*
 
@@ -116,7 +117,7 @@ ggplot(ba_dat, aes(year, perc))+
 
 <br>
 
-##### Plot 3
+#### Plot 3
 
 ```{r LO3-EX1-plot3}
 ggplot(ba_dat, aes(year, perc, color=field))+
@@ -144,7 +145,7 @@ glimpse(djia_date_range)
 
 <br>
 
-##### Plot 1
+#### Plot 1
 
 *Hints:*
 
@@ -165,7 +166,7 @@ ggplot(djia_date_range, aes(date, close))+
 
 <br>
 
-##### Plot 2
+#### Plot 2
 
 *Hints:*
 
@@ -186,7 +187,7 @@ ggplot(djia_date_range, aes(date, close))+
 
 <br>
 
-##### Plot 3
+#### Plot 3
 
 *Hints:*
 
@@ -222,7 +223,7 @@ cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
 
 <br>
 
-##### Plot 1
+#### Plot 1
 
 Construct this plot in two ways. Once using `cdc` and once using the `genhlth_count`.
 
@@ -250,7 +251,7 @@ ggplot(genhlth_count, aes(genhlth, n))+
 
 <br>
 
-##### Plot 2  
+#### Plot 2  
 
 ```{r LO3-EX3-plot2}
 ggplot(cdc, aes(genhlth, fill=as.factor(hlthplan)))+
@@ -261,7 +262,7 @@ ggplot(cdc, aes(genhlth, fill=as.factor(hlthplan)))+
 
 <br>
 
-##### Plot 3
+#### Plot 3
 
 *Hints:*
 
@@ -277,7 +278,7 @@ ggplot(cdc, aes(weight, fill=genhlth, color=genhlth))+
 
 <br>
 
-##### Plot 4
+#### Plot 4
 
 *Hints:*
 
@@ -304,7 +305,7 @@ ggplot(aes(weight, fill=gender, color=gender))+
 
 <br>
 
-##### Plot 5
+#### Plot 5
 
 *Hints:*
 
@@ -320,7 +321,7 @@ ggplot(cdc, aes(height, gender,  fill=gender))+
 
 <br>
 
-##### Plot 6
+#### Plot 6
 
 *Hints:*
 
