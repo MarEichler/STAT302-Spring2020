@@ -21,6 +21,7 @@ We'll be using data from the `blue_jays.rda`, `tech_stocks.rda`, `corruption.rda
 # Load package(s)
 library(tidyverse)
 library(gridExtra)
+library(ggrepel)
 
 # Load datasets
 load(file="data/blue_jays.rda")
@@ -60,7 +61,7 @@ topHead <- blue_jays %>%
   group_by(KnownSex) %>% 
   top_n(n=2, wt=Head)
 
-topHead <- topHead[c(1,4),]
+Labels <- topHead[c(1,4),]
 
 ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
   geom_point(alpha=0.6, size=2)+
@@ -75,9 +76,9 @@ ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
   xlab("Body Mass (g)")+
   ylab("Head length (mm)")+
   theme(legend.position = "none")+
+  geom_text(data=Labels, aes(label=KnownSex), nudge_x=0.5)
 #  directlabels::geom_dl(aes(label=KnownSex), method="top.points")
 #  directlabels::geom_dl(aes(label=KnownSex), method="smart.grid")
-  geom_text(data=topHead, aes(Mass, Head, label=KnownSex), nudge_x=0.5)
 ```
 
 
@@ -85,7 +86,7 @@ ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
 
 ### Exercise 2
 
-Using `tech_stocks` dataset, recreate the following graphics as precisely as possible.
+Using `tech_stocks` dataset, recreate the following graphics as precisely as possible.  
 
 <br>
 
@@ -94,6 +95,33 @@ Using `tech_stocks` dataset, recreate the following graphics as precisely as pos
 *Hints:*
 
 - serif font
+
+```{r L04-EX2-plot1}
+caption <- paste("Stock price over time for four major tech companies")
+caption_print <- paste(strwrap(caption, 40), collapse ="\n")  
+
+Labels <- tech_stocks %>%
+  group_by(company) %>% 
+  top_n(1, wt=date)
+
+ggplot(tech_stocks, aes(date, price_indexed))+
+  geom_line(aes(color=company))+
+  theme(legend.position = "none")+
+  xlab(NULL)+
+  ylab("Stock price, indexed")+
+  annotate(
+     "text"
+    ,x=range(tech_stocks$date)[1]
+    ,y=range(tech_stocks$price_indexed)[2]
+    ,label=caption
+    ,hjust=0
+    ,vjust=1
+    ,family="serif"
+    )+
+  geom_text(data=Labels, aes(label=company))
+```
+
+
 
 <br>
 
@@ -106,6 +134,39 @@ Using `tech_stocks` dataset, recreate the following graphics as precisely as pos
 - Minimum segment length is 0 
 - Horizontal justification is to the right
 - seed of 9876
+
+```{r L04-EX2-plot2}
+caption <- paste("Stock price over time for four major tech companies")
+caption_print <- paste(strwrap(caption, 40), collapse ="\n")  
+
+Labels <- tech_stocks %>%
+  group_by(company) %>% 
+  top_n(1, wt=date)
+
+ggplot(tech_stocks, aes(date, price_indexed))+
+  geom_line(aes(color=company))+
+  theme(legend.position = "none")+
+  xlab(NULL)+
+  ylab("Stock price, indexed")+
+  annotate(
+     "text"
+    ,x=range(tech_stocks$date)[1]
+    ,y=range(tech_stocks$price_indexed)[2]
+    ,label=caption
+    ,hjust=0
+    ,vjust=1
+    ,family="serif"
+    )+
+  geom_text_repel(
+      data=Labels
+    , aes(label=company)
+    , box.padding = 0.6
+    , min.segment.length=0
+    , hjust=1
+    , seed = 9876
+    )
+```
+
 
 <br>
 
@@ -123,6 +184,37 @@ Using `corruption.rda` dataset, recreate the following graphic as precisely as p
 - `box.padding` is 0.6
 - Minimum segment length is 0 
 - seed is 9876
+  
+```{r L04-EX3}
+corruption_2015 <- corruption %>%
+  drop_na(cpi, hdi) %>%
+  filter(year == 2015)
+
+CountriesToLabel <- c("Niger", "Iraq", "China", "Ghana", "Argentina", "Chile", "Japan", "United States", "Singapore")
+
+Labels <- corruption_2015 %>%
+  filter( country %in% CountriesToLabel)
+
+ggplot(corruption_2015, aes(cpi, hdi))+
+  geom_point(aes(color=region), alpha=0.6, size=2)+
+  geom_smooth(method="lm", formula= y~log(x), color="grey60", se=FALSE)+
+  xlab("Corruption Perceptions Index, 2015 (100=least corrupt)")+
+  ylab("Human Development Index, 2015\n (1.0 = most developed)")+
+  geom_text_repel(
+      data=Labels
+    , aes(label=country)
+    , box.padding = 0.6
+    , min.segment.length=0
+    , seed = 9876
+    )
+```
+
+
+```{r}
+
+
+
+```
 
 <br>
 
@@ -146,6 +238,40 @@ Using Bilbo Baggins' responses below to the CDC BRSFF questions, add Bilbo's dat
 
 *Hint:* Create a new dataset (maybe call it `bilbo` or `bilbo_baggins`) using either `data.frame()` (base R - example in book) or `tibble()` (tidyverse - see help documentation for the function). Make sure to use variable names that exactly match `cdc`'s variable names
 
-<br>
+```{r L04-EX4}
+bilbo <- tibble(
+  genhlth = "fair",
+  exerancy = 1, 
+  hlthplan = 0, 
+  smoke100 = 1, 
+  height = 46, 
+  weight=120, 
+  wtdesire = 120, 
+  age = 45, 
+  gender = "m"
+)
+
+ggplot(cdc, aes(height, weight))+
+  geom_point(alpha=0.1, color="blue", size=2)+
+  xlab("Height (inches)")+
+  ylab("Weight (pounds)")+
+  geom_point(data=bilbo, color="red", size=4, alpha=0.5)+
+  geom_text(
+      data=bilbo
+    , aes(label="Bilbo Baggins")
+    , color="red"
+    , hjust=0 
+    , angle = 90
+    , nudge_y = 10
+    )
+```
+
+
+
+
+
+
+
+
 
 
