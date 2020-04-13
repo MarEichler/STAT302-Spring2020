@@ -227,7 +227,7 @@ cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
 
 Construct this plot in two ways. Once using `cdc` and once using the `genhlth_count`.
 
-**Using `cdc`**  
+**Using `cdc` and `geom_bar()**  
 ```{r LO3-EX3-plot1A}
 ggplot(cdc, aes(genhlth))+
   geom_bar()
@@ -235,7 +235,7 @@ ggplot(cdc, aes(genhlth))+
 
 
 
-**Using  `genhlth_count`**
+**Using  `genhlth_count` and `geom_bar(stat="identity")`**
 
 ```{r LO3-EX3-plot1B}
 genhlth_count <- cdc %>%
@@ -247,7 +247,12 @@ ggplot(genhlth_count, aes(genhlth, n))+
   geom_bar(stat="identity")+
   ylab("count")
 ```
-
+**Using  `genhlth_count` and `geom_col()`**  
+```{r LO3-EX3-plot1C}
+ggplot(genhlth_count, aes(genhlth, n))+
+  geom_col()+
+  ylab("count")
+```
 
 <br>
 
