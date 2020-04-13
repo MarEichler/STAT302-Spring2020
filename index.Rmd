@@ -8,7 +8,9 @@ output:
     toc_float: true
     highlight: "tango"
 ---
-These are the projects and labs completed for Data Visualization (STAT 302) - Spring 2020.  
+These are the projects and labs completed for Data Visualization (STAT 302) - Spring 2020.
+
+<!-- [Favorite Lab ... so far](#lab-04)  -->
 
 # Lab 01
 ```{r child='Eichlersmith_Martha_L01.Rmd'}
