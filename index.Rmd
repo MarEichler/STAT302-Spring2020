@@ -6,6 +6,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
     highlight: "tango"
 ---
 These are the projects and labs completed for Data Visualization (STAT 302) - Spring 2020.
