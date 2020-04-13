@@ -51,6 +51,7 @@ We'll also be using a subset of the BRFSS (Behavioral Risk Factor Surveillance S
 ```{r LO3-load-packages, warning=FALSE, message=FALSE}
 # Load package(s)
 library(tidyverse)
+library(lubridate) #for ymd() function
 ```
 
 ## Exercises
@@ -134,7 +135,6 @@ Using `dow_jones_industrial` dataset, recreate the following graphics as precise
 
 ```{r LO3-EX2-data, message=FALSE}
 load(file="data/dow_jones_industrial.rda")
-library(lubridate) #for ymd() function
 
 # Restrict data to useful range
 djia_date_range <- dow_jones_industrial %>%
