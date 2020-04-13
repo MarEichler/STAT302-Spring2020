@@ -90,7 +90,7 @@ Using `tech_stocks` dataset, recreate the following graphics as precisely as pos
 
 <br>
 
-##### Plot 1
+#### Plot 1
 
 *Hints:*
 
@@ -125,7 +125,7 @@ ggplot(tech_stocks, aes(date, price_indexed))+
 
 <br>
 
-##### Plot 2
+#### Plot 2
 
 *Hints:*
 
