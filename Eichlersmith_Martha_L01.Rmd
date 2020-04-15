@@ -22,11 +22,13 @@ The goals of this lab are to (1) ensure that the major software for this course 
 
 **Don't worry if you cannot do everything here by yourself.** You are just getting started and the learning curve is steep, but remember that the instructional team and your classmates will be there to provide support. Persevere and put forth an honest effort and this course will payoff.
 
-```{r load-packages, warning=FALSE, message=FALSE}
+**Load Packages** `tidyverse`, `ggstance`, `skimr` 
+
+```{r load-packages}
 # Load package(s) 
-library(tidyverse)
-library(ggstance)
-library(skimr)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(ggstance))
+suppressPackageStartupMessages(library(skimr))
 ```
 
 <br>
@@ -34,12 +36,7 @@ library(skimr)
 ## Dataset
 
 We'll be using data from the [**lego** package](https://github.com/seankross/lego) which is already in the `/data` subdirectory, along with many other processed datasets, as part of the zipped folder for this lab. 
-
-## Tasks
- 
-> Completed tasks
-
-<br><br> 
+<br> 
 
 ## Exercise 1
 

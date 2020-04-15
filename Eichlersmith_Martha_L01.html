@@ -1578,22 +1578,16 @@ div.tocify {
 <h2>Overview</h2>
 <p>The goals of this lab are to (1) ensure that the major software for this course is properly installed and functional, (2) develop and follow a proper workflow, and (3) work together to construct a few plots to explore a dataset using <code>ggplot2</code> — demonstration of the utility and power of <code>ggplot2</code>.</p>
 <p><strong>Don’t worry if you cannot do everything here by yourself.</strong> You are just getting started and the learning curve is steep, but remember that the instructional team and your classmates will be there to provide support. Persevere and put forth an honest effort and this course will payoff.</p>
+<p><strong>Load Packages</strong> <code>tidyverse</code>, <code>ggstance</code>, <code>skimr</code></p>
 <div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><a class="sourceLine" id="cb1-1" title="1"><span class="co"># Load package(s) </span></a>
-<a class="sourceLine" id="cb1-2" title="2"><span class="kw">library</span>(tidyverse)</a>
-<a class="sourceLine" id="cb1-3" title="3"><span class="kw">library</span>(ggstance)</a>
-<a class="sourceLine" id="cb1-4" title="4"><span class="kw">library</span>(skimr)</a></code></pre></div>
+<a class="sourceLine" id="cb1-2" title="2"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(tidyverse))</a>
+<a class="sourceLine" id="cb1-3" title="3"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(ggstance))</a>
+<a class="sourceLine" id="cb1-4" title="4"><span class="kw">suppressPackageStartupMessages</span>(<span class="kw">library</span>(skimr))</a></code></pre></div>
 <p><br></p>
 </div>
 <div id="dataset" class="section level2">
 <h2>Dataset</h2>
-<p>We’ll be using data from the <a href="https://github.com/seankross/lego"><strong>lego</strong> package</a> which is already in the <code>/data</code> subdirectory, along with many other processed datasets, as part of the zipped folder for this lab.</p>
-</div>
-<div id="tasks" class="section level2">
-<h2>Tasks</h2>
-<blockquote>
-<p>Completed tasks</p>
-</blockquote>
-<p><br><br></p>
+<p>We’ll be using data from the <a href="https://github.com/seankross/lego"><strong>lego</strong> package</a> which is already in the <code>/data</code> subdirectory, along with many other processed datasets, as part of the zipped folder for this lab. <br></p>
 </div>
 <div id="exercise-1" class="section level2">
 <h2>Exercise 1</h2>
