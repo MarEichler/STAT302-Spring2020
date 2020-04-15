@@ -9,7 +9,7 @@ output:
     toc_float: true
     highlight: "tango"
 editor_options: 
-  chunk_output_type: inline
+  chunk_output_type: console
 ---
 
 ```{r setup, echo=FALSE}
