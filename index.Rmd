@@ -8,8 +8,11 @@ output:
     toc_float: true
     toc_depth: 4
     highlight: "tango"
+    code_folding: "hide"
 ---
 These are the projects and labs completed for Data Visualization (STAT 302) - Spring 2020.
+
+***
 
 <!-- [Favorite Lab ... so far](#lab-04)  -->
 
