@@ -13,27 +13,35 @@ output:
 
 The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
 
+**Load Packages:** `tidyverse`, `gridExtra`, `ggrepel`  
+```{r L04-load-packages, warning=FALSE, message=FALSE}
+# Load package(s)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(ggrepel))
+```
+
 ## Datasets
 
 We'll be using data from the `blue_jays.rda`, `tech_stocks.rda`, `corruption.rda`, and `cdc.txt` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
 
-```{r L04-load-packages, warning=FALSE, message=FALSE}
-# Load package(s)
-library(tidyverse)
-library(gridExtra)
-library(ggrepel)
 
+```{r LO4-load-data, message=FALSE}
 # Load datasets
 load(file="data/blue_jays.rda")
 load(file="data/tech_stocks.rda")
 load(file="data/corruption.rda")
 
 # Read in the cdc dataset
-cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+cdc <- read_delim(
+  file = "data/cdc.txt"
+  , delim = "|"
+  ) %>%
   mutate(genhlth = factor(genhlth,
     levels = c("excellent", "very good", "good", "fair", "poor")
   ))
 ```
+
 
 ## Exercises
 
@@ -63,6 +71,21 @@ topHead <- blue_jays %>%
 
 Labels <- topHead[c(1,4),]
 
+#ANOTHER OPTIONS: lable dataframe 
+#search by BirdID
+#specialbirds <- blue_jays  %>% 
+#  filter(BirdID %in% c("1142-05914", "702-90567"))
+#Lables <- specialbirds
+
+#ANOTHER OPTION: not showing legend 
+#instead of doing theme(legend.position = "none")
+#   geom_[geom](..... show.legend=FALSE) --> for each geom say show.legend = FALSE 
+
+#ANOTHER OPTION: labeling certain points 
+#   directlabels::geom_dl(aes(label=KnownSex), method="top.points")
+#   directlabels::geom_dl(aes(label=KnownSex), method="smart.grid")
+#   these do not allow for nudging though :()
+
 ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
   geom_point(alpha=0.6, size=2)+
   annotate(
@@ -77,8 +100,6 @@ ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
   ylab("Head length (mm)")+
   theme(legend.position = "none")+
   geom_text(data=Labels, aes(label=KnownSex), nudge_x=0.5)
-#  directlabels::geom_dl(aes(label=KnownSex), method="top.points")
-#  directlabels::geom_dl(aes(label=KnownSex), method="smart.grid")
 ```
 
 
@@ -96,13 +117,21 @@ Using `tech_stocks` dataset, recreate the following graphics as precisely as pos
 
 - serif font
 
-```{r L04-EX2-plot1}
+```{r L04-EX2-plot1, warning=FALSE}
 caption <- paste("Stock price over time for four major tech companies")
 caption_print <- paste(strwrap(caption, 40), collapse ="\n")  
 
+
 Labels <- tech_stocks %>%
-  group_by(company) %>% 
-  top_n(1, wt=date)
+  arrange(desc(date)) %>% #order by date 
+  distinct(company, .keep_all=TRUE) # return distinct company
+
+#ANOTHER OPTIONS: lable dataframe 
+#Labels <- tech_stocks %>%
+#  ungroup %>% 
+#  group_by(company) %>% 
+#  top_n(1, wt=date)
+
 
 ggplot(tech_stocks, aes(date, price_indexed))+
   geom_line(aes(color=company))+
@@ -119,6 +148,7 @@ ggplot(tech_stocks, aes(date, price_indexed))+
     ,family="serif"
     )+
   geom_text(data=Labels, aes(label=company))
+
 ```
 
 
