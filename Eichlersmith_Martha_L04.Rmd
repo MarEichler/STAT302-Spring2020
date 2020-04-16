@@ -7,6 +7,7 @@ output:
   html_document:
     toc: true
     toc_float: true
+    code_folding: "hide"
 ---
 
 ## Overview
@@ -28,9 +29,9 @@ We'll be using data from the `blue_jays.rda`, `tech_stocks.rda`, `corruption.rda
 
 ```{r LO4-load-data, message=FALSE}
 # Load datasets
-load(file="data/blue_jays.rda")
-load(file="data/tech_stocks.rda")
-load(file="data/corruption.rda")
+load(file = "data/blue_jays.rda")
+load(file = "data/tech_stocks.rda")
+load(file = "data/corruption.rda")
 
 # Read in the cdc dataset
 cdc <- read_delim(
@@ -45,61 +46,71 @@ cdc <- read_delim(
 
 ## Exercises
 
-Complete the following exercises.
-
-<br>
 
 ### Exercise 1
 
-Using `blue_jays.rda` dataset, recreate the following graphic as precisely as possible.
-
-*Hints:*
-
-- Transparency is 0.6
-- Point size 2
-- Shift text horizontally by 0.5
-- See pg 44 in *ggplot2*
+The following plot uses the `blue_jays.rda` dataset.  
 
 ```{r, L04-EX1}
+#create caption that automatically grabs number of blue jays  
 caption <- paste("Head length versus body mass for", nrow(blue_jays), "blue jays")
+
+#add string wrap 
+#will break the caption into multiple lines if longer than 40 characters
+# '\n' is the line break code 
 caption_print <- paste(strwrap(caption, 40), collapse ="\n") 
 
+#create data set for top head size for each sex
 topHead <- blue_jays %>% 
+  #arrange largest to smallest
   arrange(desc(Head)) %>%
+  # group by sex
   group_by(KnownSex) %>% 
-  top_n(n=2, wt=Head)
+  #take the top 2 head sizes  for each group 
+  top_n(n = 2, wt = Head)
 
+#'M' label will be put on the top male head size 
+#'F' label will be put on the 2nd top female head size 
 Labels <- topHead[c(1,4),]
 
 #ANOTHER OPTIONS: lable dataframe 
 #search by BirdID
-#specialbirds <- blue_jays  %>% 
-#  filter(BirdID %in% c("1142-05914", "702-90567"))
-#Lables <- specialbirds
+Labels_anotheroption <- blue_jays  %>% 
+  #select specific bird where you want the labels 
+  filter(BirdID %in% c("1142-05914", "702-90567"))
 
-#ANOTHER OPTION: not showing legend 
-#instead of doing theme(legend.position = "none")
-#   geom_[geom](..... show.legend=FALSE) --> for each geom say show.legend = FALSE 
+#get range for x and y variables 
+xrng <- range(blue_jays$Mass)
+yrng <- range(blue_jays$Head)
 
-#ANOTHER OPTION: labeling certain points 
-#   directlabels::geom_dl(aes(label=KnownSex), method="top.points")
-#   directlabels::geom_dl(aes(label=KnownSex), method="smart.grid")
-#   these do not allow for nudging though :()
-
-ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
-  geom_point(alpha=0.6, size=2)+
+#head length by body mass 
+ggplot(blue_jays, aes(Mass, Head, color = KnownSex)) +
+  geom_point(alpha = 0.6, size = 2) +
   annotate(
      "text"
-    ,x=range(blue_jays$Mass)[1]
-    ,y=range(blue_jays$Head)[2]
-    ,label=caption
-    ,hjust=0
-    ,vjust=1
-    )+
-  xlab("Body Mass (g)")+
-  ylab("Head length (mm)")+
-  theme(legend.position = "none")+
-  geom_text(data=Labels, aes(label=KnownSex), nudge_x=0.5)
+    #put text in the top left corner of plot 
+    , x = xrng[1], y = yrng[2]
+    #label is the caption already create
+    , label = caption
+    #left justify 
+    , hjust = 0
+    # bottom justify 
+    , vjust = 1
+    #size the font
+    , size = 4
+    ) +
+  xlab("Body mass (g)") +
+  ylab("Head length (mm)") +
+  #remove all legends; to remove just one legend put show.legend = FALSE into geom
+  theme(legend.position = "none") +
+  # add labels 
+  geom_text(
+    #use labels data set 
+      data = Labels
+    , aes(label = KnownSex)
+    #nudget labels to the right 
+    , nudge_x = 0.5
+    )
 ```
 
 
@@ -107,47 +118,61 @@ ggplot(blue_jays, aes(Mass, Head, color=KnownSex))+
 
 ### Exercise 2
 
-Using `tech_stocks` dataset, recreate the following graphics as precisely as possible.  
+The following plots use the `tech_stocks` dataset. 
 
-<br>
 
 #### Plot 1
 
-*Hints:*
 
-- serif font
-
-```{r L04-EX2-plot1, warning=FALSE}
+```{r L04-EX2-plot1, warning = FALSE}
+#create caption 
 caption <- paste("Stock price over time for four major tech companies")
-caption_print <- paste(strwrap(caption, 40), collapse ="\n")  
 
+#add string wrap 
+#will break the caption into multiple lines if longer than 40 characters
+# '\n' is the line break code 
+caption_print <- paste(strwrap(caption, 40), collapse = "\n")  
 
+#create labels df with most recent stock values 
 Labels <- tech_stocks %>%
-  arrange(desc(date)) %>% #order by date 
-  distinct(company, .keep_all=TRUE) # return distinct company
+  #order by date 
+  arrange(desc(date)) %>% 
+  # return distinct company
+  distinct(company
+           #keep all variables not just company 
+           , .keep_all = TRUE
+           ) 
 
-#ANOTHER OPTIONS: lable dataframe 
-#Labels <- tech_stocks %>%
-#  ungroup %>% 
-#  group_by(company) %>% 
-#  top_n(1, wt=date)
+#get range for x and y variables 
+xrng <- range(tech_stocks$date)
+yrng <- range(tech_stocks$price_indexed)
 
-
-ggplot(tech_stocks, aes(date, price_indexed))+
-  geom_line(aes(color=company))+
-  theme(legend.position = "none")+
-  xlab(NULL)+
-  ylab("Stock price, indexed")+
+#stock price by date 
+ggplot(tech_stocks, aes(date, price_indexed)) +
+  #put color in geom_line so labels are not colored
+  geom_line(aes(color = company)) +
+  # remove all legends 
+  theme(legend.position  =  "none") +
+  #remove x label 
+  xlab(NULL) +
+  ylab("Stock price, indexed") +
   annotate(
-     "text"
-    ,x=range(tech_stocks$date)[1]
-    ,y=range(tech_stocks$price_indexed)[2]
-    ,label=caption
-    ,hjust=0
-    ,vjust=1
-    ,family="serif"
-    )+
-  geom_text(data=Labels, aes(label=company))
+    "text"
+    #put text in the top left corner of plot 
+    , x = xrng[1], y = yrng[2]
+     #label is the caption already create
+    , label = caption
+    #left justify 
+    , hjust = 0
+    # bottom justify 
+    , vjust = 1
+    #use serif font 
+    , family = "serif"
+    #size the font
+    , size = 4
+    ) +
+  #add company labels to the most recent stock price 
+  geom_text(data = Labels, aes(label = company))
 
 ```
 
@@ -157,42 +182,42 @@ ggplot(tech_stocks, aes(date, price_indexed))+
 
 #### Plot 2
 
-*Hints:*
-
-- Package `ggrepel`
-- `box.padding` is 0.6
-- Minimum segment length is 0 
-- Horizontal justification is to the right
-- seed of 9876
 
 ```{r L04-EX2-plot2}
-caption <- paste("Stock price over time for four major tech companies")
-caption_print <- paste(strwrap(caption, 40), collapse ="\n")  
-
-Labels <- tech_stocks %>%
-  group_by(company) %>% 
-  top_n(1, wt=date)
-
-ggplot(tech_stocks, aes(date, price_indexed))+
-  geom_line(aes(color=company))+
-  theme(legend.position = "none")+
-  xlab(NULL)+
-  ylab("Stock price, indexed")+
+#stock price by date 
+ggplot(tech_stocks, aes(date, price_indexed)) +
+  #put color in geom_line so labels are not colored
+  geom_line(aes(color = company)) +
+  # remove all legends 
+  theme(legend.position  =  "none") +
+  #remove x label 
+  xlab(NULL) +
+  ylab("Stock price, indexed") +
   annotate(
-     "text"
-    ,x=range(tech_stocks$date)[1]
-    ,y=range(tech_stocks$price_indexed)[2]
-    ,label=caption
-    ,hjust=0
-    ,vjust=1
-    ,family="serif"
-    )+
+    "text"
+    #put text in the top left corner of plot 
+    , x = xrng[1], y = yrng[2]
+     #label is the caption already create
+    , label = caption
+    #left justify 
+    , hjust = 0
+    # bottom justify 
+    , vjust = 1
+    #use serif font 
+    , family = "serif"
+    #size the font
+    , size = 4
+    ) +
+  #add company labels to the most recent stock price 
   geom_text_repel(
-      data=Labels
-    , aes(label=company)
+      data = Labels
+    , aes(label = company)
+    #padding around label 
     , box.padding = 0.6
-    , min.segment.length=0
-    , hjust=1
+    , min.segment.length = 0
+    #right align text (so doesn't go off the plot)
+    , hjust = 1
+    #set seed for repel iterations 
     , seed = 9876
     )
 ```
@@ -202,55 +227,69 @@ ggplot(tech_stocks, aes(date, price_indexed))+
 
 ### Exercise 3
 
-Using `corruption.rda` dataset, recreate the following graphic as precisely as possible.
-
-*Hints:*
-
-- Transparency is 0.6
-- Only use 2015 data
-- Color used is `grey60`
-- `"y ~ log(x)"` (method `"lm"`)
-- Package `ggrepel`
-- `box.padding` is 0.6
-- Minimum segment length is 0 
-- seed is 9876
+The following plot uses the `corruption.rda` dataset.  
   
 ```{r L04-EX3}
+#look at 2015 data 
 corruption_2015 <- corruption %>%
+  #remove countries that don't have cpi or hdi values 
   drop_na(cpi, hdi) %>%
+  #only look at 2015 data 
   filter(year == 2015)
 
-CountriesToLabel <- c("Niger", "Iraq", "China", "Ghana", "Argentina", "Chile", "Japan", "United States", "Singapore")
+#the contries we want to label 
+CountriesToLabel <- c(
+    "Niger"
+  , "Iraq"
+  , "China"
+  , "Ghana"
+  , "Argentina"
+  , "Chile"
+  , "Japan"
+  , "United States"
+  , "Singapore"
+  )
 
+#create labels data frame 
 Labels <- corruption_2015 %>%
+  #only select specific countries already specified 
   filter( country %in% CountriesToLabel)
 
-ggplot(corruption_2015, aes(cpi, hdi))+
-  geom_point(aes(color=region), alpha=0.6, size=2)+
-  geom_smooth(method="lm", formula= y~log(x), color="grey60", se=FALSE)+
-  xlab("Corruption Perceptions Index, 2015 (100=least corrupt)")+
-  ylab("Human Development Index, 2015\n (1.0 = most developed)")+
+#hdi by cpi 
+ggplot(corruption_2015, aes(cpi, hdi)) +
+  #put color in geom_line so labels are not colored, color by geom 
+  geom_point(aes(color = region), alpha = 0.6, size = 2) +
+    geom_smooth(
+        method = "lm"
+      # use log(x) when modeling 
+      , formula =  y~log(x)
+      # specify grey color for line 
+      , color = "grey60"
+      # remove standard error bars 
+      , se = FALSE
+      ) +
+  xlab("Corruption Perceptions Index, 2015 (100 = least corrupt)") +
+  #add y label; '\n' creates line break 
+  ylab("Human Development Index, 2015\n (1.0 = most developed)") +
+  #add title
+  ggtitle("Corruption and human development (2015)")+
+  #add labels to specific countries 
   geom_text_repel(
-      data=Labels
-    , aes(label=country)
-    , box.padding = 0.6
-    , min.segment.length=0
-    , seed = 9876
+      data = Labels
+    , aes(label = country)
+    #set seed for repel iterations
+    , seed  =  9876
+    , box.padding  =  0.6
+    , min.segment.length = 0
     )
 ```
 
-
-```{r}
-
-
-
-```
 
 <br>
 
 ### Exercise 4
 
-Using `cdc` dataset, recreate the described graphic as precisely as possible.
+The next plot uses the `cdc` dataset.
 
 Using Bilbo Baggins' responses below to the CDC BRSFF questions, add Bilbo's data point as a transparent (0.5) solid red circle of size 4 to a scatterplot of `weight` by `height` with transparent (0.1) solid blue circles of size 2 as the plotting characters. In addition, label the point with his name in red. Left justify and rotate the label so it reads vertically from bottom to top --- shift it up by 10 pounds too. Plot should use appropriately formatted axis labels. Remember that the default shape is a solid circle.
 
@@ -275,23 +314,32 @@ bilbo <- tibble(
   hlthplan = 0, 
   smoke100 = 1, 
   height = 46, 
-  weight=120, 
+  weight = 120, 
   wtdesire = 120, 
   age = 45, 
   gender = "m"
 )
 
-ggplot(cdc, aes(height, weight))+
-  geom_point(alpha=0.1, color="blue", size=2)+
-  xlab("Height (inches)")+
-  ylab("Weight (pounds)")+
-  geom_point(data=bilbo, color="red", size=4, alpha=0.5)+
+ggplot(cdc, aes(height, weight)) +
+  geom_point(alpha = 0.1, color = "blue", size = 2) +
+  ggtitle("Bilbo Baggins is on the small side") +
+  labs(
+      x = "Height (inches)"
+    , y = "Weight (pounds)"
+    , subtitle = "CDC Data: Weight by Height"
+  ) +
+  #add Bilbo Baggins special red point onto graph 
+  geom_point(data = bilbo, color = "red", size = 4, alpha = 0.5) +
+  #add sing label 
   geom_text(
-      data=bilbo
-    , aes(label="Bilbo Baggins")
-    , color="red"
-    , hjust=0 
+      data = bilbo
+    , aes(label = "Bilbo Baggins")
+    , color = "red"
+    #left justify label 
+    , hjust = 0 
+    #rotate label 
     , angle = 90
+    #nudge label up 10 pounds 
     , nudge_y = 10
     )
 ```
