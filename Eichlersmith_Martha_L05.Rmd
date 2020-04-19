@@ -1,10 +1,14 @@
 ---
 title: "L05 Toolbox"
-author: "Data Visualization (STAT 302)"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-04-19
 output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
+    code_folding: "hide"
 ---
 
 ## Overview
@@ -13,17 +17,42 @@ The goal of this lab is to explore more useful plots in `ggplot2`. Specifically 
 
 Challenges are not mandatory for students to complete. We highly recommend students attempt them though. *We would expect graduate students to attempt the challenges.*
 
+```{r L05-setup }
+# Load package(s)
+suppressPackageStartupMessages(library(tidyverse))
+suppressPackageStartupMessages(library(gridExtra))
+suppressPackageStartupMessages(library(hexbin)) #for geom_hex 
+suppressPackageStartupMessages(library(maps))
+
+knitr::opts_chunk$set(dpi = 300) 
+```
+
 ## Datasets
 
 We'll be using data from the `blue_jays.rda`, `cdc.txt`, and the `US_income.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
 
-```{r load-packages, eval=FALSE, warning=FALSE, message=FALSE}
-# Load package(s)
-
+```{r LO4-load-data}
 # Load datasets
+load(file = "data/blue_jays.rda")
+load(file = "data/US_income.rda")
 
 # Read in the cdc dataset
-cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+cdc <- read_delim(
+  file = "data/cdc.txt"
+  , delim = "|"
+  #add col types 
+  , col_types = cols(
+                      genhlth = col_character(),
+                      exerany = col_double(),
+                      hlthplan = col_double(),
+                      smoke100 = col_double(),
+                      height = col_double(),
+                      weight = col_double(),
+                      wtdesire = col_double(),
+                      age = col_double(),
+                      gender = col_character()
+                    )
+  ) %>%
   mutate(genhlth = factor(genhlth,
     levels = c("excellent", "very good", "good", "fair", "poor")
   ))
@@ -38,52 +67,100 @@ Complete the following exercises.
 
 ### Exercise 1
 
-Using `blue_jays.rda` dataset, recreate the following graphic as precisely as possible.
+The following plot uses the `blue_jays.rda` dataset.
 
-*Hints:*
 
-- `geom_density_2d()` or `stat_density_2d()`
-- Transparency is 1/3
-- Horizontal lower limit is 57 and upper limit is 82
-- Point size 1.5
-- Line size is 0.4
-- `binwidth` set to 0.004
-- Minimal theme
+```{r LO5-EX1}
+#body mass by head
+ggplot(blue_jays, aes(Mass, Head))+
+  #scatter plot 
+  geom_point(alpha = 1/3, size = 1.5)+
+  #2D density plot 
+  geom_density_2d(
+    #set binwidth for density plot
+      binwidth = 0.004
+    , color = "black"
+    , size = 0.4
+    )+
+  #set limits on x-axis 
+  xlim(57, 82)+
+  # add labels 
+  labs(
+      x = "Body Mass (g)"
+    , y = "Head length (mm)"
+  )+
+  #add minimal theme; white background on plot
+  theme_minimal()
+```
+
 
 <br>
 
 ### Exercise 2
 
-Using `cdc` dataset, recreate the following graphics as precisely as possible.
+The following plots uses the `cdc` dataset
 
-##### Plot 1
+#### Plot 1
 
-*Hints:*
 
-- `bins` set to 35
-- Minimal theme
+```{r}
+cdc_plot <- ggplot(cdc, aes(height, weight))+
+  #set axis titles 
+  labs(
+      x = "Height (in)"
+    , y = "Weight (lbs)"
+  )+
+  #add minimal theme; white background on plot
+  theme_minimal()
+
+#2d density plot with hexagons
+cdc_plot + geom_hex(bins=35)
+```
+
+
 
 <br>
 
-##### Plot 2
+#### Plot 2
 
-*Hints:*
 
-- `polygon`
-- Minimal theme
+```{r}
+cdc_plot+
+  stat_density_2d(
+    #make shading based on density 
+      aes(fill=after_stat(level))
+    #fill density plot (solid not just lines)
+    , geom="polygon"
+    #don't show legend 
+    , show.legend = FALSE
+    )+
+  #separate plots for gender
+  facet_wrap(~gender)
+```
+
+
 
 <br>
 
 ### Exercise 3
 
-Make a county map of a US state. Maybe use your home state (mine is below) or a favorite state. Please do not use the the state in example provided in the book
+the following plot is made using the `maps` library.  
 
-*Hints:*
+```{r}
+#the best state in the union 
+mn <- map_data("county", "minnesota") %>% 
+  select(long, lat, group, id=subregion)
 
-- See section 3.7.1 in *ggplot2*
-- Void theme
+ggplot(mn, aes(x=long, y=lat))+
+  #draws the shapes 
+  geom_polygon(aes(group=group), fill="white", color="grey35")+
+  #helps size correctely 
+  coord_quickmap()+
+  #shows just the plotted features 
+  theme_void()
+```
 
-<br>
+<br>  
 
 ### Exercise 4
 
