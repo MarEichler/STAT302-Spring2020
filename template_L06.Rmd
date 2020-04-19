@@ -1,0 +1,153 @@
+---
+title: "L06 Layers"
+author: "Data Visualization (STAT 302)"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## Overview
+
+The goal of this lab is to explore more plots in `ggplot2`. Specifically we will be focusing on error bars for uncertainty and practice using multiple layers.
+
+## Datasets
+
+We'll be using the `cows.rda`, `cdc.txt`, and `tech_stocks.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. We will also be using the `mpg` dataset which comes packaged with `ggplot2` --- use `?ggplot2::mpg` to access its codebook.
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
+# Load package(s)
+
+# Load datasets
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
+
+# Set seed
+set.seed(9876)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using `mpg` and the `class_dat` dataset created below, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Transparency is 0.6
+- Horizontal position adjustment is 0.1
+- Larger points are 5
+
+<br>
+
+```{r class_dat}
+# Additional dataset for plot
+class_dat <- mpg %>%
+  group_by(class) %>%
+  summarise(
+    n = n(),
+    hwy = mean(hwy),
+    label = str_c("n = ", n, sep = "")
+  )
+```
+
+<br>
+
+
+
+<br>
+
+### Exercise 2
+
+Using `cow_means` dataset derived from the `cows` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Hex color code `#56B4E9`
+- 95% confidence intervals (1.96 or `qnorm(0.975)`)
+- Some useful values: 0.1, 0.7
+
+<br>
+
+```{r canadian-cows}
+# Graphic dataset
+cow_means <- cows %>%
+  filter(breed != "Canadian") %>%
+  group_by(breed) %>%
+  summarize(
+    mean = mean(butterfat),
+    se = sd(butterfat) / sqrt(n())
+  ) %>%
+  mutate(breed = fct_reorder(factor(breed), desc(mean)))
+```
+
+<br>
+
+
+
+<br>
+
+### Exercise 3
+
+Using `perc_increase` dataset derived from the `tech_stocks` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Hex color code `#56B4E9`
+- Justification of 1.1
+- Size is 5
+
+<br>
+
+```{r percent-increase}
+# percentage increase data
+perc_increase <- tech_stocks %>%
+  ungroup(ticker) %>%
+  arrange(desc(date)) %>%
+  distinct(company, .keep_all = TRUE) %>%
+  mutate(
+    perc = 100 * (price - index_price) / index_price,
+    label = str_c(round(perc), "%", sep = ""),
+    company = fct_reorder(factor(company), perc)
+  )
+```
+
+<br>
+
+
+
+<br>
+
+### Exercise 4
+
+Using `cdc_weight_95ci` dataset derived from the `cdc` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Useful values: 0.1, 0.5
+
+```{r}
+# 95% CI for weight for genhlth, gender groups
+cdc_weight_95ci <- cdc %>%
+  group_by(genhlth, gender) %>%
+  summarise(
+    mean_wt = mean(weight),
+    se = sd(weight) / sqrt(n()),
+    moe = qt(0.975, n() - 1) * se
+  )
+```
+
+<br>
+
