@@ -15,11 +15,13 @@ output:
 The goal of this lab is to continue the process of unlocking the power of `ggplot2` through constructing and experimenting with a few basic plots.
 
 **Load Packages:** `tidyverse`, `gridExtra`, `ggrepel`  
-```{r L04-load-packages, warning=FALSE, message=FALSE}
+```{r L04-setup , warning=FALSE, message=FALSE}
 # Load package(s)
 suppressPackageStartupMessages(library(tidyverse))
 suppressPackageStartupMessages(library(gridExtra))
 suppressPackageStartupMessages(library(ggrepel))
+
+knitr::opts_chunk$set(dpi = 300) 
 ```
 
 ## Datasets
@@ -232,7 +234,7 @@ The following plot uses the `corruption.rda` dataset.
 ```{r L04-EX3}
 #look at 2015 data 
 corruption_2015 <- corruption %>%
-  #remove countries that don't have cpi or hdi values 
+  #remove countries that don't have cpi or hdi values
   drop_na(cpi, hdi) %>%
   #only look at 2015 data 
   filter(year == 2015)
