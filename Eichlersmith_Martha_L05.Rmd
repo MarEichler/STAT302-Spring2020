@@ -1,0 +1,136 @@
+---
+title: "L05 Toolbox"
+author: "Data Visualization (STAT 302)"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+## Overview
+
+The goal of this lab is to explore more useful plots in `ggplot2`. Specifically we will be focusing on surface plots and geospatial plots (maps).
+
+Challenges are not mandatory for students to complete. We highly recommend students attempt them though. *We would expect graduate students to attempt the challenges.*
+
+## Datasets
+
+We'll be using data from the `blue_jays.rda`, `cdc.txt`, and the `US_income.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
+
+```{r load-packages, eval=FALSE, warning=FALSE, message=FALSE}
+# Load package(s)
+
+# Load datasets
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
+```
+
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using `blue_jays.rda` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- `geom_density_2d()` or `stat_density_2d()`
+- Transparency is 1/3
+- Horizontal lower limit is 57 and upper limit is 82
+- Point size 1.5
+- Line size is 0.4
+- `binwidth` set to 0.004
+- Minimal theme
+
+<br>
+
+### Exercise 2
+
+Using `cdc` dataset, recreate the following graphics as precisely as possible.
+
+##### Plot 1
+
+*Hints:*
+
+- `bins` set to 35
+- Minimal theme
+
+<br>
+
+##### Plot 2
+
+*Hints:*
+
+- `polygon`
+- Minimal theme
+
+<br>
+
+### Exercise 3
+
+Make a county map of a US state. Maybe use your home state (mine is below) or a favorite state. Please do not use the the state in example provided in the book
+
+*Hints:*
+
+- See section 3.7.1 in *ggplot2*
+- Void theme
+
+<br>
+
+### Exercise 4
+
+Using `US_income` dataset, recreate the following graphics as precisely as possible.
+
+<br>
+
+```{r, eval=FALSE}
+# Setting income levels
+US_income <- mutate(
+  US_income,
+  income_bins = cut(
+    ifelse(is.na(median_income), 25000, median_income),
+    breaks = c(0, 40000, 50000, 60000, 70000, 80000),
+    labels = c("< $40k", "$40k to $50k", "$50k to $60k", "$60k to $70k", "> $70k"),
+    right = FALSE
+  )
+)
+```
+
+<br>
+
+
+##### Plot 1
+
+*Hints:*
+
+- `geom_sf()` --- boundary color is `"grey80"` and size is 0.2
+- `viridis` package (`discrete = TRUE` in `scale_*` function)
+- Void theme
+
+<br>
+
+##### Plot 2
+
+*Hints:*
+
+- [Download developmental version](https://github.com/hrbrmstr/statebins) of `statebins` package
+- `geom_statebins()`
+- `viridis` package (`discrete = TRUE` in `scale_*` function)
+- Statebins theme
+
+<br>
+
+## Challenge(s)
+
+Using the `tidycensus` package and few others, try to create a map like below using [these directions](https://walkerke.github.io/tidycensus/articles/spatial-data.html). Try using a different geographical area and a different variable from the ACS.
+
+<br>
+
