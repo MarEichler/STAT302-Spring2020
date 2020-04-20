@@ -43,7 +43,7 @@ knitr::opts_chunk$set(dpi = 300)
 
 We'll be using data from the `blue_jays.rda`, `cdc.txt`, and the `US_income.rda` datasets which are already in the `/data` subdirectory in our **data_vis_labs** project. 
 
-```{r LO4-load-data}
+```{r LO5-load-data}
 # Load datasets
 load(file = "data/blue_jays.rda")
 load(file = "data/US_income.rda")
