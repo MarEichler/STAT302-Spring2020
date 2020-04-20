@@ -36,3 +36,8 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 ```{r child='Eichlersmith_Martha_L04.Rmd'}
 
 ```
+
+# Lab 05
+```{r child='Eichlersmith_Martha_L05.Rmd'}
+
+```
