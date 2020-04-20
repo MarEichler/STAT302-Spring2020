@@ -255,32 +255,6 @@ ggplot(US_income, aes(state=name, fill=income_bins))+
 
 
 
-```{r, eval=FALSE}
-# https://cinc.rud.is/web/packages/statebins/reference/geom_statebins.html
-library(statebins)
-library(cdcfluview)
-library(hrbrthemes)
-library(tidyverse)
-
-flu <- ili_weekly_activity_indicators(2017)
-
-
-ggplot(flu, aes(state=statename, fill=activity_level)) +
-  geom_statebins() +
-  coord_equal() +
-  viridis::scale_fill_viridis(
-    name = "ILI Activity Level  ", limits=c(0,10), breaks=0:10, option = "magma", direction = -1
-  ) +
-  labs(title="2017-18 Flu Season ILI Activity Level") +
-  theme(plot.title=element_text(size=16, hjust=0)) +
-  theme(plot.margin = margin(30,30,30,30))
-```
-
-
-
-
-
-
 <br>
 
 ## Challenge(s)
