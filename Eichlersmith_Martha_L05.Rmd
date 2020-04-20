@@ -9,6 +9,8 @@ output:
     toc_float: true
     toc_depth: 4
     code_folding: "hide"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ## Overview
@@ -35,6 +37,13 @@ library(viridis)
 
 #for geom_sf; will not work with discrete fill unless the package is loaded 
 library(sf)
+
+#for challegne with census data 
+library(tidycensus)
+library(mapview)
+library(tigris)
+
+library(scales) #percent() 
 
 knitr::opts_chunk$set(dpi = 300) 
 ```
@@ -84,23 +93,23 @@ The following plot uses the `blue_jays.rda` dataset.
 
 ```{r LO5-EX1}
 #body mass by head
-ggplot(blue_jays, aes(Mass, Head))+
+ggplot(blue_jays, aes(Mass, Head)) +
   #scatter plot 
-  geom_point(alpha = 1/3, size = 1.5)+
+  geom_point(alpha = 1/3, size = 1.5) +
   #2D density plot 
   geom_density_2d(
     #set binwidth for density plot
       binwidth = 0.004
     , color = "black"
     , size = 0.4
-    )+
+    ) +
   #set limits on x-axis 
-  xlim(57, 82)+
+  xlim(57, 82) +
   # add labels 
   labs(
       x = "Body Mass (g)"
     , y = "Head length (mm)"
-  )+
+  ) +
   #add minimal theme; white background on plot
   theme_minimal()
 ```
@@ -116,6 +125,7 @@ The following plots uses the `cdc` dataset
 
 
 ```{r LO5-EX2-plot1}
+#set base plot that can be used for plot1&plot2 
 cdc_plot <- ggplot(cdc, aes(height, weight))+
   #set axis titles 
   labs(
@@ -126,6 +136,7 @@ cdc_plot <- ggplot(cdc, aes(height, weight))+
   theme_minimal()
 
 #2d density plot with hexagons
+# requires `hexbins` package 
 cdc_plot + geom_hex(bins=35)
 ```
 
@@ -140,7 +151,8 @@ cdc_plot + geom_hex(bins=35)
 cdc_plot+
   stat_density_2d(
     #make shading based on density 
-      aes(fill=after_stat(level))
+    # can do after_stat(level) or ..level..
+      aes(fill=..level..)
     #fill density plot (solid not just lines)
     , geom="polygon"
     #don't show legend 
@@ -156,9 +168,11 @@ cdc_plot+
 
 ### Exercise 3
 
-the following plot is made using the `maps` library.  
+The following plot is made using the `maps` library.  
 
 ```{r LO5-EX3}
+#requires `maps` package  
+
 #the best state in the union 
 mn <- map_data("county", "minnesota") %>% 
   select(long, lat, group, id=subregion)
@@ -167,7 +181,7 @@ ggplot(mn, aes(x=long, y=lat))+
   #add title+
   ggtitle("Minnesota")+
   #draws the shapes 
-  geom_polygon(aes(group=group), fill="white", color="grey35")+
+  geom_polygon(aes(group=group), fill="white" , color="grey35")+
   #helps size correctely 
   coord_quickmap()+
   #shows just the plotted features 
@@ -178,7 +192,7 @@ ggplot(mn, aes(x=long, y=lat))+
 
 ### Exercise 4
 
-Using `US_income` dataset, recreate the following graphics as precisely as possible.
+The following plots use the `US_income` dataset. 
 
 <br>
 
@@ -203,10 +217,9 @@ US_income <- mutate(
 
 #### Plot 1
 
-
 ```{r LO5-EX4-plot1}
 ggplot(US_income)+
-  # 'simple features', need sf package
+  # 'simple features', need `sf` package
   geom_sf(
       aes(
         #specify geometry shape to be used 
@@ -240,9 +253,8 @@ ggplot(US_income)+
 
 ```{r LO5-EX4-plot2}
 ggplot(US_income, aes(state=name, fill=income_bins))+
+  # need `statebins` package  
   geom_statebins()+
-  #make each bin an equal square
-#  coord_equal()+
   #scale color fill to viridis color pallet 
   viridis::scale_fill_viridis(
     #change to continous scale
@@ -251,6 +263,9 @@ ggplot(US_income, aes(state=name, fill=income_bins))+
     , name="Median\nIncome"
     )+
   theme_statebins()
+
+#want to make each bin an equal square? can add
+#  coord_equal()
 ```
 
 
@@ -259,7 +274,102 @@ ggplot(US_income, aes(state=name, fill=income_bins))+
 
 ## Challenge(s)
 
-Using the `tidycensus` package and few others, try to create a map like below using [these directions](https://walkerke.github.io/tidycensus/articles/spatial-data.html). Try using a different geographical area and a different variable from the ACS.
+The following plots use the `tidycensus` package and few others, as well as using [these directions](https://walkerke.github.io/tidycensus/articles/spatial-data.html). 
 
-<br>
+Try using a different geographical area and a different variable from the ACS.
+
+
+```{r, eval=FALSE}
+#GET CENSUS KEY
+#install census key; ONLY NEED TO DO THIS ONCE 
+census_api_key("your census data api", install=TRUE, overwrite=TRUE)
+
+#get census data api here:  https://api.census.gov/data/key_signup.html
+#run above; it is now stored and can be accessed using 
+Sys.getenv("CENSUS_API_KEY")
+
+# https://walkerke.github.io/tidycensus/articles/basic-usage.html  
+```
+
+### Plot 1: Manhatten and Household Median Income
+```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE}
+# ```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE}
+# https://walkerke.github.io/tidycensus/articles/spatial-data.html
+options(tigris_use_cache = TRUE)
+
+ny <- get_acs(geography = "tract", 
+              variables = "B19013_001", #household median income
+              state = "NY", 
+              county = "New York", 
+              geometry = TRUE, 
+              cb = FALSE)
+
+#remove polygons over the water 
+st_erase <- function(x, y){ st_difference(x, st_union(y))}  
+ny_water <- area_water("NY", "New York", class="sf")
+NY <- st_erase(ny, ny_water) 
+
+mapview(NY
+        , zcol = "estimate"
+        , legend = TRUE
+        #change size of lines 
+        , lwd=0.2)
+
+```
+
+### Plot 2: Twin Cities and Percentage of Renter-occupied Units     
+```{r,  out.width="100%", fig.height=2.5, message=FALSE}
+# ```{r,  out.width="100%", fig.height=2.5, message=FALSE}
+options(tigris_use_cache = TRUE)
+
+twin_cities <- c("Hennepin", "Ramsey")
+vars <- c(
+   renters =  "B07013_003" #total renter-occupied units 
+  ,total =  "B07013_001" #TOTAL 
+)
+
+#get values 
+mn_val <- get_acs(
+          geography = "tract" 
+        , variables =  vars
+        , state = "MN", 
+        , county = twin_cities
+        )
+
+#great df with new values
+#can't get pivot_wider to work when geometry = false
+#put together values seperatly and then add to mn_geom
+MN_val <- mn_val %>%
+  pivot_wider(
+    names_from = variable, 
+    values_from = c(estimate, moe)
+      ) %>%
+  mutate(rent_perc = round(estimate_renters / estimate_total, 2)) %>%
+  select(GEOID, rent_perc)
+
+#get geometric files 
+MN_geom <- get_acs(
+          geography = "tract" 
+        , variables =  vars[1]
+        , state = "MN", 
+        , county = twin_cities
+        , geometry = TRUE
+        )
+
+MN <- inner_join(MN_geom, MN_val, by="GEOID")
+
+# https://r-spatial.github.io/mapview/articles/articles/mapview_02-advanced.html
+mapview(MN
+        , zcol = "rent_perc"
+        , legend = TRUE
+        #make lines thinner 
+        , lwd = 0.2
+        , layer.name = "Est % of Renters"
+        )
+```
+
+
+
+
+
 
