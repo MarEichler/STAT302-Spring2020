@@ -17,12 +17,24 @@ The goal of this lab is to explore more useful plots in `ggplot2`. Specifically 
 
 Challenges are not mandatory for students to complete. We highly recommend students attempt them though. *We would expect graduate students to attempt the challenges.*
 
-```{r L05-setup }
+```{r L05-setup, message=FALSE, warning=FALSE}
 # Load package(s)
-suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(gridExtra))
-suppressPackageStartupMessages(library(hexbin)) #for geom_hex 
-suppressPackageStartupMessages(library(maps))
+
+library(tidyverse)
+library(gridExtra)
+
+ #for geom_hex 
+library(hexbin)
+library(maps)
+
+#https://github.com/hrbrmstr/statebins
+library(statebins)
+
+#color pallet https://cran.r-project.org/web/packages/viridis/vignettes/intro-to-viridis.html
+library(viridis) 
+
+#for geom_sf; will not work with discrete fill unless the package is loaded 
+library(sf)
 
 knitr::opts_chunk$set(dpi = 300) 
 ```
@@ -103,7 +115,7 @@ The following plots uses the `cdc` dataset
 #### Plot 1
 
 
-```{r}
+```{r LO5-EX2-plot1}
 cdc_plot <- ggplot(cdc, aes(height, weight))+
   #set axis titles 
   labs(
@@ -124,7 +136,7 @@ cdc_plot + geom_hex(bins=35)
 #### Plot 2
 
 
-```{r}
+```{r LO5-EX2-plot2}
 cdc_plot+
   stat_density_2d(
     #make shading based on density 
@@ -146,12 +158,14 @@ cdc_plot+
 
 the following plot is made using the `maps` library.  
 
-```{r}
+```{r LO5-EX3}
 #the best state in the union 
 mn <- map_data("county", "minnesota") %>% 
   select(long, lat, group, id=subregion)
 
 ggplot(mn, aes(x=long, y=lat))+
+  #add title+
+  ggtitle("Minnesota")+
   #draws the shapes 
   geom_polygon(aes(group=group), fill="white", color="grey35")+
   #helps size correctely 
@@ -168,7 +182,8 @@ Using `US_income` dataset, recreate the following graphics as precisely as possi
 
 <br>
 
-```{r, eval=FALSE}
+
+```{r LO5-EX4-data}
 # Setting income levels
 US_income <- mutate(
   US_income,
@@ -179,29 +194,92 @@ US_income <- mutate(
     right = FALSE
   )
 )
+
 ```
 
-<br>
-
-
-##### Plot 1
-
-*Hints:*
-
-- `geom_sf()` --- boundary color is `"grey80"` and size is 0.2
-- `viridis` package (`discrete = TRUE` in `scale_*` function)
-- Void theme
 
 <br>
 
-##### Plot 2
 
-*Hints:*
+#### Plot 1
 
-- [Download developmental version](https://github.com/hrbrmstr/statebins) of `statebins` package
-- `geom_statebins()`
-- `viridis` package (`discrete = TRUE` in `scale_*` function)
-- Statebins theme
+
+```{r LO5-EX4-plot1}
+ggplot(US_income)+
+  # 'simple features', need sf package
+  geom_sf(
+      aes(
+        #specify geometry shape to be used 
+          geometry = geometry
+        #fill based on median income 
+        , fill = income_bins
+        )
+    #set boundary color
+    , color = "grey80"
+    #set boundary line size
+    , size=0.2
+    )+
+  #scale color fill to viridis color pallet 
+  viridis::scale_fill_viridis(
+    #change to continous scale
+      discrete = TRUE
+    #change legend name
+    , name="Median\nIncome"
+    )+
+  #helps size correctely 
+  coord_sf()+
+  #shows just the plotted features 
+  theme_void()
+```
+
+
+
+<br>
+
+#### Plot 2
+
+```{r LO5-EX4-plot2}
+ggplot(US_income, aes(state=name, fill=income_bins))+
+  geom_statebins()+
+  #make each bin an equal square
+#  coord_equal()+
+  #scale color fill to viridis color pallet 
+  viridis::scale_fill_viridis(
+    #change to continous scale
+      discrete = TRUE
+    #change legend name
+    , name="Median\nIncome"
+    )+
+  theme_statebins()
+```
+
+
+
+```{r, eval=FALSE}
+# https://cinc.rud.is/web/packages/statebins/reference/geom_statebins.html
+library(statebins)
+library(cdcfluview)
+library(hrbrthemes)
+library(tidyverse)
+
+flu <- ili_weekly_activity_indicators(2017)
+
+
+ggplot(flu, aes(state=statename, fill=activity_level)) +
+  geom_statebins() +
+  coord_equal() +
+  viridis::scale_fill_viridis(
+    name = "ILI Activity Level  ", limits=c(0,10), breaks=0:10, option = "magma", direction = -1
+  ) +
+  labs(title="2017-18 Flu Season ILI Activity Level") +
+  theme(plot.title=element_text(size=16, hjust=0)) +
+  theme(plot.margin = margin(30,30,30,30))
+```
+
+
+
+
+
 
 <br>
 
