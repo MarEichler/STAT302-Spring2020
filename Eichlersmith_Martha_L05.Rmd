@@ -292,8 +292,8 @@ Sys.getenv("CENSUS_API_KEY")
 ```
 
 ### Plot 1: Manhatten and Household Median Income
-```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE}
-# ```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE}
+```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE, warning = FALSE}
+# SIZE: out.width="100%", fig.height=2.5
 # https://walkerke.github.io/tidycensus/articles/spatial-data.html
 options(tigris_use_cache = TRUE)
 
@@ -318,8 +318,8 @@ mapview(NY
 ```
 
 ### Plot 2: Twin Cities and Percentage of Renter-occupied Units     
-```{r,  out.width="100%", fig.height=2.5, message=FALSE}
-# ```{r,  out.width="100%", fig.height=2.5, message=FALSE}
+```{r LO5-CH-plot2,  out.width="100%", fig.height=2.5, message = FALSE, warning = FALSE}
+# SIZE: out.width="100%", fig.height=2.5
 options(tigris_use_cache = TRUE)
 
 twin_cities <- c("Hennepin", "Ramsey")
@@ -337,7 +337,7 @@ mn_val <- get_acs(
         )
 
 #great df with new values
-#can't get pivot_wider to work when geometry = false
+#can't get pivot_wider to work when geometry = TRUE
 #put together values seperatly and then add to mn_geom
 MN_val <- mn_val %>%
   pivot_wider(
