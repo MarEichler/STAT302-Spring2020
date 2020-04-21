@@ -16,28 +16,33 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 
 <!-- [Favorite Lab ... so far](#lab-04)  -->
 
-# Lab 01
+# Lab 01 Overview
 ```{r child='Eichlersmith_Martha_L01.Rmd'}
 
 ```
 
 
-# Lab 02
+# Lab 02 ggplot2 aes
 ```{r child='Eichlersmith_Martha_L02.Rmd'}
 
 ```
 
-# Lab 03
+# Lab 03 ggplot2 faceting and colors 
 ```{r child='Eichlersmith_Martha_L03.Rmd'}
 
 ```
 
-# Lab 04
+# Lab 04 geom_text and annotations
 ```{r child='Eichlersmith_Martha_L04.Rmd'}
 
 ```
 
-# Lab 05
+# Lab 05 2d density plots and maps 
 ```{r child='Eichlersmith_Martha_L05.Rmd'}
+
+```
+
+# Lab 06 Errors and summary through layers
+```{r child='Eichlersmith_Martha_L06.Rmd'}
 
 ```
