@@ -27,7 +27,7 @@ The goals of this lab are to (1) ensure that the major software for this course 
 ```{r load-packages}
 # Load package(s) 
 suppressPackageStartupMessages(library(tidyverse))
-suppressPackageStartupMessages(library(ggstance))
+#suppressPackageStartupMessages(library(ggstance))
 suppressPackageStartupMessages(library(skimr))
 ```
 
