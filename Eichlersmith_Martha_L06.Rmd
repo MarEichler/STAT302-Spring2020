@@ -67,8 +67,6 @@ cdc <- read_delim(
 
 ## Exercises
 
-Complete the following exercises.
-
 <br>
 
 ### Exercise 1
@@ -198,12 +196,6 @@ ggplot(perc_increase, aes(perc, company)) +
 
 The following plot uses the `cdc` dataset.  
 
-Using `cdc_weight_95ci` dataset derived from the `cdc` dataset, recreate the following graphic as precisely as possible.
-
-*Hints:*
-
-- Useful values: 0.1, 0.5
-
 ```{r}
 # 95% CI for weight for genhlth, gender groups
 cdc_weight_95ci <- cdc %>%
@@ -212,6 +204,7 @@ cdc_weight_95ci <- cdc %>%
     mean_wt = mean(weight),
     se = sd(weight) / sqrt(n()),
     moe = qt(0.975, n() - 1) * se
+    
   )
 ```
 

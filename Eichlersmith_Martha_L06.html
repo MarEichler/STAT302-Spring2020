@@ -1634,7 +1634,6 @@ cdc &lt;- read_delim(
 </div>
 <div id="exercises" class="section level2">
 <h2>Exercises</h2>
-<p>Complete the following exercises.</p>
 <p><br></p>
 <div id="exercise-1" class="section level3">
 <h3>Exercise 1</h3>
@@ -1735,11 +1734,6 @@ perc_increase &lt;- tech_stocks %&gt;%
 <div id="exercise-4" class="section level3">
 <h3>Exercise 4</h3>
 <p>The following plot uses the <code>cdc</code> dataset.</p>
-<p>Using <code>cdc_weight_95ci</code> dataset derived from the <code>cdc</code> dataset, recreate the following graphic as precisely as possible.</p>
-<p><em>Hints:</em></p>
-<ul>
-<li>Useful values: 0.1, 0.5</li>
-</ul>
 <pre class="r"><code># 95% CI for weight for genhlth, gender groups
 cdc_weight_95ci &lt;- cdc %&gt;%
   group_by(genhlth, gender) %&gt;%
@@ -1747,6 +1741,7 @@ cdc_weight_95ci &lt;- cdc %&gt;%
     mean_wt = mean(weight),
     se = sd(weight) / sqrt(n()),
     moe = qt(0.975, n() - 1) * se
+    
   )</code></pre>
 <pre class="r"><code>ggplot(cdc_weight_95ci, aes(mean_wt, gender, color=genhlth))+
   geom_point(position = position_dodge(width = 0.5))+
