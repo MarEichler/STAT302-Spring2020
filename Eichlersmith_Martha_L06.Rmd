@@ -35,10 +35,6 @@ set.seed(9876)
 knitr::opts_chunk$set(dpi = 300) 
 ```
 
-```{r}
-seed <- 9876
-```
-
 
 ```{r L06-load-data}
 # load data sets  
@@ -91,7 +87,6 @@ class_dat <- mpg %>%
 ```
 
 ```{r L06-EX1}
-set.seed(seed)
 ggplot(mpg, aes(class, hwy))+
   #addjitter plot with all of the points 
   geom_jitter(width = 0.1)+
@@ -107,11 +102,6 @@ ggplot(mpg, aes(class, hwy))+
     , y = "Highway miles per gallon"
   )
 ```
-
-```{r, eval=FALSE}
-
-```
-
 
 <br>
 
