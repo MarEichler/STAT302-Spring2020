@@ -1,10 +1,14 @@
 ---
 title: "L06 Layers"
-author: "Data Visualization (STAT 302)"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-04-26
 output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
+    code_folding: "hide"
 ---
 
 ## Overview
@@ -17,19 +21,50 @@ We'll be using the `cows.rda`, `cdc.txt`, and `tech_stocks.rda` datasets which a
 
 <br>
 
-```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
-# Load package(s)
 
-# Load datasets
 
-# Read in the cdc dataset
-cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
-  mutate(genhlth = factor(genhlth,
-    levels = c("excellent", "very good", "good", "fair", "poor")
-  ))
+```{r L06-setup, message=FALSE, warning=FALSE}
+#Load packages 
+library(tidyverse) 
+
 
 # Set seed
 set.seed(9876)
+
+#chunk options
+knitr::opts_chunk$set(dpi = 300) 
+```
+
+```{r}
+seed <- 9876
+```
+
+
+```{r L06-load-data}
+# load data sets  
+load(file = "data/cows.rda") 
+load(file = "data/tech_stocks.rda")
+
+# Read in the cdc dataset
+cdc <- read_delim(
+  file = "data/cdc.txt"
+  , delim = "|"
+  #add col types 
+  , col_types = cols(
+                      genhlth = col_character(),
+                      exerany = col_double(),
+                      hlthplan = col_double(),
+                      smoke100 = col_double(),
+                      height = col_double(),
+                      weight = col_double(),
+                      wtdesire = col_double(),
+                      age = col_double(),
+                      gender = col_character()
+                    )
+  ) %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
 ```
 
 <br>
@@ -42,17 +77,9 @@ Complete the following exercises.
 
 ### Exercise 1
 
-Using `mpg` and the `class_dat` dataset created below, recreate the following graphic as precisely as possible.
+The following plot uses the `mpg` dataset.  
 
-*Hints:*
-
-- Transparency is 0.6
-- Horizontal position adjustment is 0.1
-- Larger points are 5
-
-<br>
-
-```{r class_dat}
+```{r L06-class_dat}
 # Additional dataset for plot
 class_dat <- mpg %>%
   group_by(class) %>%
@@ -63,25 +90,45 @@ class_dat <- mpg %>%
   )
 ```
 
-<br>
+```{r L06-EX1}
+set.seed(seed)
+ggplot(mpg, aes(class, hwy))+
+  #addjitter plot with all of the points 
+  geom_jitter(width = 0.1)+
+  #add red points at mean hwy mpg for each class 
+  geom_point(data = class_dat, size = 5, color = "red", alpha= 0.6)+
+  #add labels with number of vechicals in each class
+  geom_text(data = class_dat, aes(label = label, y = 10), vjust = "indward")+
+  #change theme
+  theme_minimal()+
+  #add axis titles 
+  labs(
+      x = "Vehicle Class"
+    , y = "Highway miles per gallon"
+  )
+```
 
+```{r, eval=FALSE}
+
+```
 
 
 <br>
 
 ### Exercise 2
 
-Using `cow_means` dataset derived from the `cows` dataset, recreate the following graphic as precisely as possible.
+The following plot uses the `cows` dataset.  
 
-*Hints:*
+<figure>
+  <img src="img/notyourmom.jpg"  style="width:100%">
+  <figcaption>
+  <a href="https://www.vegansociety.com/go-vegan/dairy-industry" target = "_blank" > The Truth About Dairy </a> | 
+  <a href="https://www.etsy.com/listing/670553144/not-your-mom-not-your-milk-vegan-iron-on?ref=shop_home_active_8&frs=1" target = "_blank"> Image Source </a> 
+  </figcaption>
+</figure>
 
-- Hex color code `#56B4E9`
-- 95% confidence intervals (1.96 or `qnorm(0.975)`)
-- Some useful values: 0.1, 0.7
 
-<br>
-
-```{r canadian-cows}
+```{r LO6-canadian-cows}
 # Graphic dataset
 cow_means <- cows %>%
   filter(breed != "Canadian") %>%
@@ -93,7 +140,29 @@ cow_means <- cows %>%
   mutate(breed = fct_reorder(factor(breed), desc(mean)))
 ```
 
-<br>
+```{r L06-EX2}
+z_star <- qnorm(0.975)
+
+
+ggplot(cow_means, aes(breed, mean)) +
+  #add color and width 
+  geom_col(fill="#56B4E9", width=0.7) +
+  geom_errorbar(
+    #add error bars
+      aes(
+        ymin = mean - se*z_star
+      , ymax = mean + se*z_star
+      )
+    , width = 0.1
+    )+
+  #change theme
+  theme_minimal()+
+  #add axis titles 
+  labs(
+      x = "Cattle breed"
+    , y = "Mean percent butterfat\ncontent in milk"
+  )
+```
 
 
 
@@ -101,17 +170,9 @@ cow_means <- cows %>%
 
 ### Exercise 3
 
-Using `perc_increase` dataset derived from the `tech_stocks` dataset, recreate the following graphic as precisely as possible.
+The following plot uses the `tech_stocks` dataset.  
 
-*Hints:*
-
-- Hex color code `#56B4E9`
-- Justification of 1.1
-- Size is 5
-
-<br>
-
-```{r percent-increase}
+```{r LO6-percent-increase}
 # percentage increase data
 perc_increase <- tech_stocks %>%
   ungroup(ticker) %>%
@@ -124,13 +185,28 @@ perc_increase <- tech_stocks %>%
   )
 ```
 
-<br>
+
+```{r L06-EX3}
+ggplot(perc_increase, aes(perc, company)) +
+  geom_col(fill = "#56B4E9") + 
+  geom_text(aes(label = label), size = 5, hjust = 1.1, color = "white")+
+  #change theme
+  theme_minimal()+
+  #remove axis titles 
+  labs(
+      x = NULL
+    , y = NULL
+  )
+```
+
 
 
 
 <br>
 
 ### Exercise 4
+
+The following plot uses the `cdc` dataset.  
 
 Using `cdc_weight_95ci` dataset derived from the `cdc` dataset, recreate the following graphic as precisely as possible.
 
@@ -149,5 +225,27 @@ cdc_weight_95ci <- cdc %>%
   )
 ```
 
-<br>
+```{r L06-EX4}
+ggplot(cdc_weight_95ci, aes(mean_wt, gender, color=genhlth))+
+  geom_point(position = position_dodge(width = 0.5))+
+  #add HORIZONTAL error bars 
+  geom_errorbarh(
+      aes(  xmin = mean_wt - moe
+          , xmax = mean_wt + moe
+          #change height 
+          , height = 0.1
+          )
+    #width refers to size of dodged position; not error bars
+   , position = position_dodge(width=0.5)
+    )+
+  theme_minimal()+
+  labs(
+      x = "Weight (lbs)"
+    , y = "Gender"
+  )+
+  scale_color_discrete(name = "General health\n(self reported)")
+```
+
+
+
 
