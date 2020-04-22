@@ -10,7 +10,7 @@ output:
     toc_depth: 4
     code_folding: "hide"
 editor_options: 
-  chunk_output_type: console
+  chunk_output_type: inline
 ---
 
 ## Overview
@@ -289,6 +289,10 @@ census_api_key("your census data api", install=TRUE, overwrite=TRUE)
 Sys.getenv("CENSUS_API_KEY")
 
 # https://walkerke.github.io/tidycensus/articles/basic-usage.html  
+
+#look through variables
+var <- load_variables(2017, "acs5", cache = TRUE)
+#then use View(var) to filter 
 ```
 
 ### Plot 1: Manhatten and Household Median Income
@@ -358,7 +362,6 @@ MN_geom <- get_acs(
 
 MN <- inner_join(MN_geom, MN_val, by="GEOID")
 
-# https://r-spatial.github.io/mapview/articles/articles/mapview_02-advanced.html
 mapview(MN
         , zcol = "rent_perc"
         , legend = TRUE
