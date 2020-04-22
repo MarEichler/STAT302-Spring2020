@@ -14,7 +14,7 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 
 ***
 
-<!-- [Favorite Lab ... so far](#lab-04)  -->
+[Favorite Lab ... so far](#lab-05-2d-surface-geospatial )
 
 # Lab 01 ggplot overview
 ```{r child='Eichlersmith_Martha_L01.Rmd'}
