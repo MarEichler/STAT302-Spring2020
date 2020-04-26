@@ -27,7 +27,7 @@ We'll be using the `tech_stocks.rda`, `cdc.txt`, and a few toy datasets.
 
 <br>
 
-```{r load-packages-data-seed, warning=FALSE, message=FALSE}
+```{r L07-load-packages-data-seed, warning=FALSE, message=FALSE}
 # Load package(s)
 library(tidyverse) 
 library(scales)
