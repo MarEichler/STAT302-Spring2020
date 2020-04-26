@@ -1,17 +1,20 @@
 ---
 title: "L07 Scales, Axes & Legends"
 subtitle: "Data Visualization (STAT 302)"
-author: "YOUR NAME"
+author: "Martha Eichlersmith"
+date: 2020-05-03
 output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
+    code_folding: "hide"
 ---
 
 
-```{r global_options, include=FALSE}
+```{r L07-setup}
 library(knitr)
-opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+opts_chunk$set(dpi = 300)
 ```
 
 ## Overview
@@ -24,10 +27,13 @@ We'll be using the `tech_stocks.rda`, `cdc.txt`, and a few toy datasets.
 
 <br>
 
-```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
+```{r load-packages-data-seed, warning=FALSE, message=FALSE}
 # Load package(s)
+library(tidyverse) 
+library(scales)
 
-# Load datasets
+# Load datasets 
+load(file = "data/tech_stocks.rda")
 
 # Read in the cdc dataset
 cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
@@ -61,14 +67,48 @@ Complete the following exercises.
 
 ### Exercise 1
 
-Using the `tech_stocks` dataset, recreate the following graphic as precisely as possible.
+The next plot uses the `tech_stocks` dataset.  
 
 *Hints:*
 
 - Size of lines in legend is 1.3
 - 0.75 and 0.85 will be useful
 
-<br>
+
+```{r L07-EX1}
+adj_tech_stocks <- tech_stocks %>%
+  ungroup() %>%
+  # re-order company as factor 
+  mutate(company = factor(
+    company, levels = c("Facebook", "Alphabet", "Microsoft", "Apple"))
+    )
+
+ggplot(adj_tech_stocks, aes(date, price_indexed, color = company)) +
+  theme_minimal() +
+  geom_line() +
+  # no name on legend 
+  scale_color_discrete(name = NULL) +
+  #change line in legends to 1.3
+  #use color as that is the what is used in aes() for lines 
+  guides(color = guide_legend(override.aes = list(size = 1.3)))+
+  scale_y_continuous(
+      name = NULL
+    #breaks from 0 to 500 every 100
+    , breaks = 100*c(0:5)
+    #label as dollars 
+    , labels = scales::dollar
+    #put labels on right side of plot 
+    , position = "right"
+    ) +
+  #put legend in plot
+  theme(
+      legend.position = c(0.75, 0.85)
+    , legend.justification = c(0.6, 0.5)
+    ) +
+  xlab(NULL) +
+  ggtitle("Stock price, indexed")
+```
+
 
 
 
@@ -76,7 +116,7 @@ Using the `tech_stocks` dataset, recreate the following graphic as precisely as 
 
 ### Exercise 2
 
-Use the toy datasets `dat1` and `dat2` to recreate the following graphic as precisely as possible.
+The next plot uses the toy datasets `dat1` and `dat2`.  
 
 *Hints:*
 
@@ -84,8 +124,19 @@ Use the toy datasets `dat1` and `dat2` to recreate the following graphic as prec
 - Transparency 0.8
 - Colors: `#56B4E9`, `darkgreen`, & `red`
 
-<br>
 
+```{r}
+dat2 %>%
+  mutate(sin_theta = sin(theta)) %>%
+ggplot(aes(theta, obs, color = larger_than))+
+  geom_point(size = 2, alpha=0.8)+
+  geom_line(aes(y = sin_theta), size = 1.3, color="#56B4E9")+
+  scale_color_manual(values = c("darkgreen", "red"))+
+  xlab(quote(theta))+
+  ylab(quote(sin(theta)))+
+  theme_minimal()+
+  theme(legend.position = "none")
+```
 
 
 <br>
@@ -109,5 +160,108 @@ Using `cdc_small`construct a scatterplot of `weight` by `height` with the follow
 - Graph title should be `CDC BRFSS: Weight by Height`.
 - Minimal theme.
 
-<br>
+
+```{r}
+htmin <- 55
+htmax <- 80
+htdiv <- 5
+htnumb <- (htmax-htmin)/htdiv
+htbreaks <- c(htmin+0:htnumb*htdiv)
+
+wtmin <- 100
+wtmax <- 300
+wtdiv <- 25
+wtnumb <- (wtmax-wtmin)/wtdiv
+wtbreaks <- c(wtmin+0:wtnumb*wtdiv)
+```
+
+
+
+```{r}
+leg_title <- "General\nHealth?"
+cap_labels <- c("Excellent", "VeryGood", "Good", "Fair", "Poor")
+
+#Using `cdc_small`construct a scatterplot of `weight` by `height`
+#Color and shape should both identify `genhlth`
+ggplot(cdc, aes(height, weight, color=genhlth, shape=genhlth))+
+  # Minimal theme
+  theme_minimal()+
+  #Size of plotting characters should be 3.
+  geom_point(size = 3)+
+  #- One legend for both color and shape
+  #Legend title should be "General Health?" with a newline starting after general
+  #Legend categories should be ordered from excellent (top) to poor (bottom)
+  #   with each word in category capitalized in the legend
+  scale_color_brewer(name = leg_title, labels = cap_labels
+                     #Color should follow the `"Set1"` pallete
+                     , palette = "Set1"
+                     )+
+  scale_shape_manual(name=leg_title, labels=cap_labels
+                       #Shape should have a solid triangle 
+                       #    (17) for excellent, solid circle
+                       #    (19) for very good
+                       #    an `x` (4) for poor
+                       #    an hollow rotated square with an `x` in it (9) for fair
+                       #    solid square (15) for good
+                       , values = c(17, 19, 4, 9, 15) 
+                       )+
+  #Legend should be placed in the lower right-hand corner of the plotting area
+  theme(
+      legend.position = c(1, 0)
+    , legend.justification = c(1, 0)
+    )+
+  scale_x_continuous(
+                    # No axis title is necessary.
+                      name = NULL
+                    #`height` values should be limited between 55 and 80.
+                    , limits = c(htmin, htmax)
+                    #`height` axis should display every 5th number between 55 and 80 
+                    , breaks = htbreaks
+                    #appropriately labeled (i.e. `55 in`, `60 in`, ..., `80 in`)
+                    , labels = scales::unit_format(unit = "in", scale = 1, accuracy = 1)
+                    )+
+  #add white background to legend (alpha = 0.6) so can better read legend 
+  theme(legend.background = element_rect(fill=alpha("white", 0.6), color="transparent"))+
+  #`weight` axis should be on log base 10 scale
+  scale_y_log10(
+                # No axis title is necessary.
+                  name = NULL
+                # `weight` values should be limited between 100 and 300
+                , limits = c(wtmin, wtmax)
+                # displaying every 25 pounds
+                , breaks = wtbreaks 
+                #appropriately labeled (i.e. `100 lbs`, `125 lbs`, ..., `300 lbs`)
+                , labels = scales::unit_format(unit = "lbs", scale = 1, accuracy = 1)
+                )+
+  ggtitle("CDC BRFSS: Weight by Height")
+
+```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
