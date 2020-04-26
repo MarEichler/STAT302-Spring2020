@@ -1,16 +1,19 @@
 ---
 title: "L08 Positioning"
 subtitle: "Data Visualization (STAT 302)"
-author: "YOUR NAME"
+author: "Martha Eichlersmith"
+date: 2020-05-03
 output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
+    code_folding: "hide"
 ---
 
-```{r global_options, include=FALSE}
+```{r L08-setup}
 library(knitr)
-opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+opts_chunk$set(dpi = 300)
 ```
 
 ## Overview
@@ -23,8 +26,10 @@ We'll be using the `titanic.rda`, `Aus_athletes.rda`, and `cdc.txt` datasets.
 
 <br>
 
-```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
+```{r L08-load-packages-data-seed, warning=FALSE, message=FALSE}
 # Load package(s)
+library(tidyverse) 
+library(scales)
 
 # Load datasets
 
