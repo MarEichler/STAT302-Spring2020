@@ -1,0 +1,113 @@
+---
+title: "L07 Scales, Axes & Legends"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+
+```{r global_options, include=FALSE}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+```
+
+## Overview
+
+The goal of this lab is to explore ways to manage and manipulate scales, axes, and legends within `ggplot2`. 
+
+## Datasets
+
+We'll be using the `tech_stocks.rda`, `cdc.txt`, and a few toy datasets.
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
+# Load package(s)
+
+# Load datasets
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor")
+  ))
+
+# Set seed
+set.seed(8221984)
+
+# Selecting a random subset of size 100
+cdc_small <- cdc %>% sample_n(100)
+
+# Generating toy datasets for exercise 2
+dat1 <- tibble(theta = c(0, 2 * pi))
+
+dat2 <- tibble(
+  theta = seq(0, 2 * pi, length.out = 100),
+  obs = rnorm(100, sin(theta), 0.1),
+  larger_than = ifelse(abs(obs) < abs(sin(theta)), "1", "0")
+)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using the `tech_stocks` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Size of lines in legend is 1.3
+- 0.75 and 0.85 will be useful
+
+<br>
+
+
+
+<br>
+
+### Exercise 2
+
+Use the toy datasets `dat1` and `dat2` to recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Sizes used 2 (points) and 1.3 (line)
+- Transparency 0.8
+- Colors: `#56B4E9`, `darkgreen`, & `red`
+
+<br>
+
+
+
+<br>
+
+### Exercise 3
+
+Using `cdc_small`construct a scatterplot of `weight` by `height` with the following requirements: 
+
+- Size of plotting characters should be 3.
+- Color and shape should both identify `genhlth`.
+- One legend for both color and shape.
+- Legend title should be "General Health?" with a newline starting after general.
+- Legend categories should be ordered from excellent (top) to poor (bottom) with each word in category capitalized in the legend.
+- Legend should be placed in the lower right-hand corner of the plotting area. 
+- Color should follow the `"Set1"` pallete.
+- Shape should have a solid triangle (17) for excellent, solid circle (19) for very good, an `x` (4) for poor, an hollow rotated square with an `x` in it (9) for fair, and a solid square (15) for good.
+- `height` values should be limited between 55 and 80.
+- `height` axis should display every 5th number between 55 and 80 and be appropriately labeled (i.e. `55 in`, `60 in`, ..., `80 in`). No axis title is necessary.
+- `weight` values should be limited between 100 and 300. 
+- `weight` axis should be on log base 10 scale, but still display weights in pounds starting at 100 and displaying every 25 pounds until 300. Must be appropriately labeled (i.e. `100 lbs`, `125 lbs`, ..., `300 lbs`). No axis title is necessary.
+- Graph title should be `CDC BRFSS: Weight by Height`.
+- Minimal theme.
+
+<br>
+

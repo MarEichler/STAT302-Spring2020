@@ -1,0 +1,129 @@
+---
+title: "L08 Positioning"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include=FALSE}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+```
+
+## Overview
+
+The goal of this lab is to develop an understanding of facets, position, continue the exploration of other `ggplot2` options/features. 
+
+## Datasets
+
+We'll be using the `titanic.rda`, `Aus_athletes.rda`, and `cdc.txt` datasets.
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE, warning=FALSE, message=FALSE}
+# Load package(s)
+
+# Load datasets
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor"),
+    labels = c("Excellent", "Very Good", "Good", "Fair", "Poor")
+  ))
+
+# Set seed
+set.seed(8221984)
+
+# Selecting a random subset of size 1000
+cdc_small <- cdc %>% sample_n(1000)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using the `titanic.rda` dataset, recreate the following graphic as precisely as possible.
+
+*Hints:*
+
+- Hex colors: `#D55E00D0`, `#0072B2D0`
+
+<br>
+
+
+
+<br>
+
+### Exercise 2
+
+Use the `athletes_dat` dataset --- extracted from `Aus_althetes.rd` --- to recreate the following graphic as precisely as possible. The `cowplot` package will be useful.
+
+<br>
+
+```{r, eval = FALSE}
+# Get list of sports played by BOTH sexes
+both_sports <- Aus_athletes %>%
+  distinct(sex, sport) %>%
+  count(sport) %>%
+  filter(n == 2) %>%
+  pull(sport)
+
+# Process data
+athletes_dat <- Aus_athletes %>%
+  filter(sport %in% both_sports) %>%
+  mutate(sport = case_when(
+    sport == "track (400m)" ~ "track",
+    sport == "track (sprint)" ~ "track",
+    TRUE ~ sport
+    )
+  )
+```
+
+<br>
+
+*Hints:*
+
+- Build each plot separately
+- Use [`cowplot::plot_grid()`](https://cran.r-project.org/web/packages/cowplot/vignettes/plot_grid.html) to combine them
+- Hex values for shading: `#D55E0040` and `#0072B240` (bottom plot),
+`#D55E00D0` & `#0072B2D0` (for top two plots) --- no `alpha`
+- Hex values for outline of boxplots: `#D55E00` and `#0072B2`
+- Boxplots should be made narrower; 0.5
+- Legend is in top-right corner of bottom plot
+- Legend shading matches hex values for top two plots
+- Bar plot lower limit 0, upper limit 95
+- `rcc`: red blood cell count; `wcc`: white blood cell count
+- Size 3 will be useful
+
+<br>
+
+
+
+<br>
+
+### Exercise 3
+
+Using `cdc_small`construct a the following graphic as precisely as possible.
+
+*Hints:*
+
+- Need to do a little more data processing
+- Hex values: `"#D55E00D0"` and `#0072B2D0`
+- `grey80` might be useful
+- size 2
+
+<br>
+
+
+
+<br>
