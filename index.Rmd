@@ -13,8 +13,9 @@ output:
 These are the projects and labs completed for Data Visualization (STAT 302) - Spring 2020.
 
 ***
-
-[Favorite Lab ... so far](#l05-2d-surface-geospatial )
+**Favorite Labs**  
+[Lab 05](#l05-2d-surface-geospatial)  
+[Lab 08](#l08-positioning)
 
 # L01 ggplot overview
 ```{r child='Eichlersmith_Martha_L01.Rmd'}
@@ -43,4 +44,8 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 
 # L07 scales, axes, & legends
 ```{r child='Eichlersmith_Martha_L07.Rmd'}
+```
+
+# L08 positioning
+```{r child='Eichlersmith_Martha_L08.Rmd'}
 ```
