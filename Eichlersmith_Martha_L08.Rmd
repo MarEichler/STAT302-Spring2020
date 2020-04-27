@@ -30,8 +30,11 @@ We'll be using the `titanic.rda`, `Aus_athletes.rda`, and `cdc.txt` datasets.
 # Load package(s)
 library(tidyverse) 
 library(scales)
+library(cowplot)
 
 # Load datasets
+load(file = "data/titanic.rda")
+load(file = "data/Aus_athletes.rda")
 
 # Read in the cdc dataset
 cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
@@ -51,19 +54,34 @@ cdc_small <- cdc %>% sample_n(1000)
 
 ## Exercises
 
-Complete the following exercises.
-
-<br>
 
 ### Exercise 1
 
-Using the `titanic.rda` dataset, recreate the following graphic as precisely as possible.
+The following plot uses the `titanic.rda` dataset .
 
 *Hints:*
 
 - Hex colors: `#D55E00D0`, `#0072B2D0`
 
-<br>
+
+
+```{r L08-EX1}
+titanic %>%
+  #add names to survived 
+  mutate(survived = factor(survived
+                           , levels = c(0, 1)
+                           , labels = c("died", "survived"))
+         ) %>%
+ggplot(aes(sex, fill = sex)) +
+  geom_bar() +
+  facet_grid(survived ~ class) +
+  scale_fill_manual(values = c("#D55E00D0", "#0072B2D0")) +
+  theme_minimal() +
+  theme(legend.position = "none")
+  
+  
+```
+
 
 
 
@@ -75,7 +93,7 @@ Use the `athletes_dat` dataset --- extracted from `Aus_althetes.rd` --- to recre
 
 <br>
 
-```{r, eval = FALSE}
+```{r L08-EX2-data}
 # Get list of sports played by BOTH sexes
 both_sports <- Aus_athletes %>%
   distinct(sex, sport) %>%
@@ -110,7 +128,80 @@ athletes_dat <- Aus_athletes %>%
 - `rcc`: red blood cell count; `wcc`: white blood cell count
 - Size 3 will be useful
 
-<br>
+
+```{r L08-EX2-plotA}
+plotA <- ggplot(athletes_dat, aes(sex, fill = sex)) + 
+  geom_bar(show.legend = FALSE)+
+  scale_fill_manual(values = c("#D55E00D0", "#0072B2D0")) +
+  scale_x_discrete(
+      name = NULL
+    , labels = c("female", "male")
+  ) +
+  scale_y_continuous(
+      name = "number"
+    , breaks = seq(0, 100, 25)
+    , limits = c(0, 95)
+  ) + 
+  theme_minimal()
+```
+
+```{r L08-EX2-plotB}
+plotB <- ggplot(athletes_dat, aes(rcc, wcc)) +
+  geom_point(
+      aes(fill = sex)
+    , pch = 21
+    , color = "white"
+    , size = 3
+    , show.legend = FALSE
+    ) + 
+  scale_fill_manual(values = c("#D55E00D0", "#0072B2D0")) + 
+  scale_x_continuous(name = "RBC Count") + 
+  scale_y_continuous(name = "WBC count") + 
+  theme_minimal()
+```
+
+
+```{r L08-EX2-plotC}
+sex_labs <- c("female", "male")
+
+plotC <- ggplot(athletes_dat, aes(sport, pcBfat)) +
+  geom_boxplot(
+      aes(color = sex, fill = sex)
+    , width = 0.5
+    ) +
+  scale_fill_manual(
+      name = NULL
+    , labels = sex_labs 
+    , values = c("#D55E0040", "#0072B240")) + 
+  scale_color_manual(
+      name = NULL
+    , labels = sex_labs
+    , values = c("#D55E00D0", "#0072B2D0")) +
+  guides(fill = guide_legend(
+      ncol = 2
+    , override.aes = list(
+        fill = c("#D55E00D0", "#0072B2D0")
+      , color = "transparent"
+      )
+    )
+  ) +
+  xlab(NULL) + 
+  ylab("% body fat") + 
+  theme_minimal() + 
+  theme(
+      legend.position = c(1, 1)
+    , legend.justification = c(1, 1)
+    , legend.margin = margin(t=0)
+  )
+```
+
+```{r L08-EX2-print}
+plot_grid(
+    plot_grid(plotA, plotB, nrow = 1)
+  , plotC
+  , nrow=2
+)
+```
 
 
 
