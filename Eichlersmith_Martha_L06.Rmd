@@ -8,7 +8,6 @@ output:
     toc: true
     toc_float: true
     toc_depth: 4
-    code_folding: "hide"
 ---
 
 ## Overview
@@ -26,7 +25,6 @@ We'll be using the `cows.rda`, `cdc.txt`, and `tech_stocks.rda` datasets which a
 ```{r L06-setup, message=FALSE, warning=FALSE}
 #Load packages 
 library(tidyverse) 
-
 
 # Set seed
 set.seed(9876)
@@ -85,15 +83,15 @@ class_dat <- mpg %>%
 ```
 
 ```{r L06-EX1}
-ggplot(mpg, aes(class, hwy))+
+ggplot(mpg, aes(class, hwy)) +
   #addjitter plot with all of the points 
-  geom_jitter(width = 0.1)+
+  geom_jitter(width = 0.1) +
   #add red points at mean hwy mpg for each class 
-  geom_point(data = class_dat, size = 5, color = "red", alpha= 0.6)+
+  geom_point(data = class_dat, size = 5, color = "red", alpha = 0.6) +
   #add labels with number of vechicals in each class
-  geom_text(data = class_dat, aes(label = label, y = 10), vjust = "indward")+
+  geom_text(data = class_dat, aes(label = label, y = 10), vjust = "indward") +
   #change theme
-  theme_minimal()+
+  theme_minimal() +
   #add axis titles 
   labs(
       x = "Vehicle Class"
@@ -131,10 +129,9 @@ cow_means <- cows %>%
 ```{r L06-EX2}
 z_star <- qnorm(0.975)
 
-
 ggplot(cow_means, aes(breed, mean)) +
   #add color and width 
-  geom_col(fill="#56B4E9", width=0.7) +
+  geom_col(fill = "#56B4E9", width = 0.7) +
   geom_errorbar(
     #add error bars
       aes(
@@ -142,9 +139,9 @@ ggplot(cow_means, aes(breed, mean)) +
       , ymax = mean + se*z_star
       )
     , width = 0.1
-    )+
+    ) +
   #change theme
-  theme_minimal()+
+  theme_minimal() +
   #add axis titles 
   labs(
       x = "Cattle breed"
@@ -177,9 +174,9 @@ perc_increase <- tech_stocks %>%
 ```{r L06-EX3}
 ggplot(perc_increase, aes(perc, company)) +
   geom_col(fill = "#56B4E9") + 
-  geom_text(aes(label = label), size = 5, hjust = 1.1, color = "white")+
+  geom_text(aes(label = label), size = 5, hjust = 1.1, color = "white") +
   #change theme
-  theme_minimal()+
+  theme_minimal() +
   #remove axis titles 
   labs(
       x = NULL
@@ -204,13 +201,12 @@ cdc_weight_95ci <- cdc %>%
     mean_wt = mean(weight),
     se = sd(weight) / sqrt(n()),
     moe = qt(0.975, n() - 1) * se
-    
   )
 ```
 
 ```{r L06-EX4}
-ggplot(cdc_weight_95ci, aes(mean_wt, gender, color=genhlth))+
-  geom_point(position = position_dodge(width = 0.5))+
+ggplot(cdc_weight_95ci, aes(mean_wt, gender, color = genhlth)) +
+  geom_point(position = position_dodge(width = 0.5)) +
   #add HORIZONTAL error bars 
   geom_errorbarh(
       aes(  xmin = mean_wt - moe
@@ -219,13 +215,13 @@ ggplot(cdc_weight_95ci, aes(mean_wt, gender, color=genhlth))+
           , height = 0.1
           )
     #width refers to size of dodged position; not error bars
-   , position = position_dodge(width=0.5)
-    )+
-  theme_minimal()+
+   , position = position_dodge(width = 0.5)
+    ) +
+  theme_minimal() +
   labs(
       x = "Weight (lbs)"
     , y = "Gender"
-  )+
+    ) +
   scale_color_discrete(name = "General health\n(self reported)")
 ```
 

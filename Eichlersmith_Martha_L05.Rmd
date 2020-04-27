@@ -8,9 +8,6 @@ output:
     toc: true
     toc_float: true
     toc_depth: 4
-    code_folding: "hide"
-editor_options: 
-  chunk_output_type: inline
 ---
 
 ## Overview
@@ -126,7 +123,7 @@ The following plots uses the `cdc` dataset
 
 ```{r LO5-EX2-plot1}
 #set base plot that can be used for plot1&plot2 
-cdc_plot <- ggplot(cdc, aes(height, weight))+
+cdc_plot <- ggplot(cdc, aes(height, weight)) +
   #set axis titles 
   labs(
       x = "Height (in)"
@@ -148,18 +145,18 @@ cdc_plot + geom_hex(bins=35)
 
 
 ```{r LO5-EX2-plot2}
-cdc_plot+
+cdc_plot +
   stat_density_2d(
     #make shading based on density 
     # can do after_stat(level) or ..level..
-      aes(fill=..level..)
+      aes(fill = ..level..)
     #fill density plot (solid not just lines)
-    , geom="polygon"
+    , geom = "polygon"
     #don't show legend 
     , show.legend = FALSE
-    )+
+    ) +
   #separate plots for gender
-  facet_wrap(~gender)
+  facet_wrap(~ gender)
 ```
 
 
@@ -175,15 +172,15 @@ The following plot is made using the `maps` library.
 
 #the best state in the union 
 mn <- map_data("county", "minnesota") %>% 
-  select(long, lat, group, id=subregion)
+  select(long, lat, group, id = subregion)
 
-ggplot(mn, aes(x=long, y=lat))+
+ggplot(mn, aes(x = long, y = lat)) +
   #add title+
-  ggtitle("Minnesota")+
+  ggtitle("Minnesota") +
   #draws the shapes 
-  geom_polygon(aes(group=group), fill="white" , color="grey35")+
+  geom_polygon(aes(group = group), fill = "white" , color = "grey35") +
   #helps size correctely 
-  coord_quickmap()+
+  coord_quickmap() +
   #shows just the plotted features 
   theme_void()
 ```
@@ -218,7 +215,7 @@ US_income <- mutate(
 #### Plot 1
 
 ```{r LO5-EX4-plot1}
-ggplot(US_income)+
+ggplot(US_income) +
   # 'simple features', need `sf` package
   geom_sf(
       aes(
@@ -230,17 +227,17 @@ ggplot(US_income)+
     #set boundary color
     , color = "grey80"
     #set boundary line size
-    , size=0.2
-    )+
+    , size = 0.2
+    ) +
   #scale color fill to viridis color pallet 
   viridis::scale_fill_viridis(
     #change to continous scale
       discrete = TRUE
     #change legend name
-    , name="Median\nIncome"
-    )+
+    , name = "Median\nIncome"
+    ) +
   #helps size correctely 
-  coord_sf()+
+  coord_sf() +
   #shows just the plotted features 
   theme_void()
 ```
@@ -252,16 +249,16 @@ ggplot(US_income)+
 #### Plot 2
 
 ```{r LO5-EX4-plot2}
-ggplot(US_income, aes(state=name, fill=income_bins))+
+ggplot(US_income, aes(state = name, fill = income_bins)) +
   # need `statebins` package  
-  geom_statebins()+
+  geom_statebins() +
   #scale color fill to viridis color pallet 
   viridis::scale_fill_viridis(
     #change to continous scale
       discrete = TRUE
     #change legend name
-    , name="Median\nIncome"
-    )+
+    , name = "Median\nIncome"
+    ) +
   theme_statebins()
 
 #want to make each bin an equal square? can add
@@ -282,7 +279,7 @@ Try using a different geographical area and a different variable from the ACS.
 ```{r, eval=FALSE}
 #GET CENSUS KEY
 #install census key; ONLY NEED TO DO THIS ONCE 
-census_api_key("your census data api", install=TRUE, overwrite=TRUE)
+census_api_key("your census data api", install = TRUE, overwrite = TRUE)
 
 #get census data api here:  https://api.census.gov/data/key_signup.html
 #run above; it is now stored and can be accessed using 
@@ -309,15 +306,18 @@ ny <- get_acs(geography = "tract",
               cb = FALSE)
 
 #remove polygons over the water 
-st_erase <- function(x, y){ st_difference(x, st_union(y))}  
-ny_water <- area_water("NY", "New York", class="sf")
+st_erase <- function(x, y){
+  st_difference(x, st_union(y))
+}  
+
+ny_water <- area_water("NY", "New York", class = "sf")
 NY <- st_erase(ny, ny_water) 
 
 mapview(NY
         , zcol = "estimate"
         , legend = TRUE
         #change size of lines 
-        , lwd=0.2)
+        , lwd = 0.2)
 
 ```
 
@@ -328,8 +328,8 @@ options(tigris_use_cache = TRUE)
 
 twin_cities <- c("Hennepin", "Ramsey")
 vars <- c(
-   renters =  "B07013_003" #total renter-occupied units 
-  ,total =  "B07013_001" #TOTAL 
+    renters =  "B07013_003" #total renter-occupied units 
+  , total   =  "B07013_001" #TOTAL 
 )
 
 #get values 
@@ -360,7 +360,7 @@ MN_geom <- get_acs(
         , geometry = TRUE
         )
 
-MN <- inner_join(MN_geom, MN_val, by="GEOID")
+MN <- inner_join(MN_geom, MN_val, by = "GEOID")
 
 mapview(MN
         , zcol = "rent_perc"
