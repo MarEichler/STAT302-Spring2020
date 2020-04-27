@@ -66,20 +66,16 @@ The following plot uses the `titanic.rda` dataset .
 
 
 ```{r L08-EX1}
-titanic %>%
-  #add names to survived 
-  mutate(survived = factor(survived
-                           , levels = c(0, 1)
-                           , labels = c("died", "survived"))
-         ) %>%
-ggplot(aes(sex, fill = sex)) +
+ggplot(titanic, aes(sex, fill = sex)) +
   geom_bar() +
-  facet_grid(survived ~ class) +
+  facet_grid(
+    factor(survived, labels = c("died", "survived"))
+    ~
+    class
+  ) +
   scale_fill_manual(values = c("#D55E00D0", "#0072B2D0")) +
   theme_minimal() +
   theme(legend.position = "none")
-  
-  
 ```
 
 
@@ -218,7 +214,34 @@ Using `cdc_small`construct a the following graphic as precisely as possible.
 - `grey80` might be useful
 - size 2
 
-<br>
+```{r L08-EX3}
+cdc_small_adj <- cdc_small %>%
+  mutate(wtloss = wtdesire - weight) 
+
+
+ggplot(cdc_small_adj, aes(weight, wtloss)) + 
+  geom_point(
+      data = select(cdc_small_adj, -gender)
+    , color = "grey80"
+    , size = 2
+  ) +
+  geom_point(
+      aes(color = gender)
+    , size = 2
+    , show.legend = FALSE
+  ) + 
+  scale_color_manual(values = c("#D55E00D0", "#0072B2D0")) + 
+  facet_grid(
+    factor(gender, labels = c("Women", "Men"))
+    ~ 
+    fct_rev(genhlth)
+  ) + 
+  xlab("Weight (lbs)") + 
+  ylab( "Weight Lost/Gain in Pounds") + 
+  theme_minimal()
+  
+```
+
 
 
 
