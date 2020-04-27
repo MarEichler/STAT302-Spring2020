@@ -60,9 +60,6 @@ dat2 <- tibble(
 
 ## Exercises
 
-Complete the following exercises.
-
-<br>
 
 ### Exercise 1
 
@@ -75,36 +72,31 @@ The next plot uses the `tech_stocks` dataset.
 
 
 ```{r L07-EX1}
-adj_tech_stocks <- tech_stocks %>%
+tech_stocks %>%
   ungroup() %>%
-  # re-order company as factor 
-  mutate(company = factor(
-    company, levels = c("Facebook", "Alphabet", "Microsoft", "Apple"))
-    )
-
-ggplot(adj_tech_stocks, aes(date, price_indexed, color = company)) +
+ggplot(aes(date, price_indexed, color = company)) +
   theme_minimal() +
   geom_line() +
-  # no name on legend 
-  scale_color_discrete(name = NULL) +
   #change line in legends to 1.3
   #use color as that is the what is used in aes() for lines 
   guides(color = guide_legend(override.aes = list(size = 1.3))) +
   scale_y_continuous(
       name = NULL
-    #breaks from 0 to 500 every 100
-    , breaks = 100*c(0:5)
-    #label as dollars 
+    , breaks = seq(0, 500, 100)
     , labels = scales::dollar
-    #put labels on right side of plot 
     , position = "right"
-    ) +
-  #put legend in plot
+  ) +
+  scale_color_discrete(
+      name = NULL
+    , limits = c("Facebook", "Alphabet", "Microsoft", "Apple")
+  )+
   theme(
       legend.position = c(0.75, 0.85)
-    , legend.justification = c(0.6, 0.5)
-    ) +
-  xlab(NULL) +
+  ) +
+  scale_x_date(
+      name = NULL
+    , expand = c(0, 0)
+  )+
   ggtitle("Stock price, indexed")
 ```
 
@@ -128,15 +120,22 @@ The next plot uses the toy datasets `dat1` and `dat2`.
 dat2 %>%
   mutate(sin_theta = sin(theta)) %>%
 ggplot(aes(theta, obs, color = larger_than)) +
-  geom_point(size = 2, alpha=0.8)+
-  geom_line(aes(y = sin_theta), size = 1.3, color = "#56B4E9") +
+  geom_point(
+      size = 2
+    , alpha = 0.8
+  ) +
+  stat_function(
+      fun =  sin
+    , size = 1.3
+    , color = "#56B4E9"
+  ) +
+  #instead of stat_funnction could use geom_line 
+  #geom_line(aes(y = sin_theta), size = 1.3, color = "#56B4E9") +
   scale_color_manual(values = c("darkgreen", "red")) +
   xlab( quote(theta) ) +
   ylab( quote(sin(theta)) ) +
   theme_minimal() +
-  theme(legend.position = "none")+
-  #set limits from 0 to 2*pi using dat1 
-  xlim(dat1$theta[1], dat1$theta[2])
+  theme(legend.position = "none")
 ```
 
 
@@ -168,14 +167,14 @@ htmin <- 55
 htmax <- 80
 htdiv <- 5
 htnumb <- (htmax-htmin)/htdiv
-htbreaks <- c(htmin+0:htnumb*htdiv)
+htbreaks <- seq(htmin, htmax, htdiv)
 
 #limits and breaks for WEIGHT
 wtmin <- 100
 wtmax <- 300
 wtdiv <- 25
 wtnumb <- (wtmax-wtmin)/wtdiv
-wtbreaks <- c(wtmin+0:wtnumb*wtdiv)
+wtbreaks <-seq(wtmin, wtmax, wtdiv)
 
 #Legend title should be "General Health?" with a newline starting after general
 leg_title <- "General\nHealth?"
@@ -184,62 +183,36 @@ leg_title <- "General\nHealth?"
 cap_labels <- c("Excellent", "VeryGood", "Good", "Fair", "Poor")
 
 #PLOT 
-ggplot(cdc, aes(
-              #weight by height 
-                height
-              , weight
-              #Color and shape should both identify `genhlth`
-              , color = genhlth
-              , shape = genhlth
-              )
+ggplot(cdc_small, aes(height, weight)) +
+  
+  geom_point(aes(color = genhlth, shape = genhlth), size = 3) +
+  scale_color_brewer(
+      name = leg_title
+    , labels = cap_labels
+    , palette = "Set1"
   ) +
-  # Minimal theme
+  scale_shape_manual(
+      name = leg_title
+    , labels = cap_labels
+    , values = c(17, 19, 15, 9, 4) 
+  ) +
+  scale_x_continuous(
+      name = NULL
+    , limits = c(htmin, htmax)
+    , breaks = htbreaks
+    , labels = scales::unit_format(unit = "in")
+  ) +
+  scale_y_log10(
+      name = NULL
+    , limits = c(wtmin, wtmax)
+    , breaks = wtbreaks 
+    , labels = scales::unit_format(unit = "lbs")
+  ) +
   theme_minimal() +
-  #Size of plotting characters should be 3.
-  geom_point(size = 3) +
-  #- One legend for both color and shape
-  #Legend categories should be ordered from excellent (top) to poor (bottom)
-  scale_color_brewer(name = leg_title, labels = cap_labels
-                     #Color should follow the `"Set1"` pallete
-                     , palette = "Set1"
-                     ) +
-  scale_shape_manual(name = leg_title, labels = cap_labels
-                       #Shape should have a solid triangle 
-                       #    (17) for excellent, solid circle
-                       #    (19) for very good
-                       #    an `x` (4) for poor
-                       #    an hollow rotated square with an `x` in it (9) for fair
-                       #    solid square (15) for good
-                       , values = c(17, 19, 4, 9, 15) 
-                       ) +
-  #Legend should be placed in the lower right-hand corner of the plotting area
   theme(
       legend.position = c(1, 0)
     , legend.justification = c(1, 0)
-    ) +
-  scale_x_continuous(
-                    # No axis title is necessary.
-                      name = NULL
-                    #`height` values should be limited between 55 and 80.
-                    , limits = c(htmin, htmax)
-                    #`height` axis should display every 5th number between 55 and 80 
-                    , breaks = htbreaks
-                    #appropriately labeled (i.e. `55 in`, `60 in`, ..., `80 in`)
-                    , labels = scales::unit_format(unit = "in", scale = 1, accuracy = 1)
-                    ) +
-  #add see-through background to legend; so legend doesn't get confused with plotted values 
-  theme(legend.background = element_rect(fill=alpha("grey90", 0.6), color = "transparent")) +
-  #`weight` axis should be on log base 10 scale
-  scale_y_log10(
-                # No axis title is necessary.
-                  name = NULL
-                # `weight` values should be limited between 100 and 300
-                , limits = c(wtmin, wtmax)
-                # displaying every 25 pounds
-                , breaks = wtbreaks 
-                #appropriately labeled (i.e. `100 lbs`, `125 lbs`, ..., `300 lbs`)
-                , labels = scales::unit_format(unit = "lbs", scale = 1, accuracy = 1)
-                ) +
+  ) +
   ggtitle("CDC BRFSS: Weight by Height")
 
 ```
