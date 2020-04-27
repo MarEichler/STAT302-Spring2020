@@ -162,7 +162,7 @@ Using `cdc_small`construct a scatterplot of `weight` by `height` with the follow
 - Minimal theme.
 
 
-```{r L06-EX3, warning=FALSE}
+```{r L07-EX3, warning=FALSE}
 #limits and breaks for HEIGHT
 htmin <- 55
 htmax <- 80
