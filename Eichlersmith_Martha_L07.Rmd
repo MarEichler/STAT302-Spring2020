@@ -8,7 +8,6 @@ output:
     toc: true
     toc_float: true
     toc_depth: 4
-    code_folding: "hide"
 ---
 
 
@@ -90,7 +89,7 @@ ggplot(adj_tech_stocks, aes(date, price_indexed, color = company)) +
   scale_color_discrete(name = NULL) +
   #change line in legends to 1.3
   #use color as that is the what is used in aes() for lines 
-  guides(color = guide_legend(override.aes = list(size = 1.3)))+
+  guides(color = guide_legend(override.aes = list(size = 1.3))) +
   scale_y_continuous(
       name = NULL
     #breaks from 0 to 500 every 100
@@ -125,17 +124,19 @@ The next plot uses the toy datasets `dat1` and `dat2`.
 - Colors: `#56B4E9`, `darkgreen`, & `red`
 
 
-```{r}
+```{r L07-EX2}
 dat2 %>%
   mutate(sin_theta = sin(theta)) %>%
-ggplot(aes(theta, obs, color = larger_than))+
+ggplot(aes(theta, obs, color = larger_than)) +
   geom_point(size = 2, alpha=0.8)+
-  geom_line(aes(y = sin_theta), size = 1.3, color="#56B4E9")+
-  scale_color_manual(values = c("darkgreen", "red"))+
-  xlab(quote(theta))+
-  ylab(quote(sin(theta)))+
-  theme_minimal()+
-  theme(legend.position = "none")
+  geom_line(aes(y = sin_theta), size = 1.3, color = "#56B4E9") +
+  scale_color_manual(values = c("darkgreen", "red")) +
+  xlab( quote(theta) ) +
+  ylab( quote(sin(theta)) ) +
+  theme_minimal() +
+  theme(legend.position = "none")+
+  #set limits from 0 to 2*pi using dat1 
+  xlim(dat1$theta[1], dat1$theta[2])
 ```
 
 
@@ -161,42 +162,48 @@ Using `cdc_small`construct a scatterplot of `weight` by `height` with the follow
 - Minimal theme.
 
 
-```{r}
+```{r L06-EX3, warning=FALSE}
+#limits and breaks for HEIGHT
 htmin <- 55
 htmax <- 80
 htdiv <- 5
 htnumb <- (htmax-htmin)/htdiv
 htbreaks <- c(htmin+0:htnumb*htdiv)
 
+#limits and breaks for WEIGHT
 wtmin <- 100
 wtmax <- 300
 wtdiv <- 25
 wtnumb <- (wtmax-wtmin)/wtdiv
 wtbreaks <- c(wtmin+0:wtnumb*wtdiv)
-```
 
-
-
-```{r}
+#Legend title should be "General Health?" with a newline starting after general
 leg_title <- "General\nHealth?"
+
+#with each word in category capitalized in the legend
 cap_labels <- c("Excellent", "VeryGood", "Good", "Fair", "Poor")
 
-#Using `cdc_small`construct a scatterplot of `weight` by `height`
-#Color and shape should both identify `genhlth`
-ggplot(cdc, aes(height, weight, color=genhlth, shape=genhlth))+
+#PLOT 
+ggplot(cdc, aes(
+              #weight by height 
+                height
+              , weight
+              #Color and shape should both identify `genhlth`
+              , color = genhlth
+              , shape = genhlth
+              )
+  ) +
   # Minimal theme
-  theme_minimal()+
+  theme_minimal() +
   #Size of plotting characters should be 3.
-  geom_point(size = 3)+
+  geom_point(size = 3) +
   #- One legend for both color and shape
-  #Legend title should be "General Health?" with a newline starting after general
   #Legend categories should be ordered from excellent (top) to poor (bottom)
-  #   with each word in category capitalized in the legend
   scale_color_brewer(name = leg_title, labels = cap_labels
                      #Color should follow the `"Set1"` pallete
                      , palette = "Set1"
-                     )+
-  scale_shape_manual(name=leg_title, labels=cap_labels
+                     ) +
+  scale_shape_manual(name = leg_title, labels = cap_labels
                        #Shape should have a solid triangle 
                        #    (17) for excellent, solid circle
                        #    (19) for very good
@@ -204,12 +211,12 @@ ggplot(cdc, aes(height, weight, color=genhlth, shape=genhlth))+
                        #    an hollow rotated square with an `x` in it (9) for fair
                        #    solid square (15) for good
                        , values = c(17, 19, 4, 9, 15) 
-                       )+
+                       ) +
   #Legend should be placed in the lower right-hand corner of the plotting area
   theme(
       legend.position = c(1, 0)
     , legend.justification = c(1, 0)
-    )+
+    ) +
   scale_x_continuous(
                     # No axis title is necessary.
                       name = NULL
@@ -219,9 +226,9 @@ ggplot(cdc, aes(height, weight, color=genhlth, shape=genhlth))+
                     , breaks = htbreaks
                     #appropriately labeled (i.e. `55 in`, `60 in`, ..., `80 in`)
                     , labels = scales::unit_format(unit = "in", scale = 1, accuracy = 1)
-                    )+
-  #add white background to legend (alpha = 0.6) so can better read legend 
-  theme(legend.background = element_rect(fill=alpha("white", 0.6), color="transparent"))+
+                    ) +
+  #add see-through background to legend; so legend doesn't get confused with plotted values 
+  theme(legend.background = element_rect(fill=alpha("grey90", 0.6), color = "transparent")) +
   #`weight` axis should be on log base 10 scale
   scale_y_log10(
                 # No axis title is necessary.
@@ -232,7 +239,7 @@ ggplot(cdc, aes(height, weight, color=genhlth, shape=genhlth))+
                 , breaks = wtbreaks 
                 #appropriately labeled (i.e. `100 lbs`, `125 lbs`, ..., `300 lbs`)
                 , labels = scales::unit_format(unit = "lbs", scale = 1, accuracy = 1)
-                )+
+                ) +
   ggtitle("CDC BRFSS: Weight by Height")
 
 ```
