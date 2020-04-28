@@ -70,11 +70,21 @@ The next plot uses the `tech_stocks` dataset.
 - Size of lines in legend is 1.3
 - 0.75 and 0.85 will be useful
 
+```{r}
+
+```
 
 ```{r L07-EX1}
 tech_stocks %>%
   ungroup() %>%
-ggplot(aes(date, price_indexed, color = company)) +
+ggplot(
+      aes(
+          date
+        , price_indexed
+        #reorder based on final values in plot 
+        , color = fct_reorder2(company, date, price_indexed)
+      )
+  ) +
   theme_minimal() +
   geom_line() +
   #change line in legends to 1.3
@@ -88,13 +98,15 @@ ggplot(aes(date, price_indexed, color = company)) +
   ) +
   scale_color_discrete(
       name = NULL
-    , limits = c("Facebook", "Alphabet", "Microsoft", "Apple")
+      #if don't reorder factors; can manually set in limits 
+#    , limits = c("Facebook", "Alphabet", "Microsoft", "Apple")
   )+
   theme(
       legend.position = c(0.75, 0.85)
   ) +
   scale_x_date(
       name = NULL
+    #remove extra padding on plot 
     , expand = c(0, 0)
   )+
   ggtitle("Stock price, indexed")
