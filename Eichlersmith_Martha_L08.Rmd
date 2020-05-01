@@ -8,7 +8,8 @@ output:
     toc: true
     toc_float: true
     toc_depth: 4
-    code_folding: "hide"
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r L08-setup}
@@ -145,7 +146,7 @@ plotA <- ggplot(athletes_dat, aes(sex, fill = sex)) +
 plotB <- ggplot(athletes_dat, aes(rcc, wcc)) +
   geom_point(
       aes(fill = sex)
-    , pch = 21
+    , shape = 21
     , color = "white"
     , size = 3
     , show.legend = FALSE
@@ -187,7 +188,8 @@ plotC <- ggplot(athletes_dat, aes(sport, pcBfat)) +
   theme(
       legend.position = c(1, 1)
     , legend.justification = c(1, 1)
-    , legend.margin = margin(t=0)
+    #set top legend to zero
+    , legend.margin = margin(t = 0)
   )
 ```
 
@@ -195,7 +197,7 @@ plotC <- ggplot(athletes_dat, aes(sport, pcBfat)) +
 plot_grid(
     plot_grid(plotA, plotB, nrow = 1)
   , plotC
-  , nrow=2
+  , nrow = 2
 )
 ```
 
@@ -244,5 +246,3 @@ ggplot(cdc_small_adj, aes(weight, wtloss)) +
 
 
 
-
-<br>
