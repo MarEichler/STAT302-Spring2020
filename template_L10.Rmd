@@ -1,0 +1,101 @@
+---
+title: "L10 Data Wrangling"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+```
+
+## Overview
+
+The goal of this lab is to use data manipulation and transformation techniques to help use build a few plots. 
+
+## Datasets
+
+We'll be using the `mod_nba2014_15_advanced.txt` and `NU_admission_data.csv` datasets --- add both to the project's **data** subdirectory. The `codebook_mod_nba2014_15_advanced.txt` file supplies a quick description of the variables in the `mod_nba2014_15_advanced.txt` dataset --- suggest adding it to the **data** subdirectory as well. The `undergraduate-admissions-statistics.pdf` is the source for the `NU_admission_data.csv` dataset and it also contains the graphic/plot we will be attempting to re-create in the second exercise. 
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE}
+# Load package(s)
+
+# Read in the datasets
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Using the `mod_nba2014_15.txt` dataset try to recreate/approximate the plot type featured in the [http://fivethirtyeight.com/](fivethirtyeight.com) article [Kawhi Leonard Is The Most Well-Rounded Elite Shooter Since Larry Bird](http://fivethirtyeight.com/features/kawhi-leonard-is-the-most-well-rounded-elite-shooter-since-larry-bird/) for any player of your choice for the 2014-2015 season. When calculating quartiles or considering players you may want to exclude players that played less than 10 games or played less than 5 minutes a game. That is, we only want to look for "qualified" players.
+
+*Hints:*
+
+Image width 8 in, height 10 in. Can be achieved many ways:
+
+- Set figure height and width in R chuck's options
+- Save image with `ggsave()` and then insert it using markdown code:
+    - `![Caption - leave blank](/path/to/image.png)`
+    - Set figure height and width in R chuck's options and then use `knitr::include_graphic(/path/to/image.png)`
+
+<br>
+
+```{r helper-function}
+quartile_rank <- function(x = 0:99) {
+  
+  # Set quartile
+  quart_breaks <- c(
+    -Inf,
+    quantile(x,
+      probs = c(.25, .5, .75),
+      na.rm = TRUE
+    ),
+    Inf
+  )
+
+  cut(x = x, breaks = quart_breaks, labels = FALSE)
+}
+```
+
+<br>
+
+
+
+<br>
+
+### Exercise 2
+
+Using `NU_admission_data.csv` create two separate plots derived from the single plot depicted in `undergraduate-admissions-statistics.pdf`. They overlaid two plots on one another by using two y-axes. Create two separate plots that display the same information instead of trying to put it all in one single plot --- consider stacking them with `cowplot::plot_grid()`. Also, improve upon them by (1) fixing their error with the bar heights and (2) by using a "Northwestern" theme. 
+
+Also, practice placing all the text information on the appropriate plots. While I'm not a fan and think it is unnecessary for telling the actual story of the data, sometimes clients want this and there are those that think detailed labeling enhances the plot's value --- they do have a point. When including detailed labeling like this take care to pick label fonts and colors so the text doesn't take away the from the message of the data (the trend in these plots). With these labels you could image removing the y-axes altogether so they don't distracts the reader/consumer. 
+
+Which approach do you find communicates the information better, their single plot or the two plot approach? Why?
+
+*Hints:*
+
+- Form 4 datasets (helps you get organized, but not entirely necessary): 
+    - 1 that has bar chart data, 
+    - 1 that has bar chart label data, 
+    - 1 that has line chart data, and 
+    - 1 that has line chart labels 
+- Decide on image size to aid in the selection of text sizes and location (9 in width, 4 in height - just a suggestion)
+
+<br>
+
+## Challenge(s)
+
+**No not have to complete.**
+
+Using `NU_admission_data.csv` try to re-create/approximate the single plot depicted in `undergraduate-admissions-statistics.pdf`. Fix their error concerning the bar heights. Might want to simply start with one of your plots from Exercise 2 and see if it can be modified. 

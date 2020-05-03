@@ -1,0 +1,115 @@
+---
+title: "L09 Themes"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: true
+    toc_float: true
+---
+
+```{r global_options, include = FALSE}
+library(knitr)
+opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+```
+
+## Overview
+
+The goal of this lab is to play around with the theme options in `ggplot2` 
+
+## Datasets
+
+We'll be using the `cdc.txt` datasets.
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE}
+# Load package(s)
+
+# Read in the cdc dataset
+cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+    levels = c("excellent", "very good", "good", "fair", "poor"),
+    labels = c("Excellent", "Very Good", "Good", "Fair", "Poor")
+  ))
+
+# Set seed
+set.seed(8221984)
+
+# Selecting a random subset of size 100
+cdc_small <- cdc %>% sample_n(100)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Use the `cdc_small` dataset to explore several pre-set `ggthemes`. The code below constructs the familiar scatterplot of `weight` by `height` and stores it in `plot_01`. Display `plot_01` to observe the default theme. **Explore/apply, and display at least 7 other pre-set themes** from the `ggplot2` or `ggthemes` package. Don't worry about making adjustments to the figures under the new themes. Just get a sense of what the themes are doing to the original figure `plot_01`. 
+
+Which theme or themes do you particularly like? Why? There should be at least 8 plots for this task. `temp1` is pictured below.
+
+<br>
+
+```{r base-plot-ex01}
+# Building plot
+plot_01 <- ggplot(data = cdc_small, aes(x = height, y = weight)) +
+  geom_point(size = 3, aes(shape = genhlth, color = genhlth)) +
+  scale_y_continuous(
+    name = "Weight in Pounds",
+    limits = c(100, 300),
+    breaks = seq(100, 350, 25),
+    trans = "log10",
+    labels = scales::unit_format(unit = "lbs")
+  ) +
+  scale_x_continuous(
+    name = "Height in Inches",
+    limits = c(55, 80),
+    breaks = seq(55, 80, 5),
+    labels = scales::unit_format(unit = "in", accuracy = 1)
+  ) +
+  scale_shape_manual(
+    name = "General\nHealth?",
+    labels = c("Excellent", "Very Good", "Good", "Fair", "Poor"),
+    values = c(17, 19, 15, 9, 4)
+  ) +
+  scale_color_brewer(
+    name = "General\nHealth?",
+    labels = c("Excellent", "Very Good", "Good", "Fair", "Poor"),
+    palette = "Set1"
+  ) +
+  theme(
+    legend.position = c(1, 0),
+    legend.justification = c(1, 0)
+  ) +
+  labs(title = "CDC BRFSS: Weight by Height")
+```
+
+<br>
+
+### Exercise 2
+
+Using `plot_01` from  and the `theme()` function, attempt to construct the ugliest plot possible (example pictured below).
+
+<br>
+
+
+
+<br>
+
+### Exercise 3
+
+Using data from `cdc_small` create a few (at least two) graphics (maybe one scatterplot and one barplot). Style the plots so they follow a "Northwestern" theme. Check out the following webpages to help create the theme:
+
+[Visual Identity](https://www.northwestern.edu/brand/visual-identity/index.html)
+
+- [Web Colors](https://www.northwestern.edu/brand/visual-identity/color/digital-colors.html)
+- [Secondary Palette](https://www.northwestern.edu/brand/visual-identity/color/secondary-palette.html)
+- [Fonts & Typography](https://www.northwestern.edu/brand/visual-identity/fonts-typography/index.html) --- Need to use [substitute fonts](https://www.northwestern.edu/brand/visual-identity/fonts-typography/substitute-fonts.html)
+
+<br>
