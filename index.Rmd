@@ -49,3 +49,7 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 # L08 positioning
 ```{r child='Eichlersmith_Martha_L08.Rmd'}
 ```
+
+# L09 themes
+```{r child='Eichlersmith_Martha_L09.Rmd'}
+```
