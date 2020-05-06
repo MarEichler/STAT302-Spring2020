@@ -105,7 +105,9 @@ legend_theme <- function(...){
 }
 ```
 
-```{r, warning = FALSE}
+```{r, warning = FALSE, out.width = '50%', fig.show='hold'}
+#out.width = '50%'
+#fig.show='hold' - print at the end of code
 p1 <- base + ggtitle("Plot 1: Base") + legend_theme()
 p1
 
