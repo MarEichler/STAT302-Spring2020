@@ -1,16 +1,19 @@
 ---
 title: "L10 Data Wrangling"
 subtitle: "Data Visualization (STAT 302)"
-author: "YOUR NAME"
+author: "Martha Eichlersmith"
+date: 2020-05-10
 output:
   html_document:
     toc: true
     toc_float: true
+    toc_depth: 4
+editor_options: 
+  chunk_output_type: inline
 ---
 
-```{r global_options, include = FALSE}
-library(knitr)
-opts_chunk$set(warning = FALSE, message = FALSE, comment = FALSE, dpi = 300)
+```{r L10-global-options, include = FALSE}
+knitr::opts_chunk$set(dpi = 300)
 ```
 
 ## Overview
@@ -21,21 +24,21 @@ The goal of this lab is to use data manipulation and transformation techniques t
 
 We'll be using the `mod_nba2014_15_advanced.txt` and `NU_admission_data.csv` datasets --- add both to the project's **data** subdirectory. The `codebook_mod_nba2014_15_advanced.txt` file supplies a quick description of the variables in the `mod_nba2014_15_advanced.txt` dataset --- suggest adding it to the **data** subdirectory as well. The `undergraduate-admissions-statistics.pdf` is the source for the `NU_admission_data.csv` dataset and it also contains the graphic/plot we will be attempting to re-create in the second exercise. 
 
-<br>
 
-```{r load-packages-data-seed, eval=FALSE}
+```{r L10-packages-data, message=FALSE}
 # Load package(s)
+library(tidyverse)
+library(ggthemes)
 
 # Read in the datasets
+nba <- read_delim(file = "data/mod_nba2014_15_advanced.txt", delim = "|")
+admission <- read_csv(file ="data/NU_admission_data.csv")
 ```
 
-<br>
 
 ## Exercises
 
-Complete the following exercises.
 
-<br>
 
 ### Exercise 1
 
@@ -50,7 +53,7 @@ Image width 8 in, height 10 in. Can be achieved many ways:
     - `![Caption - leave blank](/path/to/image.png)`
     - Set figure height and width in R chuck's options and then use `knitr::include_graphic(/path/to/image.png)`
 
-<br>
+
 
 ```{r helper-function}
 quartile_rank <- function(x = 0:99) {
@@ -69,8 +72,171 @@ quartile_rank <- function(x = 0:99) {
 }
 ```
 
-<br>
+```{r}
+  
+```
 
+
+```{r L10-EX1-data}
+nba_5metrics <- nba %>%
+  filter(G > 10, MP > 5) %>%
+  mutate(
+     qTS_perc  = quartile_rank(TS_perc)
+    , qUSG_perc = quartile_rank(USG_perc)
+    , qDBPM     = quartile_rank(DBPM)
+    , qTRB_perc = quartile_rank(TRB_perc)
+    , qAST_perc = quartile_rank(AST_perc)
+  ) %>%
+  select(Player, qTS_perc, qUSG_perc, qDBPM, qTRB_perc, qAST_perc)
+
+LJ <- nba_5metrics %>%
+  filter(Player == "LeBron James") %>%
+  pivot_longer(cols=c(-Player))
+
+x_limits <- LJ$name
+
+```
+
+```{r L10-EX1-func}
+plot_nba <- function(fivemetrics, playername){
+  #create tidy df for specific player
+  player_df <- fivemetrics %>%
+    filter(Player == playername) %>%
+    pivot_longer(cols = c(-Player), names_to = "metric", values_to = "rank")
+  
+  #denote limts, breaks and labels 
+  x_limits <- player_df$metric
+  x_labels <- c("True\nShooting", "Usage\nRate", "Defensive\nBPM", "Rebound\nRate", "Assist\nRate")
+  y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
+  y_breaks <- c(1, 2, 3, 4)
+  
+  y_labels_df <- data.frame(
+      metric = c(rep("qDBPM", 4))
+    , y_breaks = y_breaks
+    , y_labels = y_labels
+  )
+  
+  #data frame for vertical lines between metrics
+  v_lines <- data.frame(
+      x = seq(1.5, 5.5, 1)
+    , xend = seq(1.5, 5.5, 1)
+    , y = rep(0, 5)
+    , yend = rep(4, 5)
+  )
+  
+  #create plot
+  ggplot(player_df, aes(metric, rank)) +
+    geom_col(
+        width = 1
+      , fill = "red"
+      , alpha = 0.5
+    ) +
+    coord_polar() + 
+    scale_y_continuous(
+       breaks = c(1, 2, 3, 4)
+    ) +
+    scale_x_discrete(
+        limits = x_limits 
+      , labels = NULL
+      , breaks = x_limits
+    ) +
+    geom_segment(
+        data = v_lines
+      , aes(x = x, xend = xend, y=y, yend=yend)
+      , color = "black"
+    ) +
+    geom_hline(yintercept = y_breaks, linetype = "dotted")+
+    geom_text(
+        aes(label = toupper(x_labels), y=5)
+    ) +
+    geom_text(
+        data = y_labels_df 
+      , aes(label = y_labels, y=y_breaks, x=metric)
+      , vjust = -0.75
+    ) +
+    theme_void() +
+    ggtitle(paste(playername, "\n(2015)")) +
+    theme(
+       panel.background = element_rect(fill = "grey90", color = NA)
+      , plot.title = element_text(hjust = 0.5, size = 20)
+    ) 
+}
+```
+
+```{r, fig.width=8, fig.height=10}
+plot_nba(nba_5metrics, "LeBron James")
+```
+
+
+```{r}
+v_lines <- data.frame(
+    x = seq(1.5, 5.5, 1)
+  , xend = seq(1.5, 5.5, 1)
+  , y = rep(0, 5)
+  , yend = rep(4, 5)
+)
+
+
+```
+
+
+```{r}
+x_labels <- c("True\nShooting", "Usage\nRate", "Defensive\nBPM", "Rebound\nRate", "Assist\nRate")
+y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
+y_breaks <- c(1, 2, 3, 4)
+
+y_labels_df <- data.frame(
+    name = c(rep("qDBPM", 4))
+  , y = y_breaks
+  , y_lab = y_labels
+)
+
+
+
+```
+
+
+```{r, fig.width=8, fig.height=10}
+
+
+LJ  %>%
+ggplot(aes(name, value)) +
+  geom_col(
+      width = 1
+    , fill = "red"
+    , alpha = 0.5
+  ) +
+  coord_polar() + 
+  scale_y_continuous(
+     breaks = c(1, 2, 3, 4)
+  ) +
+  scale_x_discrete(
+      limits = x_limits 
+    , labels = NULL
+    , breaks = x_limits
+  ) +
+  geom_segment(
+      data = v_lines
+    , aes(x = x, xend = xend, y=y, yend=yend)
+    , color = "black"
+  ) +
+  geom_hline(yintercept = y_breaks, linetype = "dotted")+
+  geom_text(
+      aes(label = toupper(x_labels), y=5)
+  ) +
+  geom_text(
+      data = y_labels_df 
+    , aes(label = y_lab, y=y, x=name)
+    , vjust = -0.75
+  ) +
+  theme_void() +
+  ggtitle("LeBron James\n(2015)") +
+  theme(
+     panel.background = element_rect(fill = "grey90", color = NA)
+    , plot.title = element_text(hjust = 0.5, size = 20)
+  ) 
+
+```
 
 
 <br>
