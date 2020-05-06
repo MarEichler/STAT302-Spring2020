@@ -168,78 +168,9 @@ plot_nba(nba_5metrics, "LeBron James")
 ```
 
 
-```{r}
-v_lines <- data.frame(
-    x = seq(1.5, 5.5, 1)
-  , xend = seq(1.5, 5.5, 1)
-  , y = rep(0, 5)
-  , yend = rep(4, 5)
-)
-
-
-```
-
-
-```{r}
-x_labels <- c("True\nShooting", "Usage\nRate", "Defensive\nBPM", "Rebound\nRate", "Assist\nRate")
-y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
-y_breaks <- c(1, 2, 3, 4)
-
-y_labels_df <- data.frame(
-    name = c(rep("qDBPM", 4))
-  , y = y_breaks
-  , y_lab = y_labels
-)
 
 
 
-```
-
-
-```{r, fig.width=8, fig.height=10}
-
-
-LJ  %>%
-ggplot(aes(name, value)) +
-  geom_col(
-      width = 1
-    , fill = "red"
-    , alpha = 0.5
-  ) +
-  coord_polar() + 
-  scale_y_continuous(
-     breaks = c(1, 2, 3, 4)
-  ) +
-  scale_x_discrete(
-      limits = x_limits 
-    , labels = NULL
-    , breaks = x_limits
-  ) +
-  geom_segment(
-      data = v_lines
-    , aes(x = x, xend = xend, y=y, yend=yend)
-    , color = "black"
-  ) +
-  geom_hline(yintercept = y_breaks, linetype = "dotted")+
-  geom_text(
-      aes(label = toupper(x_labels), y=5)
-  ) +
-  geom_text(
-      data = y_labels_df 
-    , aes(label = y_lab, y=y, x=name)
-    , vjust = -0.75
-  ) +
-  theme_void() +
-  ggtitle("LeBron James\n(2015)") +
-  theme(
-     panel.background = element_rect(fill = "grey90", color = NA)
-    , plot.title = element_text(hjust = 0.5, size = 20)
-  ) 
-
-```
-
-
-<br>
 
 ### Exercise 2
 
