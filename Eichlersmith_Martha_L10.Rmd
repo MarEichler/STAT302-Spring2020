@@ -28,7 +28,6 @@ We'll be using the `mod_nba2014_15_advanced.txt` and `NU_admission_data.csv` dat
 ```{r L10-packages-data, message=FALSE}
 # Load package(s)
 library(tidyverse)
-library(ggthemes)
 
 # Read in the datasets
 nba <- read_delim(file = "data/mod_nba2014_15_advanced.txt", delim = "|")
@@ -55,7 +54,7 @@ Image width 8 in, height 10 in. Can be achieved many ways:
 
 
 
-```{r helper-function}
+```{r L10-helper-function}
 quartile_rank <- function(x = 0:99) {
   
   # Set quartile
@@ -72,14 +71,27 @@ quartile_rank <- function(x = 0:99) {
 }
 ```
 
-```{r}
+```{r L10-inclass-EX1, echo=FALSE, eval=FALSE, message=FALSE}
+nba_data <-  read_delim(file = "data/mod_nba2014_15_advanced.txt", delim = "|") %>%
+  janitor::clean_names() #lowercase name
+
+nba_tidy <- nba_data %>%
+  filter(g >= 10, mp/g >= 5) %>%
+  mutate( #transmutate only keeps mutated data columns, but we want to keep name 
+      ts_quant = quartile_rank(ts_perc)
+    , trb_quant = quartile_rank(trb_perc)
+    , dbpm_quant = quartile_rank(dbpm)
+    , ast_quant = quartile_rank(ast_perc)
+    , usg_quant = quartile_rank(usg_perc)
+  ) %>% 
+  select(player, contains("_quant")) %>%
+  pivot_longer(cols = -player, names_to = "variable", values_to = "value")
   
 ```
 
-
 ```{r L10-EX1-data}
 nba_5metrics <- nba %>%
-  filter(G > 10, MP > 5) %>%
+  filter(G >= 10, MP/G >= 5) %>%
   mutate(
      qTS_perc  = quartile_rank(TS_perc)
     , qUSG_perc = quartile_rank(USG_perc)
@@ -87,40 +99,33 @@ nba_5metrics <- nba %>%
     , qTRB_perc = quartile_rank(TRB_perc)
     , qAST_perc = quartile_rank(AST_perc)
   ) %>%
-  select(Player, qTS_perc, qUSG_perc, qDBPM, qTRB_perc, qAST_perc)
-
-LJ <- nba_5metrics %>%
-  filter(Player == "LeBron James") %>%
-  pivot_longer(cols=c(-Player))
-
-x_limits <- LJ$name
-
+  select(Player, contains("q")) %>%
+  pivot_longer(cols = c(-Player), names_to = "metric", values_to = "rank")
 ```
 
 ```{r L10-EX1-func}
 plot_nba <- function(fivemetrics, playername){
   #create tidy df for specific player
   player_df <- fivemetrics %>%
-    filter(Player == playername) %>%
-    pivot_longer(cols = c(-Player), names_to = "metric", values_to = "rank")
-  
+    filter(Player == playername) 
+    
   #denote limts, breaks and labels 
   x_limits <- player_df$metric
   x_labels <- c("True\nShooting", "Usage\nRate", "Defensive\nBPM", "Rebound\nRate", "Assist\nRate")
-  y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
   y_breaks <- c(1, 2, 3, 4)
+  y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
   
   y_labels_df <- data.frame(
-      metric = c(rep("qDBPM", 4))
+      metric = c(rep("qDBPM", 4 ))
     , y_breaks = y_breaks
     , y_labels = y_labels
   )
   
   #data frame for vertical lines between metrics
   v_lines <- data.frame(
-      x = seq(1.5, 5.5, 1)
+      x    = seq(1.5, 5.5, 1)
     , xend = seq(1.5, 5.5, 1)
-    , y = rep(0, 5)
+    , y    = rep(0, 5)
     , yend = rep(4, 5)
   )
   
@@ -128,43 +133,57 @@ plot_nba <- function(fivemetrics, playername){
   ggplot(player_df, aes(metric, rank)) +
     geom_col(
         width = 1
-      , fill = "red"
-      , alpha = 0.5
+      , fill  = "#F28291"
     ) +
     coord_polar() + 
     scale_y_continuous(
-       breaks = c(1, 2, 3, 4)
+        NULL
+      , expand = c(0, 0)
     ) +
     scale_x_discrete(
-        limits = x_limits 
-      , labels = NULL
-      , breaks = x_limits
+        NULL
+      , expand = c(0, 0)
+      , limits = x_limits 
     ) +
     geom_segment(
-        data = v_lines
-      , aes(x = x, xend = xend, y=y, yend=yend)
-      , color = "black"
+        x = seq(0.5, 4.5, 1)
+      , y = 0
+      , xend = seq(0.5, 4.5, 1)
+      , yend = 4
     ) +
-    geom_hline(yintercept = y_breaks, linetype = "dotted")+
+    geom_hline(
+        yintercept = y_breaks
+      , linetype = "dotted"
+    )+
+    #METRIC LABELS 
     geom_text(
-        aes(label = toupper(x_labels), y=5)
+        aes(label = toupper(x_labels), y = 5)
+      , size = 5
     ) +
+    #RANK LABELS 
     geom_text(
         data = y_labels_df 
-      , aes(label = y_labels, y=y_breaks, x=metric)
+      , aes(
+            label = y_labels
+          , y=y_breaks
+          , x=metric
+        )
       , vjust = -0.75
+      , size = 4
     ) +
     theme_void() +
     ggtitle(paste(playername, "\n(2015)")) +
     theme(
-       panel.background = element_rect(fill = "grey90", color = NA)
-      , plot.title = element_text(hjust = 0.5, size = 20)
-    ) 
+        panel.background = element_rect(fill = "grey90", color = NA)
+      , plot.title = element_text(hjust = 0.5, size = 24)
+    )  
 }
 ```
 
 ```{r, fig.width=8, fig.height=10}
 plot_nba(nba_5metrics, "LeBron James")
+plot_nba(nba_5metrics, "Kevin Durant")
+plot_nba(nba_5metrics, "Jeremy Lin")
 ```
 
 
