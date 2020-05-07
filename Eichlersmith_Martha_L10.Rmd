@@ -12,7 +12,7 @@ editor_options:
   chunk_output_type: inline
 ---
 
-```{r L10-global-options, include = FALSE}
+```{r L10-global-options, echo=FALSE}
 knitr::opts_chunk$set(dpi = 300)
 ```
 
@@ -340,7 +340,7 @@ subtitle <- ggdraw() +
 
 caption <- ggdraw() + 
   draw_label(
-      "SOURCE Information Systems Office for Admissions & Financial Aid."
+      "SOURCE: Information Systems Office for Admissions & Financial Aid."
     , color = NW_black50
     , x = 1
     , hjust = 1
@@ -367,4 +367,96 @@ This information is directly connected (one is the the raw counts, the other the
 
 **No not have to complete.**
 
-Using `NU_admission_data.csv` try to re-create/approximate the single plot depicted in `undergraduate-admissions-statistics.pdf`. Fix their error concerning the bar heights. Might want to simply start with one of your plots from Exercise 2 and see if it can be modified. 
+Using `NU_admission_data.csv` try to re-create/approximate the single plot depicted in `undergraduate-admissions-statistics.pdf`. Fix their error concerning the bar heights. Might want to simply start with one of your plots from Exercise 2 and see if it can be modified.   
+
+```{r L10-Challenge-prep}
+#more colors
+NW_orange <- "#CA7C1B"
+NW_yellow <- "#FFC520"
+
+#primary/main y-axis limit and breaks 
+y1_lim  <- 40000
+y1_breaks <- seq(0, y1_lim, 10000)
+
+#secondary y-axis limit and breaks 
+y2_lim <- 60
+y2_breaks <- seq(0,y2_lim, 15)
+
+
+transform <- y1_lim*(1/y2_lim)
+```
+
+```{r L10-challenge-plot,  fig.width = 9, fig.height=4}
+ggplot(admission_bar, aes(year)) +
+  
+  #PRIMARY AXIS
+  geom_col( aes(y=count, fill = status )) +
+  scale_fill_manual(
+      name = NULL
+    , values = c(NW_purple60, NW_yellow, NW_black20)
+    , labels = c("Attended", "Admitted but did not attend", "Not Admitted")
+  ) +
+  
+  #SECONDARY AXIS 
+  geom_line( 
+      data = admission_line
+    , aes(y = rate*transform, color = status)
+    , size = 1
+  ) +
+  geom_point( 
+      data = admission_line
+    , aes(y = rate*transform, color = status, shape = status)
+    , size = 2
+  ) +
+  scale_color_manual(
+      name = NULL
+    , values = c(NW_purple, NW_orange)
+    , labels = c("Yield Rate", "Admission Rate")
+  ) +
+  scale_shape_discrete(
+      name = NULL
+    , labels = c("Yield Rate", "Admission Rate")
+  ) +
+  
+  #SCALING
+  scale_x_continuous(
+      name = "Entering Year"
+    , limits = c(1998.25, 2018.75)
+    , breaks = seq(1999, 2018)
+    , minor_break = NULL
+    , expand = c(0, 0)
+  ) +
+    scale_y_continuous(
+      name = "Applications"
+    , expand = c(0, 0)
+    , breaks = y1_breaks
+    , labels = scales::comma
+    , sec.axis = sec_axis(
+          ~./transform
+        , breaks = y2_breaks
+        , labels = scales::unit_format(suffix = "%")
+        , name = "Rate"
+      )
+  ) +
+    
+    
+  #GENERAL THEMES
+  theme_minimal() +
+  labs(
+      title = "NORTHWESTERN UNIVERSITY"
+    , subtitle = "Undergradudate Admission History"
+    , caption = "SOURCE: Information Systems Office for Admissions & Financial Aid."
+  ) +
+  theme(
+      legend.position = "top"
+    , axis.title = element_text(color = NW_black80)
+    , axis.text = element_text(color = NW_black50)
+    , legend.text = element_text(color = NW_black80)
+    , plot.title = element_text(color = NW_purple, family ="Georgia", face = "bold", hjust = 0.5)
+    , plot.subtitle = element_text(color = NW_black80, family ="Georgia", hjust = 0.5)
+    , plot.caption = element_text(color = NW_black50)
+  ) 
+```
+
+
+
