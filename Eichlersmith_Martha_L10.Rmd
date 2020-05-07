@@ -28,12 +28,25 @@ We'll be using the `mod_nba2014_15_advanced.txt` and `NU_admission_data.csv` dat
 ```{r L10-packages-data, message=FALSE}
 # Load package(s)
 library(tidyverse)
+library(cowplot)
+
+extrafont::loadfonts(device = "win")
 
 # Read in the datasets
 nba <- read_delim(file = "data/mod_nba2014_15_advanced.txt", delim = "|")
-admission <- read_csv(file ="data/NU_admission_data.csv")
+admission <- read_csv(file ="data/NU_admission_data.csv") %>%
+  janitor::clean_names() #lowercase name
 ```
 
+```{r L10-add-NW-colors}
+NW_purple   <- "#4E2A84"
+NW_purple60 <- "#836EAA"
+NW_purple30 <- "#B6ACD1"
+NW_black80  <- "#342F2E"
+NW_black50  <- "#716C6B"
+NW_black20  <- "#BBB8B8"
+NW_black10  <- "#D8D6D6"
+```
 
 ## Exercises
 
@@ -71,23 +84,6 @@ quartile_rank <- function(x = 0:99) {
 }
 ```
 
-```{r L10-inclass-EX1, echo=FALSE, eval=FALSE, message=FALSE}
-nba_data <-  read_delim(file = "data/mod_nba2014_15_advanced.txt", delim = "|") %>%
-  janitor::clean_names() #lowercase name
-
-nba_tidy <- nba_data %>%
-  filter(g >= 10, mp/g >= 5) %>%
-  mutate( #transmutate only keeps mutated data columns, but we want to keep name 
-      ts_quant = quartile_rank(ts_perc)
-    , trb_quant = quartile_rank(trb_perc)
-    , dbpm_quant = quartile_rank(dbpm)
-    , ast_quant = quartile_rank(ast_perc)
-    , usg_quant = quartile_rank(usg_perc)
-  ) %>% 
-  select(player, contains("_quant")) %>%
-  pivot_longer(cols = -player, names_to = "variable", values_to = "value")
-  
-```
 
 ```{r L10-EX1-data}
 nba_5metrics <- nba %>%
@@ -180,13 +176,11 @@ plot_nba <- function(fivemetrics, playername){
 }
 ```
 
-```{r, fig.width=8, fig.height=10}
+```{r L10-EX1-plots, fig.width=8, fig.height=10}
 plot_nba(nba_5metrics, "LeBron James")
 plot_nba(nba_5metrics, "Kevin Durant")
 plot_nba(nba_5metrics, "Jeremy Lin")
 ```
-
-
 
 
 
@@ -199,16 +193,175 @@ Also, practice placing all the text information on the appropriate plots. While 
 
 Which approach do you find communicates the information better, their single plot or the two plot approach? Why?
 
-*Hints:*
 
-- Form 4 datasets (helps you get organized, but not entirely necessary): 
-    - 1 that has bar chart data, 
-    - 1 that has bar chart label data, 
-    - 1 that has line chart data, and 
-    - 1 that has line chart labels 
-- Decide on image size to aid in the selection of text sizes and location (9 in width, 4 in height - just a suggestion)
+```{r, L10-EX2-data-bar}
+admission_bar <- admission %>%
+  mutate(
+      non_admitted = applications - admitted_students
+    , non_attended = admitted_students - matriculants
+    , attended = matriculants
+         ) %>%
+  select(year, non_admitted, non_attended, attended)  %>%
+  pivot_longer(cols = c(-year), names_to = "status", values_to = "count" ) %>%
+  mutate(
+    status = factor(status
+                    , levels = c("attended", "non_attended", "non_admitted")
+                    )
+  )
+```
 
-<br>
+```{r L10-EX2-plot-bar, fig.width = 9, fig.height=3.5}
+plot_bar <-  ggplot(admission_bar, aes(year, count, fill = status )) +
+  geom_col() +
+  scale_fill_manual(
+      "Applications"
+    , values = c(NW_purple60, NW_purple30, NW_black20)
+    , labels = c("Attended", "Admitted but did not attend", "Not Admitted")
+  ) +
+  scale_x_continuous(
+      name = "Entering Year"
+    , limits = c(1998.5, 2018.5)
+    , breaks = seq(1999, 2018)
+    , expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+      name = NULL
+    , expand = c(0, 0)
+  ) +
+  geom_text(
+      aes(label = scales::comma(count))
+    , position = position_stack(vjust = 0.5)
+    , size = 3
+    , color = NW_black80
+  ) +
+  theme_minimal() +
+  theme(
+      legend.position = "top"
+    , axis.title = element_text(color = NW_black80)
+    , axis.text = element_text(color = NW_black50)
+    , axis.text.y = element_blank()
+    , legend.text = element_text(color = NW_black80)
+    , legend.title = element_text(family="Georgia", color=NW_black80)
+    , line = element_blank()
+  )
+```
+
+```{r, L10-EX2-data-line}
+admission_line <- admission %>%
+  select(year, admission_rate, yield_rate) %>%
+  pivot_longer(cols = c(-year), names_to = "status", values_to = "rate" ) %>%
+  mutate(
+    status = factor(status
+                    , levels = c("yield_rate", "admission_rate")
+                    )
+  )
+```
+
+```{r L10-EX2-plot-line, fig.width = 9, fig.height=4}
+plot_line <-  ggplot(admission_line, aes(year, rate, color = status, shape = status)) +
+  geom_point(size = 2) +
+  geom_line(size = 1) +
+  scale_color_manual(
+      "Rate"
+    , values = c(NW_purple, NW_purple60)
+    , labels = c("Yield Rate", "Admission Rate")
+  ) +
+  scale_shape_discrete(
+      "Rate"
+    , labels = c("Yield Rate", "Admission Rate") 
+  ) +
+  scale_x_continuous(
+      name = "Entering Year"
+    , limits = c(1998.5, 2018.5)
+    , breaks = seq(1999, 2018)
+    , minor_breaks = NULL
+    , expand = c(0, 0)
+  ) +
+  scale_y_continuous(
+      name = NULL
+    , limits = c(0, 60)
+    , expand = c(0, 0)
+    , breaks = NULL
+  ) + 
+  geom_text(
+      data = filter(admission_line, status == "yield_rate")
+    , aes(y=rate, x=year, label = paste(rate, "%", sep = ""))
+    , size = 3
+    , color = NW_purple
+    , vjust = 0
+    , nudge_y = 1.5
+  ) +
+  geom_text(
+      data = filter(admission_line, status == "admission_rate")
+    , aes(y=rate, x=year, label = paste(rate, "%", sep = ""))
+    , size = 3
+    , color = NW_purple60
+    , vjust = 1
+    , nudge_y = -1.5
+  ) + 
+  theme_minimal() +
+  theme(
+      legend.position = "top"
+    , axis.title = element_text(color = NW_black80)
+    , axis.text = element_text(color = NW_black50)
+    , axis.text.y = element_blank()
+    , legend.text = element_text(color = NW_black80)
+    , legend.title = element_text(family="Georgia", color=NW_black80)
+  )
+```
+
+```{r L10-EX2-title}
+title <- ggdraw() + 
+  draw_label(
+      "NORTHWESTERN UNIVERSITY"
+    , fontface = 'bold'
+    , fontfamily = "Georgia"
+    , color = NW_purple
+    , x = .5
+    , hjust = .5
+    , size = 14
+  ) +
+  theme(
+    plot.margin = margin(5, 5, 5, 5)
+  )
+
+subtitle <- ggdraw() + 
+  draw_label(
+      "Undergraduate Admission History"
+    , fontfamily = "Georgia"
+    , color = NW_black80
+    , x = .5
+    , hjust = .5
+    , size = 12
+  ) +
+  theme(
+    plot.margin = margin(5, 5, 5, 5)
+  )
+
+caption <- ggdraw() + 
+  draw_label(
+      "SOURCE Information Systems Office for Admissions & Financial Aid."
+    , color = NW_black50
+    , x = 1
+    , hjust = 1
+    , size = 10
+  ) 
+```
+
+```{r L10-EX2-print-plots, fig.width = 9, fig.height=8, warning = FALSE}
+plot_grid(
+    plot_grid(title, subtitle, ncol = 1)
+  , plot_grid(plot_bar, plot_line, ncol = 1, align = "v")
+  , caption
+  , ncol = 1
+  , rel_heights = c(.1, 1.5, .05)
+  )
+```
+
+
+
+
+This information is directly connected (one is the the raw counts, the other the rate) - however, putting it all onto one plot makes it difficult to read and see trends.  I think having two plots on top of eachother is a better way to show that the data are related but still allowing enough space to read.  
 
 ## Challenge(s)
 
