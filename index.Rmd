@@ -53,3 +53,7 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 # L09 themes
 ```{r child='Eichlersmith_Martha_L09.Rmd'}
 ```
+
+# L10 data wrangling
+```{r child='Eichlersmith_Martha_L10.Rmd'}
+```
