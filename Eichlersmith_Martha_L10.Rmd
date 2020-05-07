@@ -38,7 +38,7 @@ admission <- read_csv(file ="data/NU_admission_data.csv") %>%
   janitor::clean_names() #lowercase name
 ```
 
-```{r L10-add-NW-colors}
+```{r L10-NW-colors}
 NW_purple   <- "#4E2A84"
 NW_purple60 <- "#836EAA"
 NW_purple30 <- "#B6ACD1"
