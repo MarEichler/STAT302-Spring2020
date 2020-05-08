@@ -56,17 +56,6 @@ NW_black10  <- "#D8D6D6"
 
 Using the `mod_nba2014_15.txt` dataset try to recreate/approximate the plot type featured in the [http://fivethirtyeight.com/](fivethirtyeight.com) article [Kawhi Leonard Is The Most Well-Rounded Elite Shooter Since Larry Bird](http://fivethirtyeight.com/features/kawhi-leonard-is-the-most-well-rounded-elite-shooter-since-larry-bird/) for any player of your choice for the 2014-2015 season. When calculating quartiles or considering players you may want to exclude players that played less than 10 games or played less than 5 minutes a game. That is, we only want to look for "qualified" players.
 
-*Hints:*
-
-Image width 8 in, height 10 in. Can be achieved many ways:
-
-- Set figure height and width in R chuck's options
-- Save image with `ggsave()` and then insert it using markdown code:
-    - `![Caption - leave blank](/path/to/image.png)`
-    - Set figure height and width in R chuck's options and then use `knitr::include_graphic(/path/to/image.png)`
-
-
-
 ```{r L10-helper-function}
 quartile_rank <- function(x = 0:99) {
   
@@ -107,7 +96,13 @@ plot_nba <- function(fivemetrics, playername){
     
   #denote limts, breaks and labels 
   x_limits <- player_df$metric
-  x_labels <- c("True\nShooting", "Usage\nRate", "Defensive\nBPM", "Rebound\nRate", "Assist\nRate")
+  x_labels <- c(
+      "True\nShooting"
+    , "Usage\nRate"
+    , "Defensive\nBPM"
+    , "Rebound\nRate"
+    , "Assist\nRate"
+  )
   y_breaks <- c(1, 2, 3, 4)
   y_labels <- c("1st-25th", "25th-50th", "50th-75th", "75th-99th")
   
@@ -170,19 +165,44 @@ plot_nba <- function(fivemetrics, playername){
     theme_void() +
     ggtitle(paste(playername, "\n(2015)")) +
     theme(
-        panel.background = element_rect(fill = "grey90", color = NA)
-      , plot.title = element_text(hjust = 0.5, size = 24)
+        panel.background = element_rect(
+            fill = "grey90"
+          , color = NA
+        )
+      , plot.title = element_text(
+            hjust = 0.5
+          , size = 24
+        )
     )  
+  
 }
 ```
 
-```{r L10-EX1-plots, fig.width=8, fig.height=10}
-plot_nba(nba_5metrics, "LeBron James")
+
+```{r L10-EX1-plots, fig.width = 8, fig.height = 10}
+# {r, fig.width = 8, fig.height = 10}
+#also can print directly
 plot_nba(nba_5metrics, "Kevin Durant")
 plot_nba(nba_5metrics, "Jeremy Lin")
 ```
 
+```{r L10-EX1-plotsimport-img, out.width="100%", out.height="100%"}
+# {r, out.width="100%", out.height="100%"}
+#if you want to save the file and then use it 
+png(
+    file = "img/LeBron James.png"
+  , width = 8
+  , height = 10
+  , units = "in"
+  , res = 300
+)
 
+plot_nba(nba_5metrics, "LeBron James")
+
+stop <- dev.off()
+
+knitr::include_graphics("img/LeBron James.png")
+```
 
 
 ### Exercise 2
@@ -202,11 +222,16 @@ admission_bar <- admission %>%
     , attended = matriculants
          ) %>%
   select(year, non_admitted, non_attended, attended)  %>%
-  pivot_longer(cols = c(-year), names_to = "status", values_to = "count" ) %>%
+  pivot_longer(
+      cols = c(-year)
+    , names_to = "status"
+    , values_to = "count"
+  ) %>%
   mutate(
-    status = factor(status
-                    , levels = c("attended", "non_attended", "non_admitted")
-                    )
+    status = factor(
+        status
+      , levels = c("attended", "non_attended", "non_admitted")
+      )
   )
 ```
 
@@ -258,7 +283,10 @@ admission_line <- admission %>%
 ```
 
 ```{r L10-EX2-plot-line, fig.width = 9, fig.height=4}
-plot_line <-  ggplot(admission_line, aes(year, rate, color = status, shape = status)) +
+plot_line <-  ggplot(
+      admission_line
+    , aes(year, rate, color = status, shape = status)
+  ) +
   geom_point(size = 2) +
   geom_line(size = 1) +
   scale_color_manual(
@@ -306,7 +334,10 @@ plot_line <-  ggplot(admission_line, aes(year, rate, color = status, shape = sta
     , axis.text = element_text(color = NW_black50)
     , axis.text.y = element_blank()
     , legend.text = element_text(color = NW_black80)
-    , legend.title = element_text(family="Georgia", color=NW_black80)
+    , legend.title = element_text(
+          family="Georgia"
+        , color=NW_black80
+      )
   )
 ```
 
@@ -348,7 +379,7 @@ caption <- ggdraw() +
   ) 
 ```
 
-```{r L10-EX2-print-plots, fig.width = 9, fig.height=8, warning = FALSE}
+```{r L10-EX2-print-plots, fig.width = 9, fig.height=8, warning = FALSE, dpi = 500}
 plot_grid(
     plot_grid(title, subtitle, ncol = 1)
   , plot_grid(plot_bar, plot_line, ncol = 1, align = "v")
@@ -386,7 +417,7 @@ y2_breaks <- seq(0,y2_lim, 15)
 transform <- y1_lim*(1/y2_lim)
 ```
 
-```{r L10-challenge-plot,  fig.width = 9, fig.height=4}
+```{r L10-challenge-plot,  fig.width = 9, fig.height=4, dpi = 600}
 ggplot(admission_bar, aes(year)) +
   
   #PRIMARY AXIS
@@ -452,8 +483,17 @@ ggplot(admission_bar, aes(year)) +
     , axis.title = element_text(color = NW_black80)
     , axis.text = element_text(color = NW_black50)
     , legend.text = element_text(color = NW_black80)
-    , plot.title = element_text(color = NW_purple, family ="Georgia", face = "bold", hjust = 0.5)
-    , plot.subtitle = element_text(color = NW_black80, family ="Georgia", hjust = 0.5)
+    , plot.title = element_text(
+          color = NW_purple
+        , family ="Georgia"
+        , face = "bold"
+        , hjust = 0.5
+      )
+    , plot.subtitle = element_text(
+          color = NW_black80
+        , family ="Georgia"
+        , hjust = 0.5
+      )
     , plot.caption = element_text(color = NW_black50)
   ) 
 ```
