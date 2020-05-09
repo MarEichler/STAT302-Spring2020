@@ -31,15 +31,12 @@ We'll be using the `cdc.txt` datasets.
 # Load package(s)
 library(tidyverse)
 library(gridExtra)
-library(extrafont)
-
-#if want to use only windows fonts
 
 #import fonts - only once, take ~5min
 #font_import()
 
-#load fonts prior to plots
-#loadfonts(device = "win")
+#load fonts 
+extrafont::loadfonts(device = "win")
 
 # Read in the cdc dataset
 cdc <- read_delim(file = "data/cdc.txt", delim = "|") %>%
@@ -271,102 +268,4 @@ ggplot(cdc_small_adj, aes(gender))+
     , legend.title =element_text(family = "Georgia", color = NW_black80) 
   )
 ```
-
-
-```{r L09-add-NW-fonts, eval=FALSE, echo=FALSE}
-library(showtext)
-font_add(
-    family = "campton" 
-  , regular = "C:/Users/MarEichler17/AppData/Local/Microsoft/Windows/Fonts/Campton/Campton Book.ttf"
-  , bold    = "C:/Users/MarEichler17/AppData/Local/Microsoft/Windows/Fonts/Campton/Campton Bold.ttf"
-  #use italic imput for thin font
-  , italic  = "C:/Users/MarEichler17/AppData/Local/Microsoft/Windows/Fonts/Campton/Campton Thin.ttf"
-         )
-showtext_auto()
-showtext_auto(FALSE)
-```
-
-```{r, fig.showtext=TRUE, dpi = 300, fig.width=7, echo=FALSE, eval=FALSE}
-
-ggplot(cdc_small, aes(weight, height)) + 
-  geom_point(
-      data = select(cdc_small, -gender)
-    , color = NW_black20
-    , size = 2.5
-  ) +
-  geom_point(
-      color = NW_purple
-    , alpha = 0.5
-    , size = 2.5
-    , show.legend = FALSE
-  ) + 
-  scale_x_continuous(
-      labels = scales::unit_format(unit = "lbs")
-    , breaks = seq(125, 325, 50)
-  ) + 
-  scale_y_continuous(labels = scales::unit_format(suffix = "in", accuracy = 1))+
-  facet_wrap(~ factor(gender, labels = c("Women", "Men"))) + 
-  xlab("Weight") + 
-  ylab( "Height") + 
-  theme_minimal() +
-  ggtitle("Gender Comparison for Height by Weight")+
-  theme(
-      plot.title = element_text(family = "campton", color = NW_black80, hjust = 0.5
-                                , size = 140
-                                )
-    , strip.text.x = element_text(family ="campton", face = "bold", color = NW_purple, size=100)
-    , axis.title = element_text(color = NW_black80, size=100)
-    , axis.text = element_text(color = NW_black50, size = 50)
-  )
-
-```
-
-
-```{r, results=FALSE, echo=FALSE, eval=FALSE}
-
-png("plot01.png"
-   #, width = 400, height = 300
-   , width = 7, height = 5, units ="in", res=72 #creates same problem as before, tiny text
-    )
-#showtext_begin()
-
-ggplot(cdc_small, aes(weight, height)) + 
-  geom_point(
-      data = select(cdc_small, -gender)
-    , color = NW_black20
-    , size = 2.5
-  ) +
-  geom_point(
-      color = NW_purple
-    , alpha = 0.5
-    , size = 2.5
-    , show.legend = FALSE
-  ) + 
-  scale_x_continuous(
-      labels = scales::unit_format(unit = "lbs")
-    , breaks = seq(125, 325, 50)
-  ) + 
-  scale_y_continuous(labels = scales::unit_format(suffix = "in", accuracy = 1))+
-  facet_wrap(~ factor(gender, labels = c("Women", "Men"))) + 
-  xlab("Weight") + 
-  ylab( "Height") + 
-  theme_minimal() +
-  ggtitle("Gender Comparison for Height by Weight")+
-  theme(
-      plot.title = element_text(family = "campton", color = NW_black80, hjust = 0.5
-                                #, size = 15
-                                )
-    , strip.text.x = element_text(family ="campton", face = "bold", color = NW_purple, size=13)
-    , axis.title = element_text(family = "arial", color = NW_black80, size=12)
-    , axis.text = element_text(family = "arial", color = NW_black50, size = 8)
-  )
-
-#showtext_end()
-dev.off()
-
-# ![](plot01.png)
-```
-
-
-
 

@@ -1531,15 +1531,12 @@ opts_chunk$set(dpi = 300)</code></pre>
 <pre class="r"><code># Load package(s)
 library(tidyverse)
 library(gridExtra)
-library(extrafont)
-
-#if want to use only windows fonts
 
 #import fonts - only once, take ~5min
 #font_import()
 
-#load fonts prior to plots
-#loadfonts(device = &quot;win&quot;)
+#load fonts 
+extrafont::loadfonts(device = &quot;win&quot;)
 
 # Read in the cdc dataset
 cdc &lt;- read_delim(file = &quot;data/cdc.txt&quot;, delim = &quot;|&quot;) %&gt;%
