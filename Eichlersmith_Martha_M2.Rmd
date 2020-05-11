@@ -1,0 +1,112 @@
+---
+title: "M2 Midterm II"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.width = 6, fig.height = 6)
+```
+
+## Overview
+
+This lab focuses on the construction and manipulation of datasets to create a desired graphic. Manipulating/preparing data to be visualized is typically the rule and is almost entirely unavoidable when constructing somewhat complex graphics. This includes being able to create/generate fake data when attempting to depict conceptual or foundational ideas. The lab also tests your ability to utilize `ggplot2` functions that have not been directly used in previous labs. By having you use unfamiliar functions we are gauging your ability to use the documentation and your understanding of the basic structure of functions in `ggplot2`. 
+
+You are free to use any resource at your disposal such as notes, past labs, the internet, fellow students, instructor, TA, etc. However, do not simply copy and paste solutions. This is a chance for you to assess how well you have come to know `ggplot2` and determine if you are developing the practical skills needed to utilize `ggplot2` in the future. 
+
+## Datasets 
+
+We will be using the `NH_2016pp_dem.txt` and `NH_2016pp_rep.txt` datasets. `NH_2016pp_dem.txt` contains the raw vote count by county for each candidate for the 2016 New Hampshire Democratic presidential primary. `NH_2016pp_rep.txt` contains the raw vote count by county for each candidate for the 2016 New Hampshire Republican presidential primary.
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE}
+# Load package(s)
+
+# Read in the dataset(s)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+The figure for this exercise has width 6 inches and height 6 inches.
+
+Using the `NH_2016pp_dem.txt` and `NH_2016pp_rep.txt` datasets in conjunction with mapping data from the `maps` package replicate, as close as possible, the graphic below. Note the graphic is comprised of two plots displayed side-by-side. The plots both use the same shading scheme (i.e. scale limits and fill options). *Hint: You will have to use `gather()`, `left_join()`, and other data manipulation functions.*
+
+**Background Information:** On Tuesday, February 9th 2016, New Hampshire held primaries for the Democratic and Republican Parties to apportion state delegates to nominate their respective party's presidential nominee. Bernie Sanders (D) and Donald Trump (R) had very good nights. They both won every county in New Hampshire within their respective party's primary. In the Democratic primary, Hillary Clinton was second in each county. In the Republican primary John Kasich was second in all but one county where he was in a virtual tie for second, but technically in third (thus the asterisk). The graphic below visualizes the ratio of the candidate with the highest vote total to the candidate with the second highest vote total in each county (a measure of strength for each county winner). The fact that we can replace first and second place with candidate names is simply a byproduct of how the primaries played out. Otherwise, the legend labels should have been "First to Second Ratio" or we might have implemented an alternative shading scheme.
+
+After replicating the graphic provide a summary of how the two primaries relate to one another. 
+
+There are a few ways to build these maps, but I would suggest using a simple features, `sf`, approach instead of the polygon approach provided in our book. We have previously used both. Getting the mapping data into an `sf` format ready to be used with `ggplot2` only requires a few steps and is done in the code provided below. Where indicated, **add comments** to describe what the provided code is doing --- for line of code directly below it.
+
+<br>
+
+```{r nh-map-data, eval=FALSE}
+# Setup NH map dataset
+nh_dat <- maps::map(
+  database = "county",
+  regions = "new hampshire",
+  plot = FALSE,
+  fill = TRUE
+) %>%
+  # Provide comment!! 
+  st_as_sf() %>%
+  # Provide comment!!
+  mutate(ID = str_remove(ID, ".*,")) %>%
+  # Provide comment!!
+  rename(county = ID)
+```
+
+<br>
+
+### Exercise 2
+
+The figure for this exercise has width 6 inches and height 6 inches.
+
+Create a fake/randomly generated dataset to approximate the graphic shown below. Since the dataset is fake your graphic will probably appear different than the one shown (unless you set the seed), but the plot's theme characteristics (titles, aesthetics, legend, etc... ) should be the same. 
+
+**Hints:**
+
+- Set the seed of the random number generator to 2468.
+- Generated 20 observations per group (60 total observations).
+- Generated each group's `x` values using a normal distribution for each group. Each group had a different mean, but all shared the same standard deviation.
+- Generated each group's `y` values by adding white noise (random error) from a normal distribution to the `x` values. Each group's white noise had mean 0, but each had a different standard deviation.
+- Set the coordinates to be equal and utilized a pre-set theme.
+- Note the order of plotting for the points and the ellipses. 
+
+<br>
+
+
+
+<br>
+
+### Exercise 3
+
+The figure for this exercise has width 6 inches and height 6 inches.
+
+Build a dataset to replicate the graphic shown below. The dataset is not randomly generated in this case so an extremely close replication should be possible. 
+
+**Hints:**
+
+* The dataset will have three variables: `x`, `y`, and `fill_amount`.
+* The graphic works by creating a small **tile** for each `x` and `y` value along the indicated axes and fills the title according to the value supplied by `fill_amount`.
+* The structure of the dataset is displayed below. There are 40,401 observations/rows (should realize that each row corresponds to one small tile). By examining the displayed observations it should be clear that `x` values go from -1 to 1 by steps of 0.01. It might not be as obvious, but `y` values also go from -1 to 1 by steps of 0.01. Should make use of `seq()` and `rep()` to create these two columns of the dataset. Examination of the displayed observations and the provided graphic should make clear that the `fill` for each tile is either calculated using $x^3-y$ or $y-x^3$ (should be able to determine which one). 
+* The **function** can be drawn using the equation provided on the graphic. The color of the **function** is a 50-50 mix of red and blue.
+* Getting the superscript on the added text will require setting an option of `parse = TRUE` in the appropriate function/layer. 
+
+<br>
+
+Below are quick snapshots of the dataset you should create. The first is for rows 1 through 5, second is for rows 197 through 206, and the thrid is for rows 400 through 405. This should help in the construction of the dataset.  
+
+<br>
