@@ -230,45 +230,66 @@ admission_bar <- admission %>%
   mutate(
     status = factor(
         status
-      , levels = c("attended", "non_attended", "non_admitted")
+      , levels = c("non_admitted", "non_attended", "attended")
       )
   )
+
+admission_apps <- admission %>%
+  select(applications, year) %>%
+  mutate(apps = paste("n =", scales::comma(applications)))
+
+
 ```
 
 ```{r L10-EX2-plot-bar, fig.width = 9, fig.height=3.5}
-plot_bar <-  ggplot(admission_bar, aes(year, count, fill = status )) +
-  geom_col() +
+plot_bar <-  ggplot(admission_bar, aes(year, count, fill = status)) +
+  geom_col(width = 0.9) +
   scale_fill_manual(
-      "Applications"
-    , values = c(NW_purple60, NW_purple30, NW_black20)
-    , labels = c("Attended", "Admitted but did not attend", "Not Admitted")
+      "Applications:"
+    , values = c(NW_black20, NW_purple30, NW_purple60)
+    , labels = c("Not Admitted", "Admitted but did not attend", "Matriculants")
+    , guide = guide_legend(reverse = TRUE)
   ) +
   scale_x_continuous(
-      name = "Entering Year"
+      name = NULL
     , limits = c(1998.5, 2018.5)
     , breaks = seq(1999, 2018)
+    , minor_breaks = NULL
     , expand = c(0, 0)
   ) +
   scale_y_continuous(
       name = NULL
     , expand = c(0, 0)
+    , breaks = NULL
+    , limits = c(0, max(admission_apps$applications) + 3000)
   ) +
   geom_text(
       aes(label = scales::comma(count))
-    , position = position_stack(vjust = 0.5)
+    , position = position_stack(vjust = 0.6)
     , size = 3
     , color = NW_black80
+  ) +
+  annotate( 
+    "text"
+    , x = admission_apps$year
+    , y = admission_apps$applications + 2000
+    , label = scales::comma(admission_apps$applications)
+    , size = 3
+    , color = NW_black80
+    , fontface = "bold"
   ) +
   theme_minimal() +
   theme(
       legend.position = "top"
-    , axis.title = element_text(color = NW_black80)
-    , axis.text = element_text(color = NW_black50)
-    , axis.text.y = element_blank()
+    , axis.title = element_text(color = NW_black80, family = "Georgia")
+    , axis.text = element_text(color = NW_black80, family = "Georgia")
+    , axis.text.y = element_text(color = NW_black50, face = "bold")
     , legend.text = element_text(color = NW_black80)
     , legend.title = element_text(family="Georgia", color=NW_black80)
     , line = element_blank()
   )
+
+
 ```
 
 ```{r, L10-EX2-data-line}
@@ -290,16 +311,16 @@ plot_line <-  ggplot(
   geom_point(size = 2) +
   geom_line(size = 1) +
   scale_color_manual(
-      "Rate"
+      "Rate:"
     , values = c(NW_purple, NW_purple60)
     , labels = c("Yield Rate", "Admission Rate")
   ) +
   scale_shape_discrete(
-      "Rate"
+      "Rate:"
     , labels = c("Yield Rate", "Admission Rate") 
   ) +
   scale_x_continuous(
-      name = "Entering Year"
+      name = NULL
     , limits = c(1998.5, 2018.5)
     , breaks = seq(1999, 2018)
     , minor_breaks = NULL
@@ -307,7 +328,7 @@ plot_line <-  ggplot(
   ) +
   scale_y_continuous(
       name = NULL
-    , limits = c(0, 60)
+    , limits = c(0, 62)
     , expand = c(0, 0)
     , breaks = NULL
   ) + 
@@ -317,7 +338,7 @@ plot_line <-  ggplot(
     , size = 3
     , color = NW_purple
     , vjust = 0
-    , nudge_y = 1.5
+    , nudge_y = 2
   ) +
   geom_text(
       data = filter(admission_line, status == "admission_rate")
@@ -325,13 +346,13 @@ plot_line <-  ggplot(
     , size = 3
     , color = NW_purple60
     , vjust = 1
-    , nudge_y = -1.5
+    , nudge_y = -2
   ) + 
   theme_minimal() +
   theme(
       legend.position = "top"
-    , axis.title = element_text(color = NW_black80)
-    , axis.text = element_text(color = NW_black50)
+    , axis.title = element_text(color = NW_black80, family = "Georgia")
+    , axis.text = element_text(color = NW_black80, family = "Georgia")
     , axis.text.y = element_blank()
     , legend.text = element_text(color = NW_black80)
     , legend.title = element_text(
@@ -358,7 +379,7 @@ title <- ggdraw() +
 
 subtitle <- ggdraw() + 
   draw_label(
-      "Undergraduate Admission History"
+      "Undergraduate Admission History by Entering Year"
     , fontfamily = "Georgia"
     , color = NW_black80
     , x = .5
