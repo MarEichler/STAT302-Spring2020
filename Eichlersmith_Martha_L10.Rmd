@@ -445,8 +445,9 @@ ggplot(admission_bar, aes(year)) +
   geom_col( aes(y=count, fill = status )) +
   scale_fill_manual(
       name = NULL
-    , values = c(NW_purple60, NW_yellow, NW_black20)
-    , labels = c("Attended", "Admitted but did not attend", "Not Admitted")
+    , values = c(NW_black20, NW_yellow, NW_purple60)
+    , labels = c("Not Admitted", "Admitted but did not attend", "Matriculants")
+    , guide = guide_legend(reverse = TRUE)
   ) +
   
   #SECONDARY AXIS 
@@ -472,7 +473,7 @@ ggplot(admission_bar, aes(year)) +
   
   #SCALING
   scale_x_continuous(
-      name = "Entering Year"
+      NULL
     , limits = c(1998.25, 2018.75)
     , breaks = seq(1999, 2018)
     , minor_break = NULL
@@ -496,13 +497,13 @@ ggplot(admission_bar, aes(year)) +
   theme_minimal() +
   labs(
       title = "NORTHWESTERN UNIVERSITY"
-    , subtitle = "Undergradudate Admission History"
+    , subtitle = "Undergradudate Admission History by Entering Year"
     , caption = "SOURCE: Information Systems Office for Admissions & Financial Aid."
   ) +
   theme(
       legend.position = "top"
-    , axis.title = element_text(color = NW_black80)
-    , axis.text = element_text(color = NW_black50)
+    , axis.title = element_text(color = NW_black80, family = "Georgia")
+    , axis.text = element_text(color = NW_black80, family = "Georgia")
     , legend.text = element_text(color = NW_black80)
     , plot.title = element_text(
           color = NW_purple
