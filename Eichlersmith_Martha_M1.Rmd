@@ -1,16 +1,14 @@
 ---
 title: "M1 Midterm I"
 subtitle: "Data Visualization (STAT 302)"
-author: "YOUR NAME"
+author: "Martha Eichlersmith"
+date: 2020-05-17
 output:
   html_document:
     toc: yes
     toc_float: yes
 ---
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE)
-```
 
 ## Overview
 
@@ -37,59 +35,121 @@ We will need the instructor provided `stephen_curry_shotdata_2014_15.txt` datase
 
 <br>
 
-```{r load-packages-data-seed, eval=FALSE}
+```{r M1-load-package, message = FALSE}
 # Load package(s)
+library(tidyverse)
+library(hexbin)
 
 # Read in the dataset(s)
+shots <- read_delim(file = "data/stephen_curry_shotdata_2014_15.txt", delim = "|") %>%
+  janitor::clean_names()
 ```
 
 <br>
 
 ## Exercises
 
-Complete the following exercises.
 
-<br>
 
 ### Exercise 1
 
-Figures for this exercise have width 6 inches and height 4 inches.
-
-Using the `stephen_curry_shotdata_2014_15.txt` dataset replicate, as close as possible, the 2 graphics below. After replicating the plots provide a summary of what the graphics indicate about Stephen Curry's shot selection (i.e. distance from hoop) and shot make/miss rate and how they relate/compare across distance and game time (i.e. across quarters/periods). 
-
-<br>
+After replicating the plots provide a summary of what the graphics indicate about Stephen Curry's shot selection (i.e. distance from hoop) and shot make/miss rate and how they relate/compare across distance and game time (i.e. across quarters/periods). 
 
 
-
-<br>
-
-**Hints for second plot:** 
-
-- Use `minimal` theme and adjusted from there.
-- No padding on vertical axis.
-
-<br>
+#### Plot 1
 
 
+```{r M1-EX1-PLOT1, fig.width = 6, fig.height = 4}
 
+m1_ex1_p1 <- ggplot(shots, aes(as.factor(period), shot_distance)) + 
+  geom_boxplot(varwidth = TRUE) + 
+  facet_wrap( ~ event_type) + 
+  scale_x_discrete(
+      name = "Quarter/Period"
+    , labels = c("Q1", "Q2", "Q3", "Q4", "OT")
+  ) +
+  scale_y_continuous(
+      name = NULL
+    , labels = scales::unit_format(unit = "ft")
+    , limits = c(0, NA)
+    , breaks = seq(0, 40, 10)
+    , minor_breaks = NULL
+  ) +
+  ggtitle("Stephen Curry\n2014-2015") +
+  theme_minimal() +
+  theme(
+      plot.title = element_text(face = "bold", size = 14)
+    , strip.text = element_text(face = "bold", size = 12)
+    , axis.title.x = element_text(face = "bold", size = 12)
+    , panel.grid.major.x = element_blank()
+     
+  )
+
+m1_ex1_p1
+```
+
+
+
+**ADD DESCRIPTION**  
+
+<br> 
+
+#### Plot 2  
+```{r M1-EX1-PLOT2, fig.width = 6, fig.height = 4}
+ggplot(shots, aes(shot_distance, fill = event_type)) + 
+  geom_density(alpha = 0.3) + 
+  scale_fill_manual(values = c("green", "red")) + 
+  scale_x_continuous(
+      name = NULL
+    , breaks = seq(0, 40, 10)
+    , minor_breaks = NULL
+    , labels = scales::unit_format(unit = "ft")
+  ) +
+  scale_y_continuous(
+      name = NULL
+    , breaks = NULL
+    , limits = c(0, 0.081)
+    , expand = c(0, 0)) +
+  annotate(
+      "text"
+    , x = 3
+    , y = 0.04
+    , label  = "Made Shots"
+    , hjust = 0
+    , vjust = 0
+  ) +
+  annotate(
+      "text"
+    , x = 27
+    , y = 0.07
+    , label  = "Missed Shots"
+    , hjust = 0
+    , vjust = 0
+  ) + 
+  ggtitle("Stephen Curry\nShot Densitites (2014-2015)") +
+  theme_minimal() +
+  theme(
+      plot.title = element_text(size = 14)
+    , legend.position = "none"
+    , panel.grid.major.x = element_blank()
+  )
+```
 <br>
 
 ### Exercise 2
 
-Figures for this exercise have width 7 inches and height 7 inches.
-
-Using the `stephen_curry_shotdata_2014_15.txt` dataset replicate, as close as possible, the 2 graphics below. We have provided some skeleton code to get you started. You should start with the skeleton code and add to it to replicate the graphics. Where indicated, add comments to describe what the provided code is doing.
-
 After examining the two graphics, what do you conclude about Stephen Curry's shot selection (i.e. distance form hoop) for the 2014-2015 season? Out of the four graphics (two from Exercise 1 and two from Exercise 2), which graphic(s) do you find the most useful when trying to understand Stephen Curry's shot selection? If you find them all useful, explain what information is better communicated in each.
 
-```{r, eval = FALSE}
-# Provide comment!!
-court <- rasterGrob(readJPEG(source = "data/nbahalfcourt.jpg"),
+```{r M1-EX2-base}
+# picture of half a basketball court to show the location of shots 
+court <- grid::rasterGrob(jpeg::readJPEG(source = "img/nbahalfcourt.jpg"),
   width = unit(1, "npc"), height = unit(1, "npc")
 )
 
-ggplot() +
-  # Provide comment!!
+
+#create base plot with court as background
+basecourt <- ggplot() +
+  #insert half-court to be used as plot background 
   annotation_custom(
     grob = court,
     xmin = -250, xmax = 250,
@@ -100,11 +160,73 @@ ggplot() +
   ylim(-52, 418)
 ```
 
-<br>
 
-### Exercise 3
+#### Plot 1  
+```{r M1-EX2-PLOT1, fig.width = 7, fig.height = 7, dpi = 300, warning = FALSE}
+m1_ex2_p1 <-  basecourt +
+  geom_hex(
+      data = shots
+    , aes(loc_x, loc_y)
+    , bins = 20
+    , alpha = 0.7
+    , color = "grey"
+  ) +
+  scale_fill_gradient(
+      name = "Shot\nAttempts"
+    , low = "yellow"
+    , high = "red"
+    , breaks = c(0, 5, 10, 15)
+    , labels = c(0, 5, 10, "15+")
+    #set limit of shots to 0 to 15
+    , limits = c(0, 15)
+    # any shots above 15 will be 'na' so set color to high value = red
+    , na.value = "red"
+    ) +
+  ggtitle("Shot Chart\nStephen Curry") +
+  theme_void() +
+  theme(plot.title = element_text(face = "bold", size = 14))
 
-<br>
+m1_ex2_p1
+```
+```{r M1-EX2-PLOT2, fig.width = 7, fig.height = 7,  dpi = 300, warning = FALSE}
+m1_ex2_p2 <- basecourt +
+  geom_point(
+      data = shots
+    , aes(loc_x, loc_y, shape = event_type, color = event_type)
+    , fill = NA
+    , size = 5
+  ) +
+  scale_color_manual(
+      name = NULL
+    , values = c("green", "red")
+  ) +
+  scale_shape_manual(
+      name = NULL
+    , values = c(1, 4)
+  ) +
+  ggtitle("Shot Chart\nStephen Curry") +
+  theme_void() +
+  theme(
+      plot.title = element_text(face = "bold", size = 14)
+    , legend.position = "bottom"
+    , legend.text = element_text(size = 12)
+    )
+
+m1_ex2_p2
+```
+
+**ADD DESCRIPTION**
+
+```{r M1-EX2-PLOT1-wrap, fig.width = 7, fig.height = 3.62, warning = FALSE, dpi = 300, fig.show = 'asis'}
+m1_ex2_p1 + 
+  facet_wrap(~ event_type) +
+  theme(
+      plot.title = element_text(face = "bold", size = 14, margin = margin(0, 0, 10, 0))
+    , strip.text = element_text(face = "bold", size = 10)
+  )
+```
+
+### Exercise 3  
 
 ##### Part 1
 In 3-5 sentences, describe the core concept/idea and structure of the `ggplot2` package.
