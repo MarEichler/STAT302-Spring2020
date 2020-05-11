@@ -1,0 +1,129 @@
+---
+title: "M1 Midterm I"
+subtitle: "Data Visualization (STAT 302)"
+author: "YOUR NAME"
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+---
+
+```{r global_options, include=FALSE}
+knitr::opts_chunk$set(warning = FALSE, message = FALSE)
+```
+
+## Overview
+
+Exercises 1 & 2 ask you to replicate plots and provide some basic insight into what the graphics are communicating. Exercise 3 asks you to provide short descriptions/explanations regarding issues and concepts in `ggplot2`. 
+
+You are free to use any resource at your disposal such as notes, past labs, the internet, fellow students, instructor, TA, etc. However, do not simply copy and paste solutions. This is a chance for you to assess how well you have come to know `ggplot2` and determine if you are developing the practical skills needed to utilize `ggplot2` in the future. 
+
+## Datasets 
+
+We will need the instructor provided `stephen_curry_shotdata_2014_15.txt` dataset and the `nbahalfcourt.jpg`. The variables should be fairly straightforward after some inspection of the dataset, but we have provided a description of variables just in case.
+
+* `GAME_ID ` - Unique ID for each game during the season
+* `PLAYER_ID` - Unique player ID
+* `PLAYER_NAME` - Player's name
+* `TEAM_ID` - Unique team ID
+* `TEAM_NAME` - Team name          
+* `PERIOD` - Quarter or period of the game
+* `MINUTES_REMAINING` - Minutes remaining in quarter/period
+* `SECONDS_REMAINING` - Seconds remaining in quarter/period
+* `EVENT_TYPE` - `Missed Shot` or `Made Shot`
+* `SHOT_DISTANCE` - Shot distance in feet
+* `LOC_X` - X location of shot attempt according to tracking system
+* `LOC_Y` - Y location of shot attempt according to tracking system
+
+<br>
+
+```{r load-packages-data-seed, eval=FALSE}
+# Load package(s)
+
+# Read in the dataset(s)
+```
+
+<br>
+
+## Exercises
+
+Complete the following exercises.
+
+<br>
+
+### Exercise 1
+
+Figures for this exercise have width 6 inches and height 4 inches.
+
+Using the `stephen_curry_shotdata_2014_15.txt` dataset replicate, as close as possible, the 2 graphics below. After replicating the plots provide a summary of what the graphics indicate about Stephen Curry's shot selection (i.e. distance from hoop) and shot make/miss rate and how they relate/compare across distance and game time (i.e. across quarters/periods). 
+
+<br>
+
+
+
+<br>
+
+**Hints for second plot:** 
+
+- Use `minimal` theme and adjusted from there.
+- No padding on vertical axis.
+
+<br>
+
+
+
+<br>
+
+### Exercise 2
+
+Figures for this exercise have width 7 inches and height 7 inches.
+
+Using the `stephen_curry_shotdata_2014_15.txt` dataset replicate, as close as possible, the 2 graphics below. We have provided some skeleton code to get you started. You should start with the skeleton code and add to it to replicate the graphics. Where indicated, add comments to describe what the provided code is doing.
+
+After examining the two graphics, what do you conclude about Stephen Curry's shot selection (i.e. distance form hoop) for the 2014-2015 season? Out of the four graphics (two from Exercise 1 and two from Exercise 2), which graphic(s) do you find the most useful when trying to understand Stephen Curry's shot selection? If you find them all useful, explain what information is better communicated in each.
+
+```{r, eval = FALSE}
+# Provide comment!!
+court <- rasterGrob(readJPEG(source = "data/nbahalfcourt.jpg"),
+  width = unit(1, "npc"), height = unit(1, "npc")
+)
+
+ggplot() +
+  # Provide comment!!
+  annotation_custom(
+    grob = court,
+    xmin = -250, xmax = 250,
+    ymin = -52, ymax = 418
+  ) +
+  coord_fixed() +
+  xlim(250, -250) +
+  ylim(-52, 418)
+```
+
+<br>
+
+### Exercise 3
+
+<br>
+
+##### Part 1
+In 3-5 sentences, describe the core concept/idea and structure of the `ggplot2` package.
+
+<br>
+
+##### Part 2
+Describe each of the following:
+
+1. `ggplot()`
+2. `aes()`
+3. `geoms`
+4. `stats`
+5. `scales`
+6. `theme()`
+
+<br>
+
+##### Part 3
+Explain the difference between using this code `geom_point(aes(color = VARIABLE))` as opposed to using `geom_point(color = VARIABLE)`.
+
+<br>
