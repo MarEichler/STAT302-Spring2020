@@ -1,15 +1,16 @@
 ---
 title: "M2 Midterm II"
 subtitle: "Data Visualization (STAT 302)"
-author: "YOUR NAME"
+author: "Martha Eichlersmith"
+date: 2020-05-17
 output:
   html_document:
     toc: yes
     toc_float: yes
 ---
 
-```{r global_options, include=FALSE}
-knitr::opts_chunk$set(warning = FALSE, message = FALSE, fig.width = 6, fig.height = 6)
+```{r M2-setup, include=FALSE}
+knitr::opts_chunk$set(fig.width = 6, fig.height = 6)
 ```
 
 ## Overview
@@ -24,10 +25,17 @@ We will be using the `NH_2016pp_dem.txt` and `NH_2016pp_rep.txt` datasets. `NH_2
 
 <br>
 
-```{r load-packages-data-seed, eval=FALSE}
+```{r M2-load-packages, message = FALSE}
 # Load package(s)
+library(tidyverse)
+library(sf)
 
 # Read in the dataset(s)
+dem <- read_delim(file = "data/NH_2016pp_dem.txt", delim = "|") %>%
+  janitor::clean_names()
+rep <- read_delim(file = "data/NH_2016pp_rep.txt", delim = "|") %>%
+  janitor::clean_names()
+
 ```
 
 <br>
@@ -52,7 +60,7 @@ There are a few ways to build these maps, but I would suggest using a simple fea
 
 <br>
 
-```{r nh-map-data, eval=FALSE}
+```{r M2-nh-map-data}
 # Setup NH map dataset
 nh_dat <- maps::map(
   database = "county",
@@ -60,15 +68,87 @@ nh_dat <- maps::map(
   plot = FALSE,
   fill = TRUE
 ) %>%
-  # Provide comment!! 
+  #convert data into sf object (simple features)
   st_as_sf() %>%
-  # Provide comment!!
+  # remove state name, so that county name is only thing remaining
   mutate(ID = str_remove(ID, ".*,")) %>%
-  # Provide comment!!
+  # rename column to county 
   rename(county = ID)
 ```
 
-<br>
+```{r M2-EX1-test, eval=FALSE, echo=FALSE}
+ratio_df  <- left_join(dem, rep, "county") %>%
+  mutate(
+      dem_ratio = sanders/clinton
+    , rep_ratio = trump/kasich
+  ) %>%
+  select(county, dem_ratio, rep_ratio)
+
+nh_map <- left_join(ratio_df, nh_dat, by = "county")  %>%
+  pivot_longer(cols = c(dem_ratio, rep_ratio), names_to = "party", values_to = "ratio")
+
+
+ggplot(nh_map) +
+  geom_sf(aes(geometry = geom, fill = ratio)) +
+  scale_fill_gradient(
+      name = "name\nRatio"
+    , limits = c(1, 3)
+    , breaks = c(seq(1, 3, 0.5))
+    , low = "white"
+    , high = "black"
+  ) +
+  facet_wrap(~party) +
+  theme_void() +
+  labs(
+      title = paste(party, "Presidential Primary")
+    , subtitle = "New Hampshire (2016)"
+  ) +
+  theme(
+      legend.position = c(0, .93) 
+    , legend.justification = c(0, 1)
+    , legend.background = element_rect(fill = NA, color =NA)
+  )
+```
+
+```{r M2-EX1-data-wrangling}
+votes  <- left_join(dem, rep, "county")
+
+nh_primary <- left_join(votes, nh_dat, by = "county") 
+```
+
+```{r M2-EX1}
+nh_plot <- function(map_df, first, second, ratio_name, party){
+map_df %>%
+  mutate(ratio = map_df[[first]]/map_df[[second]]) %>%
+ggplot() +
+  geom_sf(
+      aes(geometry = geom, fill = ratio)
+    , color = "black"
+  ) +
+  scale_fill_gradient(
+      name = paste(ratio_name, "Ratio", sep="\n")
+    , limits = c(1, 3)
+    , breaks = c(seq(1, 3, 0.5))
+    , low = "white"
+    , high = "black"
+  ) + 
+  theme_void() +
+  labs(
+      title = paste(party, "Presidential Primary")
+    , subtitle = "New Hampshire (2016)"
+  ) +
+  theme(
+      legend.position = c(0, .90) 
+    , legend.justification = c(0, 1)
+    , legend.background = element_rect(fill = NA, color =NA)
+  )
+}
+
+p1 <- nh_plot(nh_primary, "sanders", "clinton", "Sanders to Clinton", "Democratic")
+p2 <- nh_plot(nh_primary, "trump", "kasich", "Trump to Kasich*", "Republican")
+
+cowplot::plot_grid(p1, p2, ncol=2)
+```
 
 ### Exercise 2
 
@@ -87,7 +167,84 @@ Create a fake/randomly generated dataset to approximate the graphic shown below.
 
 <br>
 
+```{r M2-EX2-data}
+set.seed(2468)
 
+
+
+random20 <- function(x.mean, x.sd, e.mean, e.sd, n, Group){
+  x <- rnorm(n, x.mean, x.sd)
+  y <- x + rnorm(n,e.mean, e.sd)
+  
+  df <- data.frame(
+      Group = c(rep(Group, n))
+    , x = x
+    , y = y
+  )
+  df
+}
+
+
+same_x_sd <- 2
+same_e_mean <- 0
+
+Low.df <- random20(
+    x.mean = 5
+  , x.sd   = same_x_sd
+  , e.mean = same_e_mean
+  , e.sd   = 1
+  , n      = 20
+  , Group   = "Low"
+  )
+
+Medium.df <- random20(
+    x.mean = 10
+  , x.sd   = same_x_sd
+  , e.mean = same_e_mean
+  , e.sd   = 2
+  , n      = 20
+  , Group   = "Medium"
+  )
+
+High.df <- random20(
+    x.mean = 15
+  , x.sd   = same_x_sd
+  , e.mean = same_e_mean
+  , e.sd   = 3
+  , n      = 20
+  , Group   = "High"
+  )
+
+data <- rbind(Low.df, Medium.df, High.df) %>%
+  mutate(Group = factor(Group, levels = c("High", "Medium", "Low")))
+
+
+#round up to a specific base 
+m_roundup <- function(x, base){
+mround_x <- base*round(x/base)
+if( mround_x - x < 0 ){
+  mroundup_x <- mround_x + base
+} else {
+  mroundup_x <- mround_x
+}
+return(mroundup_x)
+}
+
+axis_lim <- m_roundup(max(data$x, data$y), 5)
+
+```
+
+
+```{r M2-EX2-PLOT}
+ggplot(data, aes(x, y, color = Group, shape = Group, fill = Group)) + 
+  stat_ellipse(geom = "polygon", alpha = 0.2) +
+  geom_point(size = 3) +
+  scale_shape_manual(values = c(16, 17, 15)) +
+  theme_classic() +
+  xlim(NA, axis_lim)+
+  ylim(NA, axis_lim) +
+  theme(legend.position = c(0.2, 0.8) )
+```
 
 <br>
 
@@ -109,4 +266,53 @@ Build a dataset to replicate the graphic shown below. The dataset is not randoml
 
 Below are quick snapshots of the dataset you should create. The first is for rows 1 through 5, second is for rows 197 through 206, and the thrid is for rows 400 through 405. This should help in the construction of the dataset.  
 
-<br>
+```{r M2-EX3-data}
+base_seq <- seq(-1, 1, 0.01)
+n_seq <- length(base_seq)
+
+
+x <- rep(base_seq, n_seq)
+y <- sort(rep(base_seq, n_seq))
+
+cubic <- tibble(x, y) %>%
+  mutate( fill_amount = x^3 - y)
+
+```
+
+```{r, fig.height = 5.25, res = 100}
+
+func_cube <- function(x){x^3}
+
+ggplot(cubic, aes(x, y, fill = fill_amount)) + 
+  geom_raster() +
+  scale_fill_gradient2(
+      name = NULL
+    , high = "blue"
+    , low = "red"
+    , mid = "white"
+    , midpoint = 0
+  ) +
+  scale_x_continuous(expand = c(0, 0)) +
+  scale_y_continuous(expand = c(0, 0)) +
+  stat_function(
+      fun = func_cube
+    , color = "blue"
+    , alpha = 1
+    , size = 0.6
+  ) +
+  stat_function(
+      fun = func_cube
+    , color = "red"
+    , alpha = 0.5
+    , size = 0.6
+  ) +
+  annotate(
+    "text"
+    , x = 0
+    , y = 0.15
+    , label = "x^3"
+    , parse = TRUE
+    , size = 8
+  )
+```
+
