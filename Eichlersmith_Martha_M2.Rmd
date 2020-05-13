@@ -226,8 +226,7 @@ cubic_df <- tibble(x, y) %>%
 
 ```
 
-```{r, fig.height = 5.25, res = 100}
-
+```{r}
 func_cube <- function(x){x^3}
 
 ggplot(cubic_df, aes(x, y, fill = fill_amount)) + 
