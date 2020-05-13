@@ -57,3 +57,11 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 # L10 data wrangling
 ```{r child='Eichlersmith_Martha_L10.Rmd'}
 ```
+
+# M1 Midterm 1
+```{r child='Eichlersmith_Martha_M1.Rmd'}
+```
+
+# M2 Midterm 2
+```{r child='Eichlersmith_Martha_M2.Rmd'}
+```
