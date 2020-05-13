@@ -10,11 +10,6 @@ output:
 ---
 
 
-## Overview
-
-Exercises 1 & 2 ask you to replicate plots and provide some basic insight into what the graphics are communicating. Exercise 3 asks you to provide short descriptions/explanations regarding issues and concepts in `ggplot2`. 
-
-You are free to use any resource at your disposal such as notes, past labs, the internet, fellow students, instructor, TA, etc. However, do not simply copy and paste solutions. This is a chance for you to assess how well you have come to know `ggplot2` and determine if you are developing the practical skills needed to utilize `ggplot2` in the future. 
 
 ## Datasets 
 
@@ -89,8 +84,8 @@ m1_ex1_p1
 ```
 
 
+Unsurprisingly, there are the fewest shots during OT for both missed and made- which makes sense since not every game has an OT period.  For all periods, the made shots for each quarter each have a longer IQR and lower median than the missed shots.  The difference in the medians makes sense: larger distances make scoring points more difficult so shots made have a shorter distance that shots missed.  In addition, there seems to be some variety between the medians by quarter for made shot (Q2 is the highest, where Q4 is significantly lower and a huge drop-off in OT); compared to missed shots where each of the regular periods (Q1, Q2, Q3, Q4) have roughly the same median and OT is the only one noticeably different.  There also seems to be slightly less shots taken in the Q2 and Q4 than in Q1 and Q3 (both for shots made and shots missed) which may be do to playing time (some fancy baseball knowledge I don't know). 
 
-**ADD DESCRIPTION**  
 
 <br> 
 
@@ -126,7 +121,7 @@ ggplot(shots, aes(shot_distance, fill = event_type)) +
     , hjust = 0
     , vjust = 0
   ) + 
-  ggtitle("Stephen Curry\nShot Densitites (2014-2015)") +
+  ggtitle("Stephen Curry\nShot Densities (2014-2015)") +
   theme_minimal() +
   theme(
       plot.title = element_text(size = 14)
@@ -134,6 +129,9 @@ ggplot(shots, aes(shot_distance, fill = event_type)) +
     , panel.grid.major.x = element_blank()
   )
 ```
+  
+The density graph shows a similar trend from the box plots: made shots on average have a shorter distance than missed shots.  These densities are both bi-modal, peaking around 5f and again around 25 ft.  The made shots has the higher pick at 5ft (easier to make shots at a shorter distance) and the missed shots has a higher peak at 25 ft (harder to make shots at a longer distance.  Why is there this decrease in shots at the distances between?  The 3pt-line is at ~24ft, which is why there is a large increase in shots taken just around and above that height.  There is not much difference in difficult between taking a 23ft shot and a 25ft shot, but the former only gives you 2pts where the later gives you 3pts.  
+
 <br>
 
 ### Exercise 2
@@ -215,7 +213,7 @@ m1_ex2_p2 <- basecourt +
 m1_ex2_p2
 ```
 
-**ADD DESCRIPTION**
+To understand Curry's shot selection, the hex map is better as it shows the density of where he take shots.  The point chart gives the same idea (more shots around the hoop and outside the 3pt line), but it is difficult to tell the difference in density because there are so many points - definitely a case of over-plotting  The idea of looking at the location of the made and missed shots is interesting and I think it would be better to view a faceted hex map to compare shot density between made and missed shots.  The results mirror the info from above; there is a higher density of missed shots outside the 3pt line compared to made shots and a higher density of made shots around the hoop compared to missed shots.  
 
 ```{r M1-EX2-PLOT1-wrap, fig.width = 7, fig.height = 3.62, warning = FALSE, dpi = 300, fig.show = 'asis'}
 m1_ex2_p1 + 
@@ -231,21 +229,26 @@ m1_ex2_p1 +
 ##### Part 1
 In 3-5 sentences, describe the core concept/idea and structure of the `ggplot2` package.
 
+`ggplot2` is a data visualization tool that is more powerful and versatile than base R plots.  `ggplot2` allows the user to break down the plot into individual components that can be added, removed, or edited.  `ggplot2` is based on the Grammar of Graphics; which uses scales and layers to build a plot in a systematic fashion.  
 <br>
 
 ##### Part 2
 Describe each of the following:
 
-1. `ggplot()`
-2. `aes()`
-3. `geoms`
-4. `stats`
-5. `scales`
-6. `theme()`
+1. `ggplot()`: creates a new plot; this plot is blank without any other specifications
+2. `aes()`: maps data to visual aesthetics 
+3. `geoms`: specifies the type of geometric object to visualize (i.e. points, bars, etc.)
+4. `stats`: statistical transformation on the data rather than visualizing the data 
+5. `scales`: translation of data to visual properties 
+6. `theme()`: visual appearances that are not related to the data (i.e. background, legend position, title size, etc.)
 
 <br>
 
 ##### Part 3
 Explain the difference between using this code `geom_point(aes(color = VARIABLE))` as opposed to using `geom_point(color = VARIABLE)`.
 
-<br>
+`geom_point(aes(color = VARIABLE))`: This maps data to color based on value(s) of `VARIABLE`, e.g. if there are three levels of `VARIABLE`, the data will be mapped to three different color based on the level.  This option also automatically creates a legend to show which color is assigned to which level(s) of `VARIABLE`.  
+
+
+`geom_point(color = VARIABLE)`: This makes all points one color called `VARIABLE`.  No legend is created because there is no mapping from data to aesthetics.  
+
