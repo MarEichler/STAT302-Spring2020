@@ -7,6 +7,8 @@ output:
   html_document:
     toc: yes
     toc_float: yes
+editor_options: 
+  chunk_output_type: console
 ---
 
 ```{r M2-setup, include=FALSE}
@@ -48,17 +50,12 @@ Complete the following exercises.
 
 ### Exercise 1
 
-The figure for this exercise has width 6 inches and height 6 inches.
-
-Using the `NH_2016pp_dem.txt` and `NH_2016pp_rep.txt` datasets in conjunction with mapping data from the `maps` package replicate, as close as possible, the graphic below. Note the graphic is comprised of two plots displayed side-by-side. The plots both use the same shading scheme (i.e. scale limits and fill options). *Hint: You will have to use `gather()`, `left_join()`, and other data manipulation functions.*
+Using the `NH_2016pp_dem.txt` and `NH_2016pp_rep.txt` datasets in conjunction with mapping data from the `maps` package replicate, as close as possible, the graphic below. Note the graphic is comprised of two plots displayed side-by-side. The plots both use the same shading scheme (i.e. scale limits and fill options). *Hint: You will have to use `pivot_longer()`, `left_join()`, and other data manipulation functions.*
 
 **Background Information:** On Tuesday, February 9th 2016, New Hampshire held primaries for the Democratic and Republican Parties to apportion state delegates to nominate their respective party's presidential nominee. Bernie Sanders (D) and Donald Trump (R) had very good nights. They both won every county in New Hampshire within their respective party's primary. In the Democratic primary, Hillary Clinton was second in each county. In the Republican primary John Kasich was second in all but one county where he was in a virtual tie for second, but technically in third (thus the asterisk). The graphic below visualizes the ratio of the candidate with the highest vote total to the candidate with the second highest vote total in each county (a measure of strength for each county winner). The fact that we can replace first and second place with candidate names is simply a byproduct of how the primaries played out. Otherwise, the legend labels should have been "First to Second Ratio" or we might have implemented an alternative shading scheme.
 
 After replicating the graphic provide a summary of how the two primaries relate to one another. 
 
-There are a few ways to build these maps, but I would suggest using a simple features, `sf`, approach instead of the polygon approach provided in our book. We have previously used both. Getting the mapping data into an `sf` format ready to be used with `ggplot2` only requires a few steps and is done in the code provided below. Where indicated, **add comments** to describe what the provided code is doing --- for line of code directly below it.
-
-<br>
 
 ```{r M2-nh-map-data}
 # Setup NH map dataset
@@ -76,61 +73,66 @@ nh_dat <- maps::map(
   rename(county = ID)
 ```
 
-```{r M2-EX1-test, eval=FALSE, echo=FALSE}
-ratio_df  <- left_join(dem, rep, "county") %>%
-  mutate(
-      dem_ratio = sanders/clinton
-    , rep_ratio = trump/kasich
+```{r M2-EX1-func1}
+#looking at just rato of top 2
+nh_plot1 <- function(df, ratio_name, party_name){
+df %>%
+  pivot_longer(col = -county, names_to = "candidate", values_to = "votes") %>%
+  group_by(county) %>%
+  summarise(
+    ratio = max(votes) / nth(votes, n = 2, order_by = desc(votes))
   ) %>%
-  select(county, dem_ratio, rep_ratio)
-
-nh_map <- left_join(ratio_df, nh_dat, by = "county")  %>%
-  pivot_longer(cols = c(dem_ratio, rep_ratio), names_to = "party", values_to = "ratio")
-
-
-ggplot(nh_map) +
-  geom_sf(aes(geometry = geom, fill = ratio)) +
-  scale_fill_gradient(
-      name = "name\nRatio"
-    , limits = c(1, 3)
-    , breaks = c(seq(1, 3, 0.5))
-    , low = "white"
-    , high = "black"
-  ) +
-  facet_wrap(~party) +
-  theme_void() +
-  labs(
-      title = paste(party, "Presidential Primary")
-    , subtitle = "New Hampshire (2016)"
-  ) +
-  theme(
-      legend.position = c(0, .93) 
-    , legend.justification = c(0, 1)
-    , legend.background = element_rect(fill = NA, color =NA)
-  )
-```
-
-```{r M2-EX1-data-wrangling}
-votes  <- left_join(dem, rep, "county")
-
-nh_primary <- left_join(votes, nh_dat, by = "county") 
-```
-
-```{r M2-EX1}
-nh_plot <- function(map_df, first, second, ratio_name, party){
-map_df %>%
-  mutate(ratio = map_df[[first]]/map_df[[second]]) %>%
+  left_join(., nh_dat, by = "county") %>%
 ggplot() +
   geom_sf(
       aes(geometry = geom, fill = ratio)
-    , color = "black"
+    , color = "grey25"
   ) +
   scale_fill_gradient(
       name = paste(ratio_name, "Ratio", sep="\n")
     , limits = c(1, 3)
     , breaks = c(seq(1, 3, 0.5))
-    , low = "white"
-    , high = "black"
+    , low = "grey95"
+    , high = "grey5"
+  ) + 
+  theme_void() +
+  labs(
+      title = paste(party_name, "Presidential Primary")
+    , subtitle = "New Hampshire (2016)"
+  ) +
+  theme(
+      legend.position = c(0, .90) 
+    , legend.justification = c(0, 1)
+    , legend.background = element_rect(fill = NA, color =NA)
+  )
+}
+
+p1 <- nh_plot1(dem, "Sanders to Clinton", "Democratic")
+p2 <- nh_plot1(rep, "Trump to Kaisch*", "Republican")
+
+gridExtra::grid.arrange(p1, p2, ncol = 2, top = "Ratio between First and Second")
+```
+
+
+```{r M2-EX1-func2}
+#look at 2 specific people ratio 
+votes  <- left_join(dem, rep, "county")
+nh_primary <- left_join(votes, nh_dat, by = "county") 
+
+nh_plot2 <- function(map_df, name1, name2, ratio_name, party){
+map_df %>%
+  mutate(ratio = map_df[[name1]]/map_df[[name2]]) %>%
+ggplot() +
+  geom_sf(
+      aes(geometry = geom, fill = ratio)
+    , color = "grey25"
+  ) +
+  scale_fill_gradient(
+      name = paste(ratio_name, "Ratio", sep="\n")
+    , limits = c(1, 3)
+    , breaks = c(seq(1, 3, 0.5))
+    , low = "grey95"
+    , high = "grey5"
   ) + 
   theme_void() +
   labs(
@@ -144,128 +146,73 @@ ggplot() +
   )
 }
 
-p1 <- nh_plot(nh_primary, "sanders", "clinton", "Sanders to Clinton", "Democratic")
-p2 <- nh_plot(nh_primary, "trump", "kasich", "Trump to Kasich*", "Republican")
+p1 <- nh_plot2(nh_primary, "sanders", "clinton", "Sanders to Clinton", "Democratic")
+# ast not needed because looking at Trump:Kasich at each county
+p2 <- nh_plot2(nh_primary, "trump", "kasich", "Trump to Kasich", "Republican")
 
-cowplot::plot_grid(p1, p2, ncol=2)
+gridExtra::grid.arrange(p1, p2, ncol = 2, top = "Ratio between Specific Candidates")
 ```
+
+```{r}
+votes %>%
+  mutate(
+      ratio_rep = trump/kasich
+    , ratio_dem = sanders/clinton
+         ) %>%
+  select(county, ratio_rep, ratio_dem)
+
+```
+
+There is a larger margin of victory in the democratic primary in the bottom left county, and a larger margin of victory in the Rebulican primary in the bottom right hand sign.  This could mean that in these two counties there is very strong support for the lead candiate in the repsective parties.  For example, Rockingham has a very high Trump to Kasich ratio but the smallest Sanders to Clinton ratio.  This could mean that Republicans are Rockingham is very pro-Trump and in agreement; but the Democrats in this county do not have a consensus on a democratic candidate - is this because the county is so pro-Trump and more conservative?  
+
+
+
 
 ### Exercise 2
 
-The figure for this exercise has width 6 inches and height 6 inches.
-
-Create a fake/randomly generated dataset to approximate the graphic shown below. Since the dataset is fake your graphic will probably appear different than the one shown (unless you set the seed), but the plot's theme characteristics (titles, aesthetics, legend, etc... ) should be the same. 
-
-**Hints:**
-
-- Set the seed of the random number generator to 2468.
-- Generated 20 observations per group (60 total observations).
-- Generated each group's `x` values using a normal distribution for each group. Each group had a different mean, but all shared the same standard deviation.
-- Generated each group's `y` values by adding white noise (random error) from a normal distribution to the `x` values. Each group's white noise had mean 0, but each had a different standard deviation.
-- Set the coordinates to be equal and utilized a pre-set theme.
-- Note the order of plotting for the points and the ellipses. 
-
-<br>
+Create a fake/randomly generated dataset to approximate a scatterplot graphic shown. 
 
 ```{r M2-EX2-data}
 set.seed(2468)
+low_x <- rnorm(20, mean = 5,  sd = 2)
+med_x <- rnorm(20, mean = 10, sd = 2)
+hig_x <- rnorm(20, mean = 15, sd = 2)
 
+low_y <- low_x + rnorm(20, mean = 0, sd = 1)
+med_y <- med_x + rnorm(20, mean = 0, sd = 2)
+hig_y <- hig_x + rnorm(20, mean = 0, sd = 3)
 
-
-random20 <- function(x.mean, x.sd, e.mean, e.sd, n, Group){
-  x <- rnorm(n, x.mean, x.sd)
-  y <- x + rnorm(n,e.mean, e.sd)
-  
-  df <- data.frame(
-      Group = c(rep(Group, n))
-    , x = x
-    , y = y
+df <- tibble(
+    x = c(low_x, med_x, hig_x)
+  , y = c(low_y, med_y, hig_y)
+  , Group = c(
+      rep("Low", 20)
+    , rep("Medium", 20)
+    , rep("High", 20)
   )
-  df
-}
-
-
-same_x_sd <- 2
-same_e_mean <- 0
-
-Low.df <- random20(
-    x.mean = 5
-  , x.sd   = same_x_sd
-  , e.mean = same_e_mean
-  , e.sd   = 1
-  , n      = 20
-  , Group   = "Low"
-  )
-
-Medium.df <- random20(
-    x.mean = 10
-  , x.sd   = same_x_sd
-  , e.mean = same_e_mean
-  , e.sd   = 2
-  , n      = 20
-  , Group   = "Medium"
-  )
-
-High.df <- random20(
-    x.mean = 15
-  , x.sd   = same_x_sd
-  , e.mean = same_e_mean
-  , e.sd   = 3
-  , n      = 20
-  , Group   = "High"
-  )
-
-data <- rbind(Low.df, Medium.df, High.df) %>%
+) %>%
   mutate(Group = factor(Group, levels = c("High", "Medium", "Low")))
-
-
-#round up to a specific base 
-m_roundup <- function(x, base){
-mround_x <- base*round(x/base)
-if( mround_x - x < 0 ){
-  mroundup_x <- mround_x + base
-} else {
-  mroundup_x <- mround_x
-}
-return(mroundup_x)
-}
-
-axis_lim <- m_roundup(max(data$x, data$y), 5)
-
 ```
 
-
 ```{r M2-EX2-PLOT}
-ggplot(data, aes(x, y, color = Group, shape = Group, fill = Group)) + 
+ggplot(df, aes(x, y, color = Group, shape = Group, fill = Group)) + 
   stat_ellipse(geom = "polygon", alpha = 0.2) +
   geom_point(size = 3) +
   scale_shape_manual(values = c(16, 17, 15)) +
   theme_classic() +
-  xlim(NA, axis_lim)+
-  ylim(NA, axis_lim) +
-  theme(legend.position = c(0.2, 0.8) )
+  scale_x_continuous(breaks = seq(0, 20, 5)) +
+  scale_y_continuous(breaks = seq(0, 20, 5)) +
+  theme(legend.position = c(0.1, 0.9) )
 ```
 
 <br>
 
 ### Exercise 3
 
-The figure for this exercise has width 6 inches and height 6 inches.
+Create a data set and a graphic based on `tile`'s for each `x` and `y` value.  
 
-Build a dataset to replicate the graphic shown below. The dataset is not randomly generated in this case so an extremely close replication should be possible. 
-
-**Hints:**
-
-* The dataset will have three variables: `x`, `y`, and `fill_amount`.
-* The graphic works by creating a small **tile** for each `x` and `y` value along the indicated axes and fills the title according to the value supplied by `fill_amount`.
-* The structure of the dataset is displayed below. There are 40,401 observations/rows (should realize that each row corresponds to one small tile). By examining the displayed observations it should be clear that `x` values go from -1 to 1 by steps of 0.01. It might not be as obvious, but `y` values also go from -1 to 1 by steps of 0.01. Should make use of `seq()` and `rep()` to create these two columns of the dataset. Examination of the displayed observations and the provided graphic should make clear that the `fill` for each tile is either calculated using $x^3-y$ or $y-x^3$ (should be able to determine which one). 
 * The **function** can be drawn using the equation provided on the graphic. The color of the **function** is a 50-50 mix of red and blue.
-* Getting the superscript on the added text will require setting an option of `parse = TRUE` in the appropriate function/layer. 
-
-<br>
-
-Below are quick snapshots of the dataset you should create. The first is for rows 1 through 5, second is for rows 197 through 206, and the thrid is for rows 400 through 405. This should help in the construction of the dataset.  
-
+ 
 ```{r M2-EX3-data}
 base_seq <- seq(-1, 1, 0.01)
 n_seq <- length(base_seq)
@@ -274,7 +221,7 @@ n_seq <- length(base_seq)
 x <- rep(base_seq, n_seq)
 y <- sort(rep(base_seq, n_seq))
 
-cubic <- tibble(x, y) %>%
+cubic_df <- tibble(x, y) %>%
   mutate( fill_amount = x^3 - y)
 
 ```
@@ -283,7 +230,7 @@ cubic <- tibble(x, y) %>%
 
 func_cube <- function(x){x^3}
 
-ggplot(cubic, aes(x, y, fill = fill_amount)) + 
+ggplot(cubic_df, aes(x, y, fill = fill_amount)) + 
   geom_raster() +
   scale_fill_gradient2(
       name = NULL
@@ -296,14 +243,7 @@ ggplot(cubic, aes(x, y, fill = fill_amount)) +
   scale_y_continuous(expand = c(0, 0)) +
   stat_function(
       fun = func_cube
-    , color = "blue"
-    , alpha = 1
-    , size = 0.6
-  ) +
-  stat_function(
-      fun = func_cube
-    , color = "red"
-    , alpha = 0.5
+    , color = rgb(.5*255, 0, .5*255, maxColorValue = 255)
     , size = 0.6
   ) +
   annotate(
