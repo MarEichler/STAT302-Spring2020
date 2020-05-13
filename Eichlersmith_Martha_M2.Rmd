@@ -15,11 +15,6 @@ editor_options:
 knitr::opts_chunk$set(fig.width = 6, fig.height = 6)
 ```
 
-## Overview
-
-This lab focuses on the construction and manipulation of datasets to create a desired graphic. Manipulating/preparing data to be visualized is typically the rule and is almost entirely unavoidable when constructing somewhat complex graphics. This includes being able to create/generate fake data when attempting to depict conceptual or foundational ideas. The lab also tests your ability to utilize `ggplot2` functions that have not been directly used in previous labs. By having you use unfamiliar functions we are gauging your ability to use the documentation and your understanding of the basic structure of functions in `ggplot2`. 
-
-You are free to use any resource at your disposal such as notes, past labs, the internet, fellow students, instructor, TA, etc. However, do not simply copy and paste solutions. This is a chance for you to assess how well you have come to know `ggplot2` and determine if you are developing the practical skills needed to utilize `ggplot2` in the future. 
 
 ## Datasets 
 

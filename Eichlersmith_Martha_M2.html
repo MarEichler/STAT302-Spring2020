@@ -1518,11 +1518,6 @@ div.tocify {
 </div>
 
 
-<div id="overview" class="section level2">
-<h2>Overview</h2>
-<p>This lab focuses on the construction and manipulation of datasets to create a desired graphic. Manipulating/preparing data to be visualized is typically the rule and is almost entirely unavoidable when constructing somewhat complex graphics. This includes being able to create/generate fake data when attempting to depict conceptual or foundational ideas. The lab also tests your ability to utilize <code>ggplot2</code> functions that have not been directly used in previous labs. By having you use unfamiliar functions we are gauging your ability to use the documentation and your understanding of the basic structure of functions in <code>ggplot2</code>.</p>
-<p>You are free to use any resource at your disposal such as notes, past labs, the internet, fellow students, instructor, TA, etc. However, do not simply copy and paste solutions. This is a chance for you to assess how well you have come to know <code>ggplot2</code> and determine if you are developing the practical skills needed to utilize <code>ggplot2</code> in the future.</p>
-</div>
 <div id="datasets" class="section level2">
 <h2>Datasets</h2>
 <p>We will be using the <code>NH_2016pp_dem.txt</code> and <code>NH_2016pp_rep.txt</code> datasets. <code>NH_2016pp_dem.txt</code> contains the raw vote count by county for each candidate for the 2016 New Hampshire Democratic presidential primary. <code>NH_2016pp_rep.txt</code> contains the raw vote count by county for each candidate for the 2016 New Hampshire Republican presidential primary.</p>
@@ -1559,7 +1554,10 @@ nh_dat &lt;- maps::map(
   # remove state name, so that county name is only thing remaining
   mutate(ID = str_remove(ID, &quot;.*,&quot;)) %&gt;%
   # rename column to county 
-  rename(county = ID)</code></pre>
+  rename(county = ID)
+
+#check the coord reference system 
+#sf::st_crs(nh_dat)</code></pre>
 <pre class="r"><code>#looking at just rato of top 2
 nh_plot1 &lt;- function(df, ratio_name, party_name){
 df %&gt;%
