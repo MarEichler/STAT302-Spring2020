@@ -71,6 +71,9 @@ nh_dat <- maps::map(
   mutate(ID = str_remove(ID, ".*,")) %>%
   # rename column to county 
   rename(county = ID)
+
+#check the coord reference system 
+#sf::st_crs(nh_dat)
 ```
 
 ```{r M2-EX1-func1}
