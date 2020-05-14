@@ -18,32 +18,32 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 [Lab 08](#l08-positioning)
 
 # L01 ggplot overview
-```{r child='Eichlersmith_Martha_L01.Rmd'}
+```{r child='Eichlersmith_Martha_L01.Rmd', cache=TRUE}
 ```
 
 
 # L02 aesthetics  
-```{r child='Eichlersmith_Martha_L02.Rmd'}
+```{r child='Eichlersmith_Martha_L02.Rmd', cache=TRUE}
 ```
 
 # L03 categories & geom_smooth 
-```{r child='Eichlersmith_Martha_L03.Rmd'}
+```{r child='Eichlersmith_Martha_L03.Rmd', cache=TRUE}
 ```
 
 # L04 geom_text & annotation
-```{r child='Eichlersmith_Martha_L04.Rmd'}
+```{r child='Eichlersmith_Martha_L04.Rmd', cache=TRUE}
 ```
 
 # L05 2d surface & geospatial 
-```{r child='Eichlersmith_Martha_L05.Rmd'}
+```{r child='Eichlersmith_Martha_L05.Rmd', cache=TRUE}
 ```
 
 # L06 errorsbars & layers
-```{r child='Eichlersmith_Martha_L06.Rmd'}
+```{r child='Eichlersmith_Martha_L06.Rmd', cache=TRUE}
 ```
 
 # L07 scales, axes, & legends
-```{r child='Eichlersmith_Martha_L07.Rmd'}
+```{r child='Eichlersmith_Martha_L07.Rmd', cache=TRUE}
 ```
 
 # L08 positioning
