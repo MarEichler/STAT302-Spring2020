@@ -1,22 +1,27 @@
 library(shiny)
 library(tidyverse)
 
+cdc <- read_delim(file = "cdc.txt", delim = "|") %>%
+  mutate(genhlth = factor(genhlth,
+                          levels = c("excellent", "very good", "good", "fair", "poor"),
+                          labels = c("Excellent", "Very Good", "Good", "Fair", "Poor")
+  ))
+
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Hello Shiny!"),
+  titlePanel(NULL),
   
-  # Sidebar layout with input and output definitions ----
   sidebarLayout(
+    position = "right", 
     
-    # Sidebar panel for inputs ----
     sidebarPanel(
       
       # Input: Slider for the number of bins ----
       sliderInput(inputId = "bins",
                   label = "Number of bins:",
-                  min = 1,
+                  min = 5,
                   max = 50,
                   value = 30)
       
@@ -35,36 +40,31 @@ ui <- fluidPage(
 # Define server logic required to draw a histogram ----
 server <- function(input, output) {
   
-  # Histogram of the Old Faithful Geyser Data ----
-  # with requested number of bins
-  # This expression that generates a histogram is wrapped in a call
-  # to renderPlot to indicate that:
-  #
-  # 1. It is "reactive" and therefore should be automatically
-  #    re-executed when inputs (input$bins) change
-  # 2. Its output type is a plot
   output$distPlot <- renderPlot({
     
     
-    ggplot(faithful, aes(waiting)) + 
+    ggplot(cdc, aes(weight, fill = gender)) + 
       geom_histogram(
-          color = "white"
-        , fill = "#75AADB"
+          color = "black"
         , bins = input$bins
-      )+
-      labs(
-          x = "Waiting time to next erruption (in min)"
-        , title = "Histogram of waiting times"
-        , y = NULL
       ) +
-      theme(plot.title = element_text(size = 20))
+      scale_fill_discrete(
+          name = "Gender"
+        , labels = c("Female", "Male")
+      ) +
+      labs(
+          x = "Weight in Pounds"
+        , title = "CDC BRFSS Histogram of Weight Grouped by Gender"
+      ) +
+      theme_minimal() + 
+      theme(
+          plot.title = element_text(size = 20)
+        , legend.position = c(0.55, 0.6)
+        , legend.justification = c(1, 0)
+        , legend.background = element_rect(fill = NA, color = NA)
+      )
     
-#TEMPLATE HISTOGRAM EXAMPLE 
-#    x    <- faithful$waiting
-#    bins <- seq(min(x), max(x), length.out = input$bins + 1)
-#    hist(x, breaks = bins, col = "#75AADB", border = "white",
-#         xlab = "Waiting time to next eruption (in mins)",
-#         main = "Histogram of waiting times")
+
     
   })
   
