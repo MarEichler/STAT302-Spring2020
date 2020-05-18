@@ -6,7 +6,7 @@ library(tidyverse)
 ui <- fluidPage(
   
   # App title ----
-  titlePanel("Hello Shiny!"),
+  titlePanel("Hello World!"),
   
   # Sidebar layout with input and output definitions ----
   sidebarLayout(
@@ -17,7 +17,7 @@ ui <- fluidPage(
       # Input: Slider for the number of bins ----
       sliderInput(inputId = "bins",
                   label = "Number of bins:",
-                  min = 1,
+                  min = 5,
                   max = 50,
                   value = 30)
       
@@ -49,15 +49,16 @@ server <- function(input, output) {
     
     ggplot(faithful, aes(waiting)) + 
       geom_histogram(
-          color = "white"
+          color = "orange"
         , fill = "#75AADB"
         , bins = input$bins
       )+
       labs(
           x = "Waiting time to next erruption (in min)"
         , title = "Histogram of waiting times"
-        , y = NULL
+        , y = "Frequency"
       ) +
+      theme_classic() + 
       theme(plot.title = element_text(size = 20))
     
 #TEMPLATE HISTOGRAM EXAMPLE 
