@@ -10,7 +10,7 @@ ui <- fluidPage(
   sidebarLayout(position = "left",
                 sidebarPanel("Check out my Guinea Pigs"),
                 mainPanel(
-                  h1("Daffodil and Bloosom", align = "center"),
+                  h1("Daffodil and Blossom", align = "center"),
                   p("These are my two guinea pigs.  I adopted them in January 2019.", style = "font-family: 'times'; font-si16pt"), 
                   strong("They are are very cute."),
                   br(),
