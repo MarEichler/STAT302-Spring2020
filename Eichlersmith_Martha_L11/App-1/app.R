@@ -1,4 +1,5 @@
 library(shiny)
+library(tidyverse)
 
 # Define UI for app that draws a histogram ----
 ui <- fluidPage(
@@ -44,12 +45,26 @@ server <- function(input, output) {
   # 2. Its output type is a plot
   output$distPlot <- renderPlot({
     
-    x    <- faithful$waiting
-    bins <- seq(min(x), max(x), length.out = input$bins + 1)
     
-    hist(x, breaks = bins, col = "#75AADB", border = "white",
-         xlab = "Waiting time to next eruption (in mins)",
-         main = "Histogram of waiting times")
+    ggplot(faithful, aes(waiting)) + 
+      geom_histogram(
+          color = "white"
+        , fill = "#75AADB"
+        , bins = input$bins
+      )+
+      labs(
+          x = "Waiting time to next erruption (in min)"
+        , title = "Histogram of waiting times"
+        , y = NULL
+      ) +
+      theme(plot.title = element_text(size = 20))
+    
+#TEMPLATE HISTOGRAM EXAMPLE 
+#    x    <- faithful$waiting
+#    bins <- seq(min(x), max(x), length.out = input$bins + 1)
+#    hist(x, breaks = bins, col = "#75AADB", border = "white",
+#         xlab = "Waiting time to next eruption (in mins)",
+#         main = "Histogram of waiting times")
     
   })
   
