@@ -1,0 +1,33 @@
+---
+title: "L11 Shiny I"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-05-24
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r L11-setup, include=FALSE}
+knitr::opts_chunk$set()
+library(shiny)
+```
+
+
+## Exercies 
+
+### Exercies 1 
+
+Work through [lesson 1](https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/) and [lesson 2](https://shiny.rstudio.com/tutorial/written-tutorial/lesson2/) which both contain an exercise for practice. In the case of lesson 1’s exercise you should have replaced the base R graphics code with `ggplot` code (i.e. make the histogram using `ggplot2`). Submit your shiny applications for lessons 1 and 2.
+
+
+```{r}
+
+source("examples/app.R")
+```
+
+
+
