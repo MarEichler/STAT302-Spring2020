@@ -47,21 +47,25 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 ```
 
 # L08 positioning
-```{r child='Eichlersmith_Martha_L08.Rmd'}
+```{r child='Eichlersmith_Martha_L08.Rmd', cache=TRUE}
 ```
 
 # L09 themes
-```{r child='Eichlersmith_Martha_L09.Rmd'}
+```{r child='Eichlersmith_Martha_L09.Rmd', cache=TRUE}
 ```
 
 # L10 data wrangling
-```{r child='Eichlersmith_Martha_L10.Rmd'}
+```{r child='Eichlersmith_Martha_L10.Rmd', cache=TRUE}
 ```
 
 # M1 Midterm 1
-```{r child='Eichlersmith_Martha_M1.Rmd'}
+```{r child='Eichlersmith_Martha_M1.Rmd', cache=TRUE}
 ```
 
 # M2 Midterm 2
-```{r child='Eichlersmith_Martha_M2.Rmd'}
+```{r child='Eichlersmith_Martha_M2.Rmd', cache = TRUE}
+```
+
+# L11 Shiny 1
+```{r child='Eichlersmith_Martha_L11.Rmd', cache=TRUE, eval = FALSE}
 ```
