@@ -7,3 +7,5 @@
 #.RData
 .rdx
 .rdb
+index_cache/
+index_files/
