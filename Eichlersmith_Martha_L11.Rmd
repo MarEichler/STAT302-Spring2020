@@ -11,10 +11,20 @@ editor_options:
   chunk_output_type: console
 ---
 
+<style>
+img.imgshadow{
+    box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
+  }
+img.rounded-corners {
+  border-radius: 5px;
+  border: 1px solid rgba(0, 0, 0, 0.5);
+}
+}
+</style>
+
 ```{r L11-setup, include=FALSE}
-knitr::opts_chunk$set()
-library(shiny)
 ```
+
 
 
 ## Exercies 
@@ -24,7 +34,39 @@ library(shiny)
 Work through [lesson 1](https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/) and [lesson 2](https://shiny.rstudio.com/tutorial/written-tutorial/lesson2/) which both contain an exercise for practice. In the case of lesson 1’s exercise you should have replaced the base R graphics code with `ggplot` code (i.e. make the histogram using `ggplot2`). Submit your shiny applications for lessons 1 and 2.
 
 
+#### Lesson 1
+```{r, code = readLines('Eichlersmith_Martha_L11/lesson_1/app.R'), eval = FALSE}
+```
 
 
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L11/lesson_1/static.png">
 
+
+#### Lesson 2
+```{r, code = readLines('Eichlersmith_Martha_L11/lesson_2/app.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L11/lesson_2/static.png">
+
+
+### Exercise 2  
+Create a `shiny` for the CDC data where the input is the number of bins and the output is a histogram of weight by gender.  
+```{r, code = readLines('Eichlersmith_Martha_L11/CDC_weight/app.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L11/CDC_weight/static.png">
+
+Arend's app (on shinnyapps server):
+```{r, out.width="100%"}
+#{r, out.width = "100%"}
+knitr::include_app("https://amkuyper.shinyapps.io/CDCapp/", height = "500px")
+```
+
+### Exercise 3
+Create an app with a state or country; explore options for text, images, and HTML tags.  
+
+```{r, code = readLines('Eichlersmith_Martha_L11/MN_map/app.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L11/MN_map/static.png">
 
