@@ -3,11 +3,4 @@
 .RData
 .Ruserdata
 
-#cache docs
-#.RData
-.rdx
-.rdb
-index_cache/
-index_files/
-__packages
-index_files/figure-html/
+img/LeBron_James.png
