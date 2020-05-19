@@ -18,54 +18,53 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 [Lab 08](#l08-positioning)
 
 # L01 ggplot overview
-```{r child='Eichlersmith_Martha_L01.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L01.Rmd'}
 ```
 
-
 # L02 aesthetics  
-```{r child='Eichlersmith_Martha_L02.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L02.Rmd'}
 ```
 
 # L03 categories & geom_smooth 
-```{r child='Eichlersmith_Martha_L03.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L03.Rmd'}
 ```
 
 # L04 geom_text & annotation
-```{r child='Eichlersmith_Martha_L04.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L04.Rmd'}
 ```
 
 # L05 2d surface & geospatial 
-```{r child='Eichlersmith_Martha_L05.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L05.Rmd'}
 ```
 
 # L06 errorsbars & layers
-```{r child='Eichlersmith_Martha_L06.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L06.Rmd'}
 ```
 
 # L07 scales, axes, & legends
-```{r child='Eichlersmith_Martha_L07.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L07.Rmd'}
 ```
 
 # L08 positioning
-```{r child='Eichlersmith_Martha_L08.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L08.Rmd'}
 ```
 
 # L09 themes
-```{r child='Eichlersmith_Martha_L09.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L09.Rmd'}
 ```
 
 # L10 data wrangling
-```{r child='Eichlersmith_Martha_L10.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_L10.Rmd'}
 ```
 
 # M1 Midterm 1
-```{r child='Eichlersmith_Martha_M1.Rmd', cache=TRUE}
+```{r child='Eichlersmith_Martha_M1.Rmd'}
 ```
 
 # M2 Midterm 2
-```{r child='Eichlersmith_Martha_M2.Rmd', cache = TRUE}
+```{r child='Eichlersmith_Martha_M2.Rmd'}
 ```
 
 # L11 Shiny 1
-```{r child='Eichlersmith_Martha_L11.Rmd', cache=TRUE, eval = FALSE}
+```{r child='Eichlersmith_Martha_L11.Rmd'}
 ```
