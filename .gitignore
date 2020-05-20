@@ -4,11 +4,11 @@
 .Ruserdata
 img/LeBron_James.png
 #CACHE FILES
-index_cache/
-index_files/
+index_cache
+index_files
 *.RData
 *.rds
 *.rdbx
 __packages
 index_files/**/*.png
-Eichlersmith_Martha_L12_cache
+
