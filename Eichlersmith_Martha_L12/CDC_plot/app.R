@@ -106,10 +106,9 @@ server <- function(input, output) {
   output$plot <- renderPlot({
     
     #other option 
-    #var_hist <- case_when(
-    #  input$var_x == "Actual Weight" ~ pull(cdc, weight)
-    #)
+    #var_hist <- case_when(input$var_x == "Actual Weight" ~ pull(cdc, weight))
     
+    #x_labe. <- case_when(input$var_x == "Actual Weight" ~ "Actual Weight in Pounds")
     
     fill <- cdc[[input$fill_var]]
     fill_name <- names(fill_names)[fill_names == input$fill_var]
