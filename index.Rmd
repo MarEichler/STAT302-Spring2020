@@ -68,3 +68,7 @@ These are the projects and labs completed for Data Visualization (STAT 302) - Sp
 # L11 Shiny 1
 ```{r child='Eichlersmith_Martha_L11.Rmd'}
 ```
+
+# L12 Shiny 2
+```{r child='Eichlersmith_Martha_L12.Rmd'}
+```
