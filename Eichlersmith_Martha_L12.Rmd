@@ -20,9 +20,9 @@ htmltools::includeHTML("image_format.html")
 ```
 
 
-## Exercies 
+## Exercises  
 
-### Exercies 1 
+### Exercise 1 
 
 Work through [lesson 3](https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/) and [lesson 4](https://shiny.rstudio.com/tutorial/written-tutorial/lesson2/) which both contain an exercise for practice. In this case, the exercise for lesson 4 simply builds directly upon lesson 3’s exercise. Submit one shiny app that corresponds with the completion of the exercises for lessons 3 and 4.
 
@@ -42,16 +42,19 @@ runApp('Eichlersmith_Martha_L12/lesson_4', display.mode = "showcase")
 
 ### Exercise 2  
 Create a `shiny` for the CDC data where the input is the number of bins and variable and the output is a histogram of weight by the given variable.    
-```{r l12-ex2-code, code = readLines('Eichlersmith_Martha_L12/CDC_weight/app.R'), eval = FALSE}
+```{r l12-ex2-code, code = readLines('Eichlersmith_Martha_L12/CDC_plot/app.R'), eval = FALSE}
 ```
 
-<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L12/CDC_weight/static.png">  
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L12/CDC_plot/static.png">  
 <br>
 
-Arend's app (on shinnyapps server):
+  
+This app can be accessed at 
+<a href="https://mareichler-nw.shinyapps.io/cdc_plot/" target = "_blank" >mareichler-nw.shinyapps.io/cdc_plot/</a>
+; it is also embedded below.  
 ```{r L12-ex2-url-app, out.width="100%"}
 #{r, out.width = "100%"}
-knitr::include_app("https://amkuyper.shinyapps.io/CDC_challenge_L12/", height = "500px")
+knitr::include_app("https://mareichler-nw.shinyapps.io/cdc_plot/", height = "600px")
 ```
   
 
