@@ -1692,6 +1692,11 @@ server &lt;- function(input, output) {
 #PLOT OUTPUT   
   output$plot &lt;- renderPlot({
     
+    #other option 
+    #var_hist &lt;- case_when(input$var_x == &quot;Actual Weight&quot; ~ pull(cdc, weight))
+    
+    #x_labe. &lt;- case_when(input$var_x == &quot;Actual Weight&quot; ~ &quot;Actual Weight in Pounds&quot;)
+    
     fill &lt;- cdc[[input$fill_var]]
     fill_name &lt;- names(fill_names)[fill_names == input$fill_var]
     
