@@ -1,0 +1,10 @@
+name: cdc_plot
+title:
+username:
+account: mareichler-nw
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 2332521
+bundleId: 3171887
+url: https://mareichler-nw.shinyapps.io/cdc_plot/
+when: 1590003756.54531
