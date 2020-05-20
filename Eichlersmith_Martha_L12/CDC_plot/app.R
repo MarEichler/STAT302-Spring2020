@@ -165,3 +165,6 @@ server <- function(input, output) {
 } #end of server 
 
 shinyApp(ui = ui, server = server)
+
+# rsconnect::deployApp('Eichlersmith_Martha_L12/CDC')
+ 
