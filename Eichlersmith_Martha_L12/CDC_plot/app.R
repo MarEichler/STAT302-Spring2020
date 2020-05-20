@@ -50,7 +50,8 @@ ui <- fluidPage(
                       "Actual Weight" = "weight"
                     , "Desired Weight" = "wtdesire"
                     , "Height" = "height"
-                  ),  selected = "weight"),
+                  ),  selected = "weight"
+          ), #end of select input 
       
       
       sliderInput(inputId = "bins",
@@ -59,7 +60,7 @@ ui <- fluidPage(
                   max = 50,
                   value = 30,
                   animate = animationOptions(interval = 1000, loop = FALSE)
-                  ), 
+        ),  #end of slider input 
       
       radioButtons("fill_var", label = "Select Fill/Legend Variable", 
                    choices = list(
@@ -69,9 +70,10 @@ ui <- fluidPage(
                      , "Smoked 100 Cigarettes" = "smoke100"
                      , "Gender" = "gender"
                      , "None" = "None"
-                     ), selected = "genhlth")
+                     ), selected = "genhlth"
+          ) #end of radio buttons 
       
-    ),
+    ), #end of side bar panel 
     
     # Main panel for displaying outputs ----
     mainPanel(
@@ -102,6 +104,12 @@ server <- function(input, output) {
 
 #PLOT OUTPUT   
   output$plot <- renderPlot({
+    
+    #other option 
+    #var_hist <- case_when(
+    #  input$var_x == "Actual Weight" ~ pull(cdc, weight)
+    #)
+    
     
     fill <- cdc[[input$fill_var]]
     fill_name <- names(fill_names)[fill_names == input$fill_var]
@@ -166,5 +174,5 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 
-# rsconnect::deployApp('Eichlersmith_Martha_L12/CDC')
+# rsconnect::deployApp('Eichlersmith_Martha_L12/CDC_plot')
  
