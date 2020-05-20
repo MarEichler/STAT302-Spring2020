@@ -1,0 +1,57 @@
+---
+title: "L12 Shiny II"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-05-24
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r L11-setup, include=FALSE, message = FALSE}
+library(knitr)
+```
+
+```{r, echo=FALSE}
+htmltools::includeHTML("image_format.html")
+```
+
+
+## Exercies 
+
+### Exercies 1 
+
+Work through [lesson 3](https://shiny.rstudio.com/tutorial/written-tutorial/lesson1/) and [lesson 4](https://shiny.rstudio.com/tutorial/written-tutorial/lesson2/) which both contain an exercise for practice. In this case, the exercise for lesson 4 simply builds directly upon lesson 3’s exercise. Submit one shiny app that corresponds with the completion of the exercises for lessons 3 and 4.
+
+
+```{r, code = readLines('Eichlersmith_Martha_L12/lesson_34/app.R'), eval = FALSE}
+```
+
+```{r, eval = FALSE, echo = TRUE}
+runApp('Eichlersmith_Martha_L12/lesson_4', display.mode = "showcase")
+```
+
+
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L12/lesson_34/static.png">  
+<br>
+
+
+### Exercise 2  
+Create a `shiny` for the CDC data where the input is the number of bins and variable and the output is a histogram of weight by the given variable.    
+```{r, code = readLines('Eichlersmith_Martha_L12/CDC_weight/app.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L12/CDC_weight/static.png">  
+<br>
+
+Arend's app (on shinnyapps server):
+```{r, out.width="100%"}
+#{r, out.width = "100%"}
+knitr::include_app("https://amkuyper.shinyapps.io/CDC_challenge_L12/", height = "500px")
+```
+  
+
