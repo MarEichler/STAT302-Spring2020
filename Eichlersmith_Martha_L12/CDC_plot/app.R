@@ -173,5 +173,5 @@ server <- function(input, output) {
 
 shinyApp(ui = ui, server = server)
 
-# rsconnect::deployApp('Eichlersmith_Martha_L12/CDC_plot')
+# rsconnect::deployApp('Eichlersmith_Martha_L12/CDC_plot', account = "mareichler-nw")
  
