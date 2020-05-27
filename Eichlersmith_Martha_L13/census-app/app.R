@@ -1,6 +1,11 @@
 #lesson 5
+library(shiny)
 library(maps)
 library(tidyverse)
+library(tools)
+library(rgeos)
+library(maptools)
+library(statebins)
 source("func_statemap.R")
 source("func_countymap.R")
 source("func_binmap.R")
@@ -96,3 +101,5 @@ server <- function(input, output) {
 
 # Run app ----
 shinyApp(ui, server)
+
+## rsconnect::deployApp('Eichlersmith_Martha_L13/census-app', account = "mareichler-nw")
