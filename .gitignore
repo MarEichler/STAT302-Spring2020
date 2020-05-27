@@ -11,4 +11,4 @@ index_files
 *.rdbx
 __packages
 index_files/**/*.png
-
+*.zip
