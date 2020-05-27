@@ -21,9 +21,11 @@ county_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, pe
     coord_map("conic", lat0=30) +
     theme_void() +
     theme(
-      plot.title = element_text(size = 24, hjust = 0.5)
-      , legend.title = element_text(size = 16)
-      , legend.text = element_text(size = 12)
+      plot.title = element_text(size = 30, hjust = 0.5)
+      , legend.title = element_text(size = 20)
+      , legend.text = element_text(size = 14)
+      , legend.key.width = unit(.8, "cm")
+      , legend.key.height = unit(.8, "cm")
     )
 }
 
