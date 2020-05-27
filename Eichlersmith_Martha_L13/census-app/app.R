@@ -44,7 +44,7 @@ ui <- fluidPage(
         information from the 2010 US Census."),
             
             selectInput("area", label = "Select a state or the contiguous 48 states to display", 
-                        choices = choices, selected = choices[52]),
+                        choices = choices, selected = choices[51]),
             
             selectInput("var", 
                         label = "Choose a variable to display",
@@ -71,7 +71,7 @@ server <- function(input, output) {
         }
         else if (input$area == choices[52]) {counties_map}
         else {bin_data}
-    })
+    }) 
     
     genArgs <- reactive({
         
