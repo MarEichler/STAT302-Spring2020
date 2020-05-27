@@ -1,3 +1,5 @@
+#lesson 6 helper 
+
 if (!exists(".inflation")) {
   .inflation <- getSymbols('CPIAUCNS', src = 'FRED', 
      auto.assign = FALSE)

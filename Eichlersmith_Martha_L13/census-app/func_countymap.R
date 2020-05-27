@@ -1,3 +1,5 @@
+#func_countymap
+#map of whole 48 states by county
 county_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, perc_max, area_name){
 
   perc_breaks <- seq(perc_min, perc_max, (perc_max-perc_min)/4)

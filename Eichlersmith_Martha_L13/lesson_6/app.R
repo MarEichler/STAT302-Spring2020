@@ -1,3 +1,5 @@
+#lesson 6
+
 # Load packages ----
 library(shiny)
 library(quantmod)

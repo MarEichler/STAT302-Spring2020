@@ -1,3 +1,5 @@
+#func_binmap 
+#create state bin chlo. map 
 bin_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, perc_max, area_name){
   
   perc_breaks <- seq(perc_min, perc_max, (perc_max-perc_min)/4)
