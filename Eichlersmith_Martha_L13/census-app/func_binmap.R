@@ -1,4 +1,5 @@
 bin_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, perc_max, area_name){
+  
   perc_breaks <- seq(perc_min, perc_max, (perc_max-perc_min)/4)
   perc_labels <- paste(perc_breaks, "%", sep = "")
   if(perc_max < 100){perc_labels[5] <- paste(perc_labels[5], "or more")}
@@ -15,6 +16,7 @@ bin_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, perc_
       , breaks = perc_breaks 
       , labels = perc_labels 
       , oob = scales::squish
+      , guide = guide_legend(reverse = TRUE)
     ) +
     theme_void() +
     coord_equal() + 

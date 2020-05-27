@@ -37,7 +37,7 @@ legend_name <- "White %"
 fill_color = "darkgreen"
 
 perc_min <- 0
-perc_max <- 100
+perc_max <- 70
 
 area_name = "Contiguous 48 States, Counties"
 
@@ -63,6 +63,7 @@ ggplot(map_data, aes(state = state, fill = fill_var)) +
     , breaks = perc_breaks 
     , labels = perc_labels 
     , oob = scales::squish
+    , guide = guide_legend(reverse = TRUE)
   ) +
   theme_void() +
   coord_equal() + 
@@ -73,34 +74,4 @@ ggplot(map_data, aes(state = state, fill = fill_var)) +
   )
 
 
-
-load(file = "data/US_income.rda")
-
-# Setting income levels
-US_income <- US_income %>%
-  select(name, GEOID, median_income) %>%
-  mutate(
-  income_bins = cut(
-    ifelse(is.na(median_income), 25000, median_income),
-    breaks = c(0, 40000, 50000, 60000, 70000, 80000),
-    labels = c("< $40k", "$40k to $50k", "$50k to $60k", "$60k to $70k", "> $70k"),
-    right = FALSE
-  )
-)
-
-
-
-
-ggplot(US_income, aes(state = name, fill = income_bins)) +
-  # need `statebins` package  
-  geom_statebins() +
-  #scale color fill to viridis color pallet 
-  viridis::scale_fill_viridis(
-    #change to continous scale
-    discrete = TRUE
-    #change legend name
-    , name = "Median\nIncome"
-  ) +
-  theme_void() +
-  coord_equal()
 
