@@ -1,0 +1,79 @@
+---
+title: "L13 Shiny II"
+subtitle: "Data Visualization (STAT 302)"
+author: "Martha Eichlersmith"
+date: 2020-06-07
+output:
+  html_document:
+    toc: yes
+    toc_float: yes
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r L13-setup, include=FALSE, message = FALSE}
+library(knitr)
+```
+
+```{r L13-image-format, echo=FALSE}
+htmltools::includeHTML("image_format.html")
+```
+
+## Exercises  
+<br> 
+
+### Exercise 1 
+
+Work through [lesson 5](https://shiny.rstudio.com/tutorial/written-tutorial/lesson5/) and [lesson 6](https://shiny.rstudio.com/tutorial/written-tutorial/lesson6/) which both contain an exercise for practice.  
+
+<br>
+
+#### Lesson 5  
+
+```{r l13-ex1-5-app, code = readLines('Eichlersmith_Martha_L13/lesson_5/app.R'), eval = FALSE}
+```
+
+```{r l13-ex1-5-helper, code = readLines('Eichlersmith_Martha_L13/lesson_5/helpers.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/lesson_5/static.png">  
+<br>
+
+#### Lesson 6 
+
+```{r l13-ex1-6-app, code = readLines('Eichlersmith_Martha_L13/lesson_6/app.R'), eval = FALSE}
+```
+
+```{r l13-ex1-6-helper, code = readLines('Eichlersmith_Martha_L13/lesson_6/helpers.R'), eval = FALSE}
+```
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/lesson_6./static.png">  
+<br>
+
+
+
+### Exercise 2  
+Create a copy of lesson 5 and use this to create a more complex app using `ggplot`.   
+This app can be accessed at 
+<a href="https://amkuyper.shinyapps.io/census-app-ggplot2/" target = "_blank" >https://amkuyper.shinyapps.io/census-app-ggplot2/</a>
+```{r L13-ex2-app, code = readLines('Eichlersmith_Martha_L13/census-app/app.R'), eval = FALSE}
+```
+
+```{r L13-ex2-func1, code = readLines('Eichlersmith_Martha_L13/census-app/func_statemap.R'), eval = FALSE}
+```
+
+```{r L13-ex2-func2, code = readLines('Eichlersmith_Martha_L13/census-app/func_countymap.R'), eval = FALSE}
+```
+
+```{r L13-ex2-func3, code = readLines('Eichlersmith_Martha_L13/census-app/func_binmap.R'), eval = FALSE}
+```
+
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/census-app/static1.png" width = "350" > &nbsp; <img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/census-app/static2.png" width = "350"> 
+
+<img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/census-app/static3.png" width = "350"> &nbsp; <img class= "rounded-corners imgshadow" src="Eichlersmith_Martha_L13/census-app/static4.png" width = "350">
+
+
+
+  
+
