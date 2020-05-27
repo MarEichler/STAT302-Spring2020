@@ -27,19 +27,18 @@ bin_data <- counties %>%
   select(state, white, black, hispanic, asian)
 
 
-glimpse(bin_data)
 
 ## VARIABLES 
 
 map_data <- bin_data
 fill_var <- bin_data$white 
-legend_name <- "White %"
+legend_name <- "% White"
 fill_color = "darkgreen"
 
 perc_min <- 0
 perc_max <- 70
 
-area_name = "Contiguous 48 States, Counties"
+area_name = "Contiguous 48 States"
 
 
 
@@ -52,7 +51,7 @@ perc_labels <- paste(perc_breaks, "%", sep = "")
 if(perc_max < 100){perc_labels[5] <- paste(perc_labels[5], "or more")}
 
 ggplot(map_data, aes(state = state, fill = fill_var)) +
-  geom_statebins() + 
+  geom_statebins(border_size = 0.5) + 
   ggtitle(area_name) + 
   scale_fill_gradient(
       name = legend_name
@@ -63,14 +62,17 @@ ggplot(map_data, aes(state = state, fill = fill_var)) +
     , breaks = perc_breaks 
     , labels = perc_labels 
     , oob = scales::squish
-    , guide = guide_legend(reverse = TRUE)
+    , guide = guide_legend(reverse = TRUE, override.aes = list(color = "black"))
   ) +
-  theme_void() +
+  theme_statebins() +
   coord_equal() + 
   theme(
-      plot.title = element_text(size = 24, hjust = 0.5)
-    , legend.title = element_text(size = 16)
-    , legend.text = element_text(size = 12)
+      plot.title = element_text(size = 30, hjust = 0.5)
+    , legend.position = "right"
+    , legend.title = element_text(size = 22)
+    , legend.text = element_text(size = 14)
+    , legend.key.height = unit(0.8, "cm")
+    , legend.key.width = unit(0.8, "cm")
   )
 
 
