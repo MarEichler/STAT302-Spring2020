@@ -2,6 +2,8 @@
 library(maps)
 library(tidyverse)
 source("func_statemap.R")
+source("func_countymap.R")
+source("func_binmap.R")
 
 counties <- readRDS("data/counties.rds")  %>%
     separate(name, c("state", "county"), ",")
@@ -10,6 +12,27 @@ counties_map <- map_data("county") %>%
     select(long, lat, group, county = subregion, state = region) %>% 
     left_join(., counties, by = c("county" = "county",  "state" = "state"))
 
+bin_data <- counties %>% 
+    mutate(
+        white.pop = total.pop*white
+        , black.pop = total.pop*black
+        , hispanic.pop = total.pop*hispanic
+        , asian.pop = total.pop*asian
+    ) %>% 
+    select(state, total.pop, white.pop, black.pop, hispanic.pop, asian.pop) %>%
+    drop_na() %>%
+    group_by(state) %>%
+    summarize_all(sum) %>%
+    mutate(
+        white = white.pop / total.pop
+        , black = black.pop / total.pop
+        , hispanic = hispanic.pop / total.pop
+        , asian = asian.pop / total.pop
+        , state = toTitleCase(state)
+    ) %>%
+    select(state, white, black, hispanic, asian)
+
+choices <- c(state.name, "Contiguous 48 States", "Contiguous 48 States, Counties")
 
 # User interface ----
 ui <- fluidPage(
@@ -20,8 +43,8 @@ ui <- fluidPage(
             helpText("Create demographic maps with 
         information from the 2010 US Census."),
             
-            selectInput("state", label = "Select a state or the contiguous 48 states to display", 
-                        choices = state.name, selected = "South Dakota"),
+            selectInput("area", label = "Select a state or the contiguous 48 states to display", 
+                        choices = choices, selected = choices[52]),
             
             selectInput("var", 
                         label = "Choose a variable to display",
@@ -42,24 +65,32 @@ ui <- fluidPage(
 server <- function(input, output) {
     
     dataInput <- reactive({
-        counties_map %>%
-            filter(state == tolower(input$state))
+        if (input$area %in% state.name) { 
+            counties_map %>%
+            filter(state == tolower(input$area))
+        }
+        else if (input$area == choices[52]) {counties_map}
+        else {bin_data}
     })
     
-    output$map <- renderPlot({
+    genArgs <- reactive({
+        
         args <- switch(input$var,
                        "Percent White" = list(dataInput()$white, "darkgreen", "% White"),
                        "Percent Black" = list(dataInput()$black, "dodgerblue", "% Black"),
                        "Percent Hispanic" = list(dataInput()$hispanic, "darkorange", "% Hispanic"),
                        "Percent Asian" = list(dataInput()$asian, "darkviolet", "% Asian"))
-        
         args$perc_min <- input$range[1]
         args$perc_max <- input$range[2]
+        args$area_name <- input$area
         args$map_data <- dataInput() 
-        args$state_name <- input$state
-        
-        
-        do.call(state_map, args)
+        args
+    })
+    
+    output$map <- renderPlot({
+        if ( input$area %in% state.name ) { do.call(state_map, genArgs()) } 
+        else if (input$area == choices[52]) {do.call(county_map, genArgs())}
+        else {do.call(bin_map, genArgs())}
     })
 }
 
