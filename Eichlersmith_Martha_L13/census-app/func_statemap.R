@@ -10,13 +10,14 @@ state_map <- function(map_data, fill_var, fill_color, legend_name, perc_min, per
     ggtitle(state_name) + 
     borders("state", state_name, colour = "black") +
     scale_fill_gradient(
-        name = legend_name
+      name = legend_name
       , high = fill_color
       , low = "white"
-      , na.value = fill_color
+      , na.value = "grey50"
       , limits = c(perc_min, perc_max)
       , breaks = perc_breaks 
       , labels = perc_labels 
+      , oob = scales::squish
     ) +
     coord_quickmap() +
     theme_void() +
