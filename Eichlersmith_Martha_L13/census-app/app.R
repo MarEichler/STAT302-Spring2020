@@ -1,8 +1,6 @@
 #lesson 5
 library(maps)
-library(mapproj)
 library(tidyverse)
-source("helpers.R")
 source("func_statemap.R")
 
 counties <- readRDS("data/counties.rds")  %>%
