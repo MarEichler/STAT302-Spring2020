@@ -5,6 +5,6 @@ account: mareichler-nw
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 2366573
-bundleId: 3197263
+bundleId: 3223328
 url: https://mareichler-nw.shinyapps.io/census-app/
-when: 1590609603.67428
+when: 1591193684.06957
