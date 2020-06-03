@@ -1538,6 +1538,9 @@ knitr::opts_chunk$set(dpi = 300) </code></pre>
 load(file = &quot;data/cows.rda&quot;) 
 load(file = &quot;data/tech_stocks.rda&quot;)
 
+tech_stocks &lt;- tech_stocks %&gt;%
+  ungroup()
+
 # Read in the cdc dataset
 cdc &lt;- read_delim(
   file = &quot;data/cdc.txt&quot;
@@ -1637,7 +1640,6 @@ ggplot(cow_means, aes(breed, mean)) +
 <p>The following plot uses the <code>tech_stocks</code> dataset.</p>
 <pre class="r"><code># percentage increase data
 perc_increase &lt;- tech_stocks %&gt;%
-  ungroup(ticker) %&gt;%
   arrange(desc(date)) %&gt;%
   distinct(company, .keep_all = TRUE) %&gt;%
   mutate(
@@ -1741,7 +1743,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0

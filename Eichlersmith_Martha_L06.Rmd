@@ -39,6 +39,9 @@ knitr::opts_chunk$set(dpi = 300)
 load(file = "data/cows.rda") 
 load(file = "data/tech_stocks.rda")
 
+tech_stocks <- tech_stocks %>%
+  ungroup()
+
 # Read in the cdc dataset
 cdc <- read_delim(
   file = "data/cdc.txt"
@@ -71,7 +74,7 @@ cdc <- read_delim(
 
 The following plot uses the `mpg` dataset.  
 
-```{r L06-class_dat}
+```{r L06-class_dat, message = FALSE}
 # Additional dataset for plot
 class_dat <- mpg %>%
   group_by(class) %>%
@@ -114,7 +117,7 @@ The following plot uses the `cows` dataset.
 </figure>
 
 
-```{r LO6-canadian-cows}
+```{r LO6-canadian-cows, message = FALSE}
 # Graphic dataset
 cow_means <- cows %>%
   filter(breed != "Canadian") %>%
@@ -160,7 +163,6 @@ The following plot uses the `tech_stocks` dataset.
 ```{r LO6-percent-increase}
 # percentage increase data
 perc_increase <- tech_stocks %>%
-  ungroup(ticker) %>%
   arrange(desc(date)) %>%
   distinct(company, .keep_all = TRUE) %>%
   mutate(
@@ -193,7 +195,7 @@ ggplot(perc_increase, aes(perc, company)) +
 
 The following plot uses the `cdc` dataset.  
 
-```{r}
+```{r, message = FALSE}
 # 95% CI for weight for genhlth, gender groups
 cdc_weight_95ci <- cdc %>%
   group_by(genhlth, gender) %>%
