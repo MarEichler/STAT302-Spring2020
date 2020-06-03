@@ -137,6 +137,7 @@ caption_print <- paste(strwrap(caption, 40), collapse = "\n")
 
 #create labels df with most recent stock values 
 Labels <- tech_stocks %>%
+  ungroup() %>%
   #order by date 
   arrange(desc(date)) %>% 
   # return distinct company
@@ -148,6 +149,9 @@ Labels <- tech_stocks %>%
 #get range for x and y variables 
 xrng <- range(tech_stocks$date)
 yrng <- range(tech_stocks$price_indexed)
+
+tech_stocks <- tech_stocks %>%
+  ungroup()
 
 #stock price by date 
 ggplot(tech_stocks, aes(date, price_indexed)) +

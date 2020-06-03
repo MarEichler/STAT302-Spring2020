@@ -1288,8 +1288,8 @@ window.initializeCodeFolding = function(show) {
 
     // create a collapsable div to wrap the code in
     var div = $('<div class="collapse r-code-collapse"></div>');
-    if (show || $(this)[0].classList.contains('fold-show'))
-      div.addClass('in');
+    show = (show || $(this).hasClass('fold-show')) && !$(this).hasClass('fold-hide');
+    if (show) div.addClass('in');
     var id = 'rcode-643E0F36' + currentIndex++;
     div.attr('id', id);
     $(this).before(div);
@@ -1699,6 +1699,7 @@ caption_print &lt;- paste(strwrap(caption, 40), collapse = &quot;\n&quot;)
 
 #create labels df with most recent stock values 
 Labels &lt;- tech_stocks %&gt;%
+  ungroup() %&gt;%
   #order by date 
   arrange(desc(date)) %&gt;% 
   # return distinct company
@@ -1710,6 +1711,9 @@ Labels &lt;- tech_stocks %&gt;%
 #get range for x and y variables 
 xrng &lt;- range(tech_stocks$date)
 yrng &lt;- range(tech_stocks$price_indexed)
+
+tech_stocks &lt;- tech_stocks %&gt;%
+  ungroup()
 
 #stock price by date 
 ggplot(tech_stocks, aes(date, price_indexed)) +
@@ -1950,7 +1954,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0
