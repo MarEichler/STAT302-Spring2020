@@ -292,6 +292,11 @@ var <- load_variables(2017, "acs5", cache = TRUE)
 #then use View(var) to filter 
 ```
 
+```{r, include = FALSE, eval = FALSE}
+Sys.getenv("298766340cee3d5d42954afa1ce6d4cf04c55650")
+```
+
+
 ### Plot 1: Manhatten and Household Median Income
 ```{r LO5-CH-plot1,  out.width="100%", fig.height=2.5, message = FALSE, warning = FALSE}
 # SIZE: out.width="100%", fig.height=2.5
