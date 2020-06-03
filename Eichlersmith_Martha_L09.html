@@ -1694,6 +1694,7 @@ NW_black10  &lt;- &quot;#D8D6D6&quot;</code></pre>
 labels &lt;- cdc_small_adj %&gt;%
   group_by(gender, genhlth) %&gt;%
   summarize(count = paste(&quot;n =&quot;, n()))</code></pre>
+<pre><code>## `summarise()` regrouping output by &#39;gender&#39; (override with `.groups` argument)</code></pre>
 <pre class="r"><code>ggplot(cdc_small_adj, aes(gender))+
   geom_bar(
       aes(fill = exercise)
@@ -1788,7 +1789,7 @@ $(document).ready(function ()  {
       theme: "bootstrap3",
       context: '.toc-content',
       hashGenerator: function (text) {
-        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_').toLowerCase();
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
       },
       ignoreSelector: ".toc-ignore",
       scrollTo: 0

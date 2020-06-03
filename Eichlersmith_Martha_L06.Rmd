@@ -20,6 +20,9 @@ We'll be using the `cows.rda`, `cdc.txt`, and `tech_stocks.rda` datasets which a
 
 <br>
 
+```{r}
+knitr::opts_chunk$set(eval = FALSE)
+```
 
 
 ```{r L06-setup, message=FALSE, warning=FALSE}
